@@ -8,7 +8,7 @@
 - [x] Delete file and move to trash
 - [x] Add context menu
 - [x] Add context menu for explorer item
-- [ ] Create new file or folder
+- [x] Create new file or folder
 
 ### Fix
 
