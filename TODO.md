@@ -11,5 +11,9 @@
 - [x] Create new file or folder
 
 ### Fix
-
 - [ ] Sort by size 
+
+### UI
+- [ ] Add settings
+- [ ] Better context menu
+- [ ] Add favorites folders sidebar
