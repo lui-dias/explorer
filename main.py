@@ -149,6 +149,9 @@ def get_file_type(path: Path):
                                           '.sfd']):
             return 'Font'
 
+        if any(name.endswith(i) for i in ['.csv', '.tsv', '.txt']):
+            return 'Text'
+
         # ! --------------------------------------------
         # ! KEEP ALWAYS AT THE END
         # ! --------------------------------------------

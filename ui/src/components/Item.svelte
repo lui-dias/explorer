@@ -35,6 +35,7 @@
 	import FolderSrc from './icons/folders/FolderSrc.svelte'
 	import FolderView from './icons/folders/FolderView.svelte'
 	import FolderVscode from './icons/folders/FolderVscode.svelte'
+	import FileText from './icons/files/FileText.svelte'
 
 	export let file: ExplorerItem
 	let size = file.size ?? '0 B'
@@ -67,6 +68,7 @@
         'HTML'                 : FileHTML,
         'CSS'                  : FileCSS,
         'Font'                 : FileFont,
+        'Text'                 : FileText,
 	}
 
 	// prettier-ignore
