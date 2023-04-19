@@ -1,0 +1,272 @@
+<script lang="ts">
+	import { onMount } from 'svelte'
+	import {
+		cwd,
+		historyIndex,
+		sortType,
+		history,
+		selectedItem,
+		refreshExplorer,
+	} from '../stores/explorerStore'
+	import type { ExplorerItem, TSortTypes } from '../types'
+	import { isNumber, outsideClick, sort } from '../utils'
+	import Item from './Item.svelte'
+	import ArrowLeft from './icons/ArrowLeft.svelte'
+	import Reload from './icons/Reload.svelte'
+	import ContextMenu from './ContextMenu/ContextMenu.svelte'
+	import Virtualist from './Virtualist.svelte'
+
+	let cwdSplit = [] as string[]
+	let items = [] as ExplorerItem[]
+
+	let isSearchSelected = false
+	let searchNode: HTMLButtonElement
+	let inputSearchNode: HTMLInputElement
+	let explorerItemsNode: HTMLUListElement
+
+	refreshExplorer.set(async () => {
+		items = []
+		cwdSplit = $cwd.split('/')
+		// @ts-ignore
+		items = (await pywebview.api.ls($cwd)).map(i => ({
+			...i,
+			isEditMode: false,
+		}))
+
+		sortItems()
+	})
+
+	async function isPywebviewReady() {
+		// @ts-ignore
+		if (typeof pywebview === 'undefined') {
+			return new Promise(resolve => {
+				setTimeout(() => {
+					resolve(isPywebviewReady())
+				}, 100)
+			})
+		}
+
+		return true
+	}
+
+	function sortItems() {
+		if ($sortType === 'name') {
+			items = sort(items, i => (isNumber(i.name) ? Number(i.name) : i.name))
+		} else if ($sortType === 'modified') {
+			items = sort(items, i => i.modified)
+		} else if ($sortType === 'type') {
+			items = sort(items, i => i.kind)
+		} else if ($sortType === 'size') {
+			// FIXME: not working
+			items = sort(items, i => i.size)
+		}
+	}
+
+	function back() {
+		if ($historyIndex > 0) {
+			historyIndex.set($historyIndex - 1)
+		}
+	}
+
+	function forward() {
+		if ($historyIndex < $history.length - 1) {
+			historyIndex.set($historyIndex + 1)
+		}
+	}
+
+	onMount(() => {
+		isPywebviewReady().then(async () => {
+			console.log('ready')
+			sortType.set((localStorage.getItem('sortType') || $sortType) as TSortTypes)
+			// @ts-ignore
+			cwd.set(localStorage.getItem('cwd') || (await pywebview.api.home()))
+
+			const h = [] as string[]
+
+			const cwdSplit = $cwd.split('/')
+			for (let i = 0; i < cwdSplit.length; i++) {
+				h.push(cwdSplit.slice(0, i + 1).join('/'))
+			}
+			history.set(h)
+			historyIndex.set(h.length - 1)
+
+			sortType.subscribe(v => {
+				sortItems()
+
+				localStorage.setItem('sortType', $sortType)
+			})
+
+			cwd.subscribe(v => {
+				if (v) {
+					$refreshExplorer()
+
+					localStorage.setItem('cwd', $cwd)
+				}
+			})
+
+			historyIndex.subscribe(v => {
+				cwd.set($history[$historyIndex])
+			})
+		})
+
+		outsideClick(searchNode, () => {
+			isSearchSelected = false
+		})
+
+		outsideClick(explorerItemsNode, () => {
+			selectedItem.set(null)
+		})
+	})
+</script>
+
+<svelte:window
+	on:mousedown={e => {
+		if (e.button == 3) {
+			back()
+		} else if (e.button == 4) {
+			forward()
+		}
+	}}
+	on:keydown={async e => {
+		if (e.key === 'Escape') {
+			isSearchSelected = false
+			selectedItem.set(null)
+		}
+
+		if ($selectedItem) {
+			if (e.key === 'F2') {
+				items = items.map(i => {
+					if (!$selectedItem) {
+						return i
+					}
+
+					if (i.path === $selectedItem.path) {
+						return {
+							...i,
+							isEditMode: true,
+						}
+					}
+
+					return i
+				})
+			} else if (e.key === 'Delete') {
+				while (true) {
+					// @ts-ignore
+					const { end, total, deleted } = await pywebview.api.stream_delete(
+						$selectedItem.path,
+						!e.shiftKey,
+					)
+					console.log(`Deleted ${deleted} of ${total} files`)
+
+					if (end) {
+						break
+					}
+				}
+				console.log('Deleted', $selectedItem.path)
+				$refreshExplorer()
+			}
+		}
+	}}
+/>
+
+<ContextMenu />
+
+<div class="w-full h-full dark:bg-zinc-800 p-3 font-poppins flex flex-col gap-y-2">
+	<div class="flex gap-x-2">
+		<div class="flex gap-x-3">
+			<button type="button" class="w-3" disabled={$historyIndex === 0} on:click={back}>
+				<ArrowLeft />
+			</button>
+
+			<button
+				type="button"
+				class="transform rotate-180 w-3"
+				disabled={$historyIndex === $history.length - 1}
+				on:click={forward}
+			>
+				<ArrowLeft />
+			</button>
+		</div>
+
+		<button
+			type="button"
+			class="dark:bg-zinc-700 w-full dark:text-violet-300 flex items-center overflow-x-auto"
+			on:focus={() => {
+				isSearchSelected = true
+			}}
+			bind:this={searchNode}
+		>
+			{#if isSearchSelected}
+				<!-- svelte-ignore a11y-autofocus -->
+				<input
+					type="text"
+					class="bg-transparent w-full h-full px-4 outline-none focus:outline-purple-300"
+					autofocus
+					value={$cwd}
+					on:keyup={async e => {
+						if (e.key === 'Enter') {
+							cwd.set(inputSearchNode.value)
+							$refreshExplorer()
+						}
+					}}
+					bind:this={inputSearchNode}
+				/>
+			{:else}
+				<div class="relative w-full">
+					<ul class="flex">
+						{#each cwdSplit as dir, i}
+							<li class="flex items-center">
+								<button
+									type="button"
+									class="dark:hover:bg-purple-300/20 p-2"
+									on:click={() => {
+										historyIndex.set($historyIndex - 1)
+									}}
+								>
+									<span class="text-gray-500 dark:text-violet-200">{dir}</span>
+								</button>
+								{#if i < cwdSplit.length - 1}
+									<span class="transform rotate-180 w-1.5 block mx-1">
+										<ArrowLeft />
+									</span>
+								{/if}
+							</li>
+						{/each}
+					</ul>
+					<button
+						type="button"
+						class="absolute inset-y-0 right-2"
+						on:click={$refreshExplorer}
+					>
+						<Reload />
+					</button>
+				</div>
+			{/if}
+		</button>
+	</div>
+
+	<div class="flex">
+		<span class="dark:text-purple-100 text-left border-r border-purple-100 text-sm w-[50%]"
+			>Name</span
+		>
+		<span class="dark:text-purple-100 text-left border-r border-purple-100 pl-2 text-sm w-[20%]"
+			>Modified</span
+		>
+		<span class="dark:text-purple-100 text-left border-r border-purple-100 pl-2 text-sm w-[15%]"
+			>Type</span
+		>
+		<span class="dark:text-purple-100 text-left border-r border-purple-100 pl-2 text-sm w-[15%]"
+			>Size</span
+		>
+	</div>
+	<ul bind:this={explorerItemsNode} class="h-[calc(100%-40px)]">
+		<Virtualist
+			{items}
+			itemHeight={24}
+			let:item={file}
+			class="flex flex-col w-full mt-2 h-full"
+		>
+			<Item {file} />
+		</Virtualist>
+	</ul>
+</div>
