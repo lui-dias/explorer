@@ -28,25 +28,25 @@ def get_folder_size(path: Path):
 
 def get_file_type(path: Path):
     name = path.name
-    
+
 
     if path.is_dir():
         if any(name.endswith(i) for i in ['.vscode', 'vscode']):
             return 'Vscode'
-        
+
         if any(name.endswith(i) for i in ['node_modules']):
             return 'Node Modules'
-        
+
         if any(name.endswith(i) for i in ['public', '.public']):
             return 'Public'
-        
+
         if any(name.endswith(i) for i in ['src', 'source', 'sources']):
             return 'Src'
 
         if any(name.endswith(i) for i in ['component',
                                           'components', '.components', 'gui', 'ui', 'widgets']):
             return 'Component'
-        
+
         if any(name.endswith(i) for i in ['html', 'view', 'views', 'layout', 'layouts', 'page',
                                           'pages', '_view', '_views', '_layout', '_layouts',
                                           '_page', '_pages']):
@@ -58,7 +58,10 @@ def get_file_type(path: Path):
                 return 'Dist'
 
         if any(name.endswith(i) for i in ['assets', '.assets', 'asset', '.asset', 'static']):
-            return 'Assets'                              
+            return 'Assets'
+
+        if any(name.endswith(i) for i in ['git', '.git', 'submodules', '.submodules']):
+            return 'Git'
 
         return 'folder'
     elif path.is_file():
@@ -106,8 +109,8 @@ def get_file_type(path: Path):
         if any(name.endswith(i) for i in ['astro.config.js', 'astro.config.cjs',
                                           'astro.config.mjs', 'astro.config.ts']):
             return 'Astro Config'
-    
-        
+
+
         if any(name.endswith(i) for i in ['tailwind.js',
                                           'tailwind.cjs',
                                           'tailwind.coffee',
@@ -129,19 +132,19 @@ def get_file_type(path: Path):
                                           '.tailwindrc.ts',
                                           '.tailwindrc.json']):
             return 'Tailwind'
-        
+
         if any(name.endswith(i) for i in ['.d.ts', '.d.cts', '.d.mts']):
             return 'Typescript Definition'
-        
+
         if any(name.endswith(i) for i in ['.db']):
             return 'Database'
-        
+
         if any(name.endswith(i) for i in ['.svg']):
             return 'SVG'
-        
+
         if any(name.endswith(i) for i in ['.html']):
             return 'HTML'
-        
+
         if any(name.endswith(i) for i in ['.css']):
             return 'CSS'
 
@@ -159,10 +162,10 @@ def get_file_type(path: Path):
         if any(name.endswith(i) for i in ['.json', '.jsonl', '.ndjson',
                                           '.json-tmlanguage', '.jsonc']):
             return 'Json'
-        
+
         if any(name.endswith(i) for i in ['.js']):
             return 'Javascript'
-        
+
         if any(name.endswith(i) for i in ['.ts']):
             return 'Typescript'
 
@@ -191,7 +194,7 @@ class StreamFolderSize:
 
     def __eq__(self, other):
         return self.path == other.path
-    
+
 class StreamDelete:
     def __init__(self, path: str, moveToTrash = True):
         self.path = Path(path)
@@ -275,10 +278,10 @@ class API:
             )
             for i in Path(folder).iterdir()
         ]
-    
+
     def home(self):
         return Path.home().as_posix()
-    
+
     def rename(self, path: str, name: str):
         Path(path).rename(Path(path).parent / name)
 
@@ -318,7 +321,7 @@ class API:
             'total': streams_deletes[path].total,
             'deleted': streams_deletes[path].deleted
         }
-    
+
     def reset_stream_size(self, path: str):
         if path in streams_files:
             del streams_files[path]
