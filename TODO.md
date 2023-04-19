@@ -15,5 +15,11 @@
 
 ### UI
 - [ ] Add settings
-- [ ] Better context menu
 - [ ] Add favorites folders sidebar
+- [ ] Better context appearance
+- [ ] Better footer appearance
+
+### Low priority
+- [ ] Add search
+- [ ] Offline PWA
+- [ ] Add file preview
