@@ -76,6 +76,5 @@ export function formatDate(date: Date) {
 
 	return Object.keys(formats).reduce((acc, key) => {
 		return acc.replace(key, String(formats[key]).padStart(2, '0'))
-	}, 'yyyy-MM-dd HH:mm')
+	}, 'dd/MM/yyyy HH:mm')
 }
-
