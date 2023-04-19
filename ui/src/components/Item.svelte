@@ -5,7 +5,7 @@
 	import type { ExplorerItem } from '../types'
 
 	import { events } from '../event'
-	import { formatBytes, isPathChild, outsideClick } from '../utils'
+	import { __pywebview, formatBytes, isPathChild, outsideClick } from '../utils'
 	import Folder from './icons/Folder.svelte'
 	import FileAstro from './icons/files/FileAstro.svelte'
 	import FileAstroConfig from './icons/files/FileAstroConfig.svelte'
@@ -98,27 +98,19 @@
 
 	async function executeEdit() {
 		if (file.action === 'create_file') {
-			// @ts-ignore
-			await pywebview.api.create_file(`${file.parent}/${file.name}`)
-			events.emit('create_file')
+			events.emit('create_file', `${file.parent}/${file.name}`)
 		} else if (file.action === 'create_folder') {
-			// @ts-ignore
-			await pywebview.api.create_folder(`${file.parent}/${file.name}`)
-			events.emit('create_folder')
+			events.emit('create_folder', `${file.parent}/${file.name}`)
 		} else if (file.action === 'rename') {
 			const path = `${file.parent}/${file.name}`
-			// @ts-ignore
-			const exists = await pywebview.api.exists(path, file.path)
+			const exists = await __pywebview.exists(path, file.path)
 
 			if (file.name === '') {
 				footerText.set('The name cannot be empty')
 			} else if (exists) {
 				footerText.set('The name already exists')
 			} else {
-				// @ts-ignore
-				await pywebview.api.rename(file.path, `${file.parent}/${file.name}`)
-
-				events.emit('rename')
+				events.emit('rename', file.path, `${file.parent}/${file.name}`)
 			}
 		}
 
@@ -133,8 +125,7 @@
 		})
 
 		let interval = setInterval(async () => {
-			// @ts-ignore
-			const { size: newSize, end } = await pywebview.api.stream_folder_size(file.path)
+			const { size: newSize, end } = await __pywebview.stream_folder_size(file.path)
 
 			size = newSize
 
@@ -143,8 +134,7 @@
 			}
 		}, 100)
 
-		// @ts-ignore
-		await pywebview.api.reset_stream_size(file.path)
+		await __pywebview.reset_stream_size(file.path)
 	})
 
 	$: if (file.isEditMode && inputEditNode) {

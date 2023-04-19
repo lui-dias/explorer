@@ -1,3 +1,5 @@
+import type { ExplorerItem } from './types'
+
 const isVisible = (elem: any) =>
 	!!elem && !!(elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length)
 
@@ -77,4 +79,59 @@ export function formatDate(date: Date) {
 	return Object.keys(formats).reduce((acc, key) => {
 		return acc.replace(key, String(formats[key]).padStart(2, '0'))
 	}, 'dd/MM/yyyy HH:mm')
+}
+
+export const __pywebview = {
+	ls: async (folder: string): Promise<ExplorerItem[]> => {
+		// @ts-ignore
+		return await pywebview.api.ls(folder)
+	},
+	home: async (): Promise<string> => {
+		// @ts-ignore
+		return await pywebview.api.home()
+	},
+	rename: async (from: string, to: string): Promise<void> => {
+		// @ts-ignore
+		return await pywebview.api.rename(from, to)
+	},
+	create_file: async (path: string): Promise<void> => {
+		// @ts-ignore
+		return await pywebview.api.create_file(path)
+	},
+	create_folder: async (path: string): Promise<void> => {
+		// @ts-ignore
+		return await pywebview.api.create_folder(path)
+	},
+	exists: async (path: string, ignore: string): Promise<boolean> => {
+		// @ts-ignore
+		return await pywebview.api.exists(path, ignore)
+	},
+	stream_folder_size: async (
+		path: string,
+	): Promise<{
+		size: number
+		end: boolean
+	}> => {
+		// @ts-ignore
+		return await pywebview.api.stream_folder_size(path)
+	},
+	stream_delete: async (
+		path: string,
+		moveToTrash: boolean,
+	): Promise<{
+		end: boolean
+		total: number
+		deleted: number
+	}> => {
+		// @ts-ignore
+		return await pywebview.api.stream_delete(path, moveToTrash)
+	},
+	reset_stream_size: async (path: string): Promise<void> => {
+		// @ts-ignore
+		return await pywebview.api.reset_stream_size(path)
+	},
+	reset_stream_delete: async (path: string): Promise<void> => {
+		// @ts-ignore
+		return await pywebview.api.reset_stream_delete(path)
+	},
 }

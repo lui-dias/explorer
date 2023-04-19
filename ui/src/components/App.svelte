@@ -12,7 +12,7 @@
 		sortType,
 	} from '../store'
 	import type { TSortTypes } from '../types'
-	import { isNumber, outsideClick, sort } from '../utils'
+	import { __pywebview, isNumber, outsideClick, sort } from '../utils'
 	import ContextMenu from './ContextMenu/ContextMenu.svelte'
 	import Virtualist from './Virtualist.svelte'
 	import ArrowLeft from './icons/ArrowLeft.svelte'
@@ -25,29 +25,40 @@
 	let inputSearchNode: HTMLInputElement
 	let explorerItemsNode: HTMLUListElement
 
-	events.on('create_file', () => {
+	events.on('create_file', async (file: string) => {
 		console.log('create_file')
+
+		await __pywebview.create_file(file)
 	})
-	events.on('create_folder', () => {
+	events.on('create_folder', async (folder: string) => {
 		console.log('create_folder')
+
+		await __pywebview.create_folder(folder)
 	})
-	events.on('rename', () => {
+	events.on('rename', async (from: string, to: string) => {
 		console.log('rename')
+
+		await __pywebview.rename(from, to)
 	})
-	events.on('delete', () => {
-		console.log('delete')
+	events.on('delete', async (path: string, moveToTrash: boolean) => {
+		while (true) {
+			const { end, total, deleted } = await __pywebview.stream_delete(path, moveToTrash)
+			console.log(`Deleted ${deleted} of ${total} files`)
+
+			if (end) {
+				break
+			}
+		}
 	})
 	events.on('full_reload', async () => {
-		// @ts-ignore
-		explorerItems.set(await pywebview.api.ls($cwd))
+		explorerItems.set(await __pywebview.ls($cwd))
 	})
 	events.on('reset_delete', async (path: string) => {
-		// @ts-ignore
-		await pywebview.api.reset_stream_delete(path)
+		await __pywebview.reset_stream_delete(path)
 	})
 	events.on('reset_size', async (path: string) => {
 		// @ts-ignore
-		await pywebview.api.reset_stream_size(path)
+		await __pywebview.reset_stream_size(path)
 	})
 
 	footerText.subscribe(v => {
@@ -59,8 +70,7 @@
 	refreshExplorer.set(async () => {
 		cwdSplit = $cwd.split('/')
 		explorerItems.set(
-			// @ts-ignore
-			(await pywebview.api.ls($cwd)).map(i => ({
+			(await __pywebview.ls($cwd)).map(i => ({
 				...i,
 				isEditMode: false,
 			})),
@@ -114,7 +124,7 @@
 			console.log('ready')
 			sortType.set((localStorage.getItem('sortType') || $sortType) as TSortTypes)
 			// @ts-ignore
-			cwd.set(localStorage.getItem('cwd') || (await pywebview.api.home()))
+			cwd.set(localStorage.getItem('cwd') || (await __pywebview.home()))
 
 			const h = [] as string[]
 
@@ -188,21 +198,7 @@
 					}),
 				)
 			} else if (e.key === 'Delete') {
-				while (true) {
-					// @ts-ignore
-					const { end, total, deleted } = await pywebview.api.stream_delete(
-						$selectedItem.path,
-						!e.shiftKey,
-					)
-					console.log(`Deleted ${deleted} of ${total} files`)
-
-					if (end) {
-						break
-					}
-				}
-				console.log('Deleted', $selectedItem.path)
-
-				events.emit('delete')
+				events.emit('delete', $selectedItem.path, !e.shiftKey)
 				events.emit('full_reload')
 				events.emit('reset_delete', $selectedItem.path)
 			}
