@@ -15,7 +15,7 @@ if not SEED_FOLDER.exists():
 
 
 def start_server():
-    run('nr dev', shell=True)
+    run('pnpm dev', shell=True)
 
 
 def show_ui():

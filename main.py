@@ -56,7 +56,9 @@ def get_file_type(path: Path):
                                           'exports', 'build', '.build', 'builds', 'release',
                                           'releases', 'target', 'targets']):
                 return 'Dist'
-                                          
+
+        if any(name.endswith(i) for i in ['assets', '.assets', 'asset', '.asset', 'static']):
+            return 'Assets'                              
 
         return 'folder'
     elif path.is_file():

@@ -39,6 +39,7 @@
 	import FolderSrc from './icons/folders/FolderSrc.svelte'
 	import FolderView from './icons/folders/FolderView.svelte'
 	import FolderVscode from './icons/folders/FolderVscode.svelte'
+	import FolderAssets from './icons/folders/FolderAssets.svelte'
 
 	export let file: ExplorerItem
 	let size = file.size ?? '0 B'
@@ -82,7 +83,8 @@
         'Src'         : FolderSrc,
         'Component'   : FolderComponent,
         'View'        : FolderView,
-        'Dist'        : FolderDist
+        'Dist'        : FolderDist,
+        'Assets'      : FolderAssets,
     }
 
 	function getFileIcon(file: ExplorerItem) {
