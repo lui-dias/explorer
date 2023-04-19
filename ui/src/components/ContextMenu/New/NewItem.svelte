@@ -2,7 +2,7 @@
 	import ArrowLeft from '../../icons/ArrowLeft.svelte'
 </script>
 
-<div class="flex items-center gap-x-3">
+<div class="flex justify-between items-center gap-x-3 w-full">
 	New
 	<span class="transform rotate-180 w-1.5">
 		<ArrowLeft />

@@ -16,7 +16,7 @@ class ExplorerItem(TypedDict):
     modified: str
     type: str
     size: str
-
+    parent: str
 
 def get_folder_size(path: Path):
     if path.is_dir():
@@ -267,7 +267,8 @@ class API:
                     timezone.utc
                 ).strftime('%d/%m/%Y %H:%M'),
                 type=get_file_type(i),
-                size=0
+                size=0,
+                parent=i.parent.as_posix()
             )
             for i in Path(folder).iterdir()
         ]
@@ -277,6 +278,18 @@ class API:
     
     def rename(self, path: str, name: str):
         Path(path).rename(Path(path).parent / name)
+
+    def create_file(self, path: str):
+        Path(path).touch()
+
+    def create_folder(self, path: str):
+        Path(path).mkdir()
+
+    def exists(self, path: str, ignore: str = None):
+        p1 = Path(path)
+        p2 = Path(ignore) if ignore else None
+
+        return p1.exists() and p1 != p2
 
     def stream_folder_size(self, path: str):
         s = StreamFolderSize(path)
@@ -291,7 +304,7 @@ class API:
         }
 
     def stream_delete(self, path: str, moveToTrash = True):
-        s = StreamDelete(path)
+        s = StreamDelete(path, moveToTrash)
 
         if path not in streams_deletes:
             s.start()
@@ -302,6 +315,14 @@ class API:
             'total': streams_deletes[path].total,
             'deleted': streams_deletes[path].deleted
         }
+    
+    def reset_stream_size(self, path: str):
+        if path in streams_files:
+            del streams_files[path]
+
+    def reset_stream_delete(self, path: str):
+        if path in streams_deletes:
+            del streams_deletes[path]
 
 streams_files = {}
 streams_deletes = {}

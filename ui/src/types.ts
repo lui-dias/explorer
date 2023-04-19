@@ -5,8 +5,10 @@ export type ExplorerItem = {
     modified: string
 	type: string
     size: number
+    parent: string
 
     isEditMode: boolean
+    action?: 'create_file' | 'create_folder' | 'rename'
 }
 
 export type TSortTypes = 'name' | 'modified' | 'type' | 'size'

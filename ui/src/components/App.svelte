@@ -1,37 +1,70 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
+	import { events } from '../event'
 	import {
 		cwd,
-		historyIndex,
-		sortType,
+		explorerItems,
+		footerText,
 		history,
-		selectedItem,
+		historyIndex,
 		refreshExplorer,
-	} from '../stores/explorerStore'
-	import type { ExplorerItem, TSortTypes } from '../types'
+		selectedItem,
+		sortType,
+	} from '../store'
+	import type { TSortTypes } from '../types'
 	import { isNumber, outsideClick, sort } from '../utils'
-	import Item from './Item.svelte'
-	import ArrowLeft from './icons/ArrowLeft.svelte'
-	import Reload from './icons/Reload.svelte'
 	import ContextMenu from './ContextMenu/ContextMenu.svelte'
 	import Virtualist from './Virtualist.svelte'
+	import ArrowLeft from './icons/ArrowLeft.svelte'
+	import Reload from './icons/Reload.svelte'
 
 	let cwdSplit = [] as string[]
-	let items = [] as ExplorerItem[]
 
 	let isSearchSelected = false
 	let searchNode: HTMLButtonElement
 	let inputSearchNode: HTMLInputElement
 	let explorerItemsNode: HTMLUListElement
 
-	refreshExplorer.set(async () => {
-		items = []
-		cwdSplit = $cwd.split('/')
+	events.on('create_file', () => {
+		console.log('create_file')
+	})
+	events.on('create_folder', () => {
+		console.log('create_folder')
+	})
+	events.on('rename', () => {
+		console.log('rename')
+	})
+	events.on('delete', () => {
+		console.log('delete')
+	})
+	events.on('full_reload', async () => {
 		// @ts-ignore
-		items = (await pywebview.api.ls($cwd)).map(i => ({
-			...i,
-			isEditMode: false,
-		}))
+		explorerItems.set(await pywebview.api.ls($cwd))
+	})
+	events.on('reset_delete', async (path: string) => {
+		// @ts-ignore
+		await pywebview.api.reset_stream_delete(path)
+	})
+	events.on('reset_size', async (path: string) => {
+		// @ts-ignore
+		await pywebview.api.reset_stream_size(path)
+	})
+
+	footerText.subscribe(v => {
+		setTimeout(() => {
+			footerText.set('')
+		}, 5000)
+	})
+
+	refreshExplorer.set(async () => {
+		cwdSplit = $cwd.split('/')
+		explorerItems.set(
+			// @ts-ignore
+			(await pywebview.api.ls($cwd)).map(i => ({
+				...i,
+				isEditMode: false,
+			})),
+		)
 
 		sortItems()
 	})
@@ -51,14 +84,16 @@
 
 	function sortItems() {
 		if ($sortType === 'name') {
-			items = sort(items, i => (isNumber(i.name) ? Number(i.name) : i.name))
+			explorerItems.set(
+				sort($explorerItems, i => (isNumber(i.name) ? Number(i.name) : i.name)),
+			)
 		} else if ($sortType === 'modified') {
-			items = sort(items, i => i.modified)
+			explorerItems.set(sort($explorerItems, i => i.modified))
 		} else if ($sortType === 'type') {
-			items = sort(items, i => i.kind)
+			explorerItems.set(sort($explorerItems, i => i.kind))
 		} else if ($sortType === 'size') {
 			// FIXME: not working
-			items = sort(items, i => i.size)
+			explorerItems.set(sort($explorerItems, i => i.size))
 		}
 	}
 
@@ -135,20 +170,23 @@
 
 		if ($selectedItem) {
 			if (e.key === 'F2') {
-				items = items.map(i => {
-					if (!$selectedItem) {
-						return i
-					}
-
-					if (i.path === $selectedItem.path) {
-						return {
-							...i,
-							isEditMode: true,
+				explorerItems.set(
+					$explorerItems.map(i => {
+						if (!$selectedItem) {
+							return i
 						}
-					}
 
-					return i
-				})
+						if (i.path === $selectedItem.path) {
+							return {
+								...i,
+								isEditMode: true,
+								action: 'rename',
+							}
+						}
+
+						return i
+					}),
+				)
 			} else if (e.key === 'Delete') {
 				while (true) {
 					// @ts-ignore
@@ -163,7 +201,10 @@
 					}
 				}
 				console.log('Deleted', $selectedItem.path)
-				$refreshExplorer()
+
+				events.emit('delete')
+				events.emit('full_reload')
+				events.emit('reset_delete', $selectedItem.path)
 			}
 		}
 	}}
@@ -171,8 +212,8 @@
 
 <ContextMenu />
 
-<div class="w-full h-full dark:bg-zinc-800 p-3 font-poppins flex flex-col gap-y-2">
-	<div class="flex gap-x-2">
+<div class="w-full h-full dark:bg-zinc-800 flex flex-col gap-y-2">
+	<div class="flex gap-x-2 mx-3 mt-3">
 		<div class="flex gap-x-3">
 			<button type="button" class="w-3" disabled={$historyIndex === 0} on:click={back}>
 				<ArrowLeft />
@@ -245,7 +286,7 @@
 		</button>
 	</div>
 
-	<div class="flex">
+	<div class="flex mx-3">
 		<span class="dark:text-purple-100 text-left border-r border-purple-100 text-sm w-[50%]"
 			>Name</span
 		>
@@ -259,14 +300,11 @@
 			>Size</span
 		>
 	</div>
-	<ul bind:this={explorerItemsNode} class="h-[calc(100%-40px)]">
-		<Virtualist
-			{items}
-			itemHeight={24}
-			let:item={file}
-			class="flex flex-col w-full mt-2 h-full"
-		>
-			<Item {file} />
-		</Virtualist>
+	<ul bind:this={explorerItemsNode} class="h-[calc(100%-40px-40px)] mx-3">
+		<Virtualist itemHeight={24} class="flex flex-col w-full mt-2 h-full" />
 	</ul>
+
+	<footer class="h-10 px-2 text-purple-300 border-t border-zinc-700 flex items-center">
+		{$footerText}
+	</footer>
 </div>

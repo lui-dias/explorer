@@ -4,7 +4,7 @@
 	import ContextMenuItem from './ContextMenuItem.svelte'
 	import SortInner from './Sort/SortInner.svelte'
 	import SortItem from './Sort/SortItem.svelte'
-	import { contextMenuOpen, selectedItem } from '../../stores/explorerStore'
+	import { contextMenuOpen, selectedItem } from '../../store'
 	import NewItem from './New/NewItem.svelte'
 	import NewInner from './New/NewInner.svelte'
 
@@ -62,11 +62,12 @@
 >
 	<li class="dark:hover:bg-zinc-600">
 		{#if $selectedItem}
-			<ContextMenuItem {parentHeight}>
-				<NewItem slot="item" />
-                <NewInner slot="inner" />
-			</ContextMenuItem>
+            <span />
 		{:else}
+        <ContextMenuItem {parentHeight}>
+            <NewItem slot="item" />
+            <NewInner slot="inner" />
+        </ContextMenuItem>
 			<ContextMenuItem {parentHeight}>
 				<SortItem slot="item" />
 				<SortInner slot="inner" />

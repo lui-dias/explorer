@@ -33,7 +33,7 @@
 <!-- svelte-ignore a11y-mouse-events-have-key-events -->
 <button
 	type="button"
-	class="px-4 py-2 flex items-center"
+	class="px-4 py-2 flex justify-between items-center w-full"
 	on:mouseover={() => (isHovered = true)}
 	on:mouseleave={() => (isHovered = false)}
 >

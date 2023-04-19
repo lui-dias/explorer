@@ -1,15 +1,10 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
 
-	import {
-		cwd,
-		history,
-		historyIndex,
-		refreshExplorer,
-		selectedItem,
-	} from '../stores/explorerStore'
+	import { cwd, footerText, history, historyIndex, refreshExplorer, selectedItem } from '../store'
 	import type { ExplorerItem } from '../types'
 
+	import { events } from '../event'
 	import { formatBytes, isPathChild, outsideClick } from '../utils'
 	import Folder from './icons/Folder.svelte'
 	import FileAstro from './icons/files/FileAstro.svelte'
@@ -32,6 +27,7 @@
 	import FileTypescript from './icons/files/FileTypescript.svelte'
 	import FileTypescriptDef from './icons/files/FileTypescriptDef.svelte'
 	import FileYaml from './icons/files/FileYaml.svelte'
+	import FolderAssets from './icons/folders/FolderAssets.svelte'
 	import FolderComponent from './icons/folders/FolderComponent.svelte'
 	import FolderDist from './icons/folders/FolderDist.svelte'
 	import FolderNodeModules from './icons/folders/FolderNodeModules.svelte'
@@ -39,7 +35,6 @@
 	import FolderSrc from './icons/folders/FolderSrc.svelte'
 	import FolderView from './icons/folders/FolderView.svelte'
 	import FolderVscode from './icons/folders/FolderVscode.svelte'
-	import FolderAssets from './icons/folders/FolderAssets.svelte'
 
 	export let file: ExplorerItem
 	let size = file.size ?? '0 B'
@@ -91,25 +86,44 @@
 		if (file.kind === 'folder') {
 			// @ts-ignore
 			return folderIcon[file.type] || Folder
-		} else {
-			// @ts-ignore
-			return fileIcon[file.type] || FileDefault
 		}
-	}
-
-	async function renameFile() {
-		file.isEditMode = false
 
 		// @ts-ignore
-		await pywebview.api.rename(
-			file.path,
-			file.path.split('/').slice(0, -1).join('/') + '/' + file.name,
-		)
+		return fileIcon[file.type] || FileDefault
+	}
 
-		await $refreshExplorer()
+	async function executeEdit() {
+		if (file.action === 'create_file') {
+			// @ts-ignore
+			await pywebview.api.create_file(`${file.parent}/${file.name}`)
+			events.emit('create_file')
+		} else if (file.action === 'create_folder') {
+			// @ts-ignore
+			await pywebview.api.create_folder(`${file.parent}/${file.name}`)
+			events.emit('create_folder')
+		} else if (file.action === 'rename') {
+			const path = `${file.parent}/${file.name}`
+			// @ts-ignore
+			const exists = await pywebview.api.exists(path, file.path)
+
+			if (file.name === '') {
+				footerText.set('The name cannot be empty')
+			} else if (exists) {
+				footerText.set('The name already exists')
+			} else {
+				// @ts-ignore
+				await pywebview.api.rename(file.path, `${file.parent}/${file.name}`)
+
+				events.emit('rename')
+			}
+		}
+
+		events.emit('full_reload')
 	}
 
 	onMount(async () => {
+		console.log('mount')
+
 		outsideClick(itemNode, () => {
 			selectedItem.set(null)
 		})
@@ -124,6 +138,9 @@
 				clearInterval(interval)
 			}
 		}, 100)
+
+		// @ts-ignore
+		await pywebview.api.reset_stream_size(file.path)
 	})
 
 	$: if (file.isEditMode && inputEditNode) {
@@ -166,11 +183,10 @@
 				autocomplete="false"
 				bind:value={file.name}
 				bind:this={inputEditNode}
-				on:blur={renameFile}
+				on:blur={executeEdit}
 				on:keydown={e => {
 					if (e.key === 'Enter') {
-						file.isEditMode = false
-						renameFile()
+						executeEdit()
 					}
 				}}
 				on:focus={() => {

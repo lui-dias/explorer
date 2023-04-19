@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { contextMenuOpen, sortType } from '../../../stores/explorerStore'
+	import { contextMenuOpen, sortType } from '../../../store'
 </script>
 
 <ul>

@@ -9,3 +9,7 @@
 - [x] Add context menu
 - [x] Add context menu for explorer item
 - [ ] Create new file or folder
+
+### Fix
+
+- [ ] Sort by size 
