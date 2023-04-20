@@ -9,13 +9,15 @@
 - [x] Add context menu
 - [x] Add context menu for explorer item
 - [x] Create new file or folder
+- [x] Add window buttons
+- [x] Add explorer loading
+- [ ] Add settings
+- [ ] Add favorites folders sidebar
 
 ### Fix
 - [ ] Sort by size 
 
 ### UI
-- [ ] Add settings
-- [ ] Add favorites folders sidebar
 - [ ] Better context appearance
 - [ ] Better footer appearance
 
