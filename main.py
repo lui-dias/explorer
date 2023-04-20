@@ -262,6 +262,15 @@ class StreamDelete:
         return self.path == other.path
 
 class API:
+    def close(self):
+        w.destroy()
+
+    def minimize(self):
+        w.minimize()
+
+    def maximize(self):
+        w.toggle_fullscreen()
+
     def ls(self, folder: str):
         return [
             ExplorerItem(
@@ -333,5 +342,9 @@ class API:
 streams_files = {}
 streams_deletes = {}
 
-webview.create_window('Explorer', 'http://localhost:3000', js_api=API())
+w = webview.create_window('Explorer', 'http://localhost:3000', js_api=API(), frameless=True)
+
 webview.start(debug=True)
+
+
+

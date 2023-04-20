@@ -18,6 +18,9 @@
 	import ArrowLeft from './icons/ArrowLeft.svelte'
 	import Reload from './icons/Reload.svelte'
 	import Loading from './Loading.svelte'
+	import Close from './icons/Close.svelte'
+	import Maximize from './icons/Maximize.svelte'
+	import Minimize from './icons/Minimize.svelte'
 
 	let cwdSplit = [] as string[]
 
@@ -165,7 +168,7 @@
 			selectedItem.set(null)
 		})
 
-        isLoading = false
+		isLoading = false
 	})
 </script>
 
@@ -214,6 +217,17 @@
 <ContextMenu />
 
 <div class="w-full h-full dark:bg-zinc-800 flex flex-col gap-y-2">
+	<div class="flex justify-end">
+		<button type="button" class="hover:bg-zinc-700 py-2 px-4" on:click={__pywebview.minimize}>
+			<Minimize class="fill-purple-200" />
+		</button>
+		<button type="button" class="hover:bg-zinc-700 py-2 px-4" on:click={__pywebview.maximize}>
+			<Maximize class="fill-purple-200" />
+		</button>
+		<button type="button" class="hover:bg-red-500 py-2 px-4" on:click={__pywebview.close}>
+			<Close class="fill-purple-200" />
+		</button>
+	</div>
 	{#if isLoading}
 		<Loading />
 	{:else}

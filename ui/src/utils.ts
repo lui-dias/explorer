@@ -90,6 +90,18 @@ export const __pywebview = {
 			}
 		}, 100)
 	},
+    close: async (): Promise<void> => {
+        // @ts-ignore
+        return await pywebview.api.close()
+    },
+    minimize: async (): Promise<void> => {
+        // @ts-ignore
+        return await pywebview.api.minimize()
+    },
+    maximize: async (): Promise<void> => {
+        // @ts-ignore
+        return await pywebview.api.maximize()
+    },
 	ls: async (folder: string): Promise<ExplorerItem[]> => {
 		// @ts-ignore
 		return await pywebview.api.ls(folder)
