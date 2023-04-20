@@ -12,7 +12,7 @@
 		sortType,
 	} from '../store'
 	import type { TSortTypes } from '../types'
-	import { __pywebview, isNumber, outsideClick, sort } from '../utils'
+	import { __pywebview, isClient, isNumber, outsideClick, sort } from '../utils'
 	import ContextMenu from './ContextMenu/ContextMenu.svelte'
 	import Virtualist from './Virtualist.svelte'
 	import ArrowLeft from './icons/ArrowLeft.svelte'
@@ -81,7 +81,7 @@
 
 	async function isPywebviewReady() {
 		// @ts-ignore
-		if (typeof pywebview === 'undefined') {
+		if (isClient()) {
 			return new Promise(resolve => {
 				setTimeout(() => {
 					resolve(isPywebviewReady())
@@ -119,39 +119,39 @@
 		}
 	}
 
-	onMount(() => {
-		isPywebviewReady().then(async () => {
-			console.log('ready')
-			sortType.set((localStorage.getItem('sortType') || $sortType) as TSortTypes)
-			// @ts-ignore
-			cwd.set(localStorage.getItem('cwd') || (await __pywebview.home()))
+	onMount(async () => {
+		await __pywebview.__wait()
 
-			const h = [] as string[]
+		console.log('ready')
+		sortType.set((localStorage.getItem('sortType') || $sortType) as TSortTypes)
+		// @ts-ignore
+		cwd.set(localStorage.getItem('cwd') || (await __pywebview.home()))
 
-			const cwdSplit = $cwd.split('/')
-			for (let i = 0; i < cwdSplit.length; i++) {
-				h.push(cwdSplit.slice(0, i + 1).join('/'))
+		const h = [] as string[]
+
+		const cwdSplit = $cwd.split('/')
+		for (let i = 0; i < cwdSplit.length; i++) {
+			h.push(cwdSplit.slice(0, i + 1).join('/'))
+		}
+		history.set(h)
+		historyIndex.set(h.length - 1)
+
+		sortType.subscribe(v => {
+			sortItems()
+
+			localStorage.setItem('sortType', $sortType)
+		})
+
+		cwd.subscribe(v => {
+			if (v) {
+				$refreshExplorer()
+
+				localStorage.setItem('cwd', $cwd)
 			}
-			history.set(h)
-			historyIndex.set(h.length - 1)
+		})
 
-			sortType.subscribe(v => {
-				sortItems()
-
-				localStorage.setItem('sortType', $sortType)
-			})
-
-			cwd.subscribe(v => {
-				if (v) {
-					$refreshExplorer()
-
-					localStorage.setItem('cwd', $cwd)
-				}
-			})
-
-			historyIndex.subscribe(v => {
-				cwd.set($history[$historyIndex])
-			})
+		historyIndex.subscribe(v => {
+			cwd.set($history[$historyIndex])
 		})
 
 		outsideClick(searchNode, () => {

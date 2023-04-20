@@ -82,6 +82,14 @@ export function formatDate(date: Date) {
 }
 
 export const __pywebview = {
+	__wait: async () => {
+		const interval = setInterval(() => {
+			// @ts-ignore
+			if (window.pywebview) {
+				clearInterval(interval)
+			}
+		}, 100)
+	},
 	ls: async (folder: string): Promise<ExplorerItem[]> => {
 		// @ts-ignore
 		return await pywebview.api.ls(folder)
@@ -134,4 +142,8 @@ export const __pywebview = {
 		// @ts-ignore
 		return await pywebview.api.reset_stream_delete(path)
 	},
+}
+
+export function isClient() {
+	return typeof window !== 'undefined'
 }

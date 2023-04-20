@@ -70,7 +70,7 @@
         'CSS'                  : FileCSS,
         'Font'                 : FileFont,
         'Text'                 : FileText,
-	}
+	} as Record<string, any>
 
 	// prettier-ignore
 	const folderIcon = {
@@ -84,25 +84,24 @@
         'Dist'        : FolderDist,
         'Assets'      : FolderAssets,
         'Git'         : FolderGit,
-    }
+    } as Record<string, any>
 
 	function getFileIcon(file: ExplorerItem) {
 		if (file.kind === 'folder') {
-			// @ts-ignore
 			return folderIcon[file.type] || Folder
 		}
 
-		// @ts-ignore
 		return fileIcon[file.type] || FileDefault
 	}
 
 	async function executeEdit() {
+		const path = `${file.parent}/${file.name}`
+
 		if (file.action === 'create_file') {
-			events.emit('create_file', `${file.parent}/${file.name}`)
+			events.emit('create_file', path)
 		} else if (file.action === 'create_folder') {
-			events.emit('create_folder', `${file.parent}/${file.name}`)
+			events.emit('create_folder', path)
 		} else if (file.action === 'rename') {
-			const path = `${file.parent}/${file.name}`
 			const exists = await __pywebview.exists(path, file.path)
 
 			if (file.name === '') {
@@ -110,7 +109,7 @@
 			} else if (exists) {
 				footerText.set('The name already exists')
 			} else {
-				events.emit('rename', file.path, `${file.parent}/${file.name}`)
+				events.emit('rename', file.path, path)
 			}
 		}
 
@@ -118,8 +117,6 @@
 	}
 
 	onMount(async () => {
-		console.log('mount')
-
 		outsideClick(itemNode, () => {
 			selectedItem.set(null)
 		})
