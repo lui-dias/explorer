@@ -17,6 +17,7 @@
 	import Virtualist from './Virtualist.svelte'
 	import ArrowLeft from './icons/ArrowLeft.svelte'
 	import Reload from './icons/Reload.svelte'
+	import Loading from './Loading.svelte'
 
 	let cwdSplit = [] as string[]
 
@@ -24,6 +25,8 @@
 	let searchNode: HTMLButtonElement
 	let inputSearchNode: HTMLInputElement
 	let explorerItemsNode: HTMLUListElement
+
+	let isLoading = true
 
 	events.on('create_file', async (file: string) => {
 		console.log('create_file')
@@ -161,6 +164,8 @@
 		outsideClick(explorerItemsNode, () => {
 			selectedItem.set(null)
 		})
+
+        isLoading = false
 	})
 </script>
 
@@ -209,98 +214,106 @@
 <ContextMenu />
 
 <div class="w-full h-full dark:bg-zinc-800 flex flex-col gap-y-2">
-	<div class="flex gap-x-2 mx-3 mt-3">
-		<div class="flex gap-x-3">
-			<button type="button" class="w-3" disabled={$historyIndex === 0} on:click={back}>
-				<ArrowLeft />
-			</button>
+	{#if isLoading}
+		<Loading />
+	{:else}
+		<div class="flex gap-x-2 mx-3 mt-3">
+			<div class="flex gap-x-3">
+				<button type="button" class="w-3" disabled={$historyIndex === 0} on:click={back}>
+					<ArrowLeft />
+				</button>
+
+				<button
+					type="button"
+					class="transform rotate-180 w-3"
+					disabled={$historyIndex === $history.length - 1}
+					on:click={forward}
+				>
+					<ArrowLeft />
+				</button>
+			</div>
 
 			<button
 				type="button"
-				class="transform rotate-180 w-3"
-				disabled={$historyIndex === $history.length - 1}
-				on:click={forward}
+				class="dark:bg-zinc-700 w-full dark:text-violet-300 flex items-center overflow-x-auto"
+				on:focus={() => {
+					isSearchSelected = true
+				}}
+				bind:this={searchNode}
 			>
-				<ArrowLeft />
+				{#if isSearchSelected}
+					<!-- svelte-ignore a11y-autofocus -->
+					<input
+						type="text"
+						class="bg-transparent w-full h-full px-4 outline-none focus:outline-purple-300"
+						autofocus
+						value={$cwd}
+						on:keyup={async e => {
+							if (e.key === 'Enter') {
+								cwd.set(inputSearchNode.value)
+								$refreshExplorer()
+							}
+						}}
+						bind:this={inputSearchNode}
+					/>
+				{:else}
+					<div class="relative w-full">
+						<ul class="flex">
+							{#each cwdSplit as dir, i}
+								<li class="flex items-center">
+									<button
+										type="button"
+										class="dark:hover:bg-purple-300/20 p-2"
+										on:click={() => {
+											historyIndex.set($historyIndex - 1)
+										}}
+									>
+										<span class="text-gray-500 dark:text-violet-200">{dir}</span
+										>
+									</button>
+									{#if i < cwdSplit.length - 1}
+										<span class="transform rotate-180 w-1.5 block mx-1">
+											<ArrowLeft />
+										</span>
+									{/if}
+								</li>
+							{/each}
+						</ul>
+						<button
+							type="button"
+							class="absolute inset-y-0 right-2"
+							on:click={$refreshExplorer}
+						>
+							<Reload />
+						</button>
+					</div>
+				{/if}
 			</button>
 		</div>
 
-		<button
-			type="button"
-			class="dark:bg-zinc-700 w-full dark:text-violet-300 flex items-center overflow-x-auto"
-			on:focus={() => {
-				isSearchSelected = true
-			}}
-			bind:this={searchNode}
-		>
-			{#if isSearchSelected}
-				<!-- svelte-ignore a11y-autofocus -->
-				<input
-					type="text"
-					class="bg-transparent w-full h-full px-4 outline-none focus:outline-purple-300"
-					autofocus
-					value={$cwd}
-					on:keyup={async e => {
-						if (e.key === 'Enter') {
-							cwd.set(inputSearchNode.value)
-							$refreshExplorer()
-						}
-					}}
-					bind:this={inputSearchNode}
-				/>
-			{:else}
-				<div class="relative w-full">
-					<ul class="flex">
-						{#each cwdSplit as dir, i}
-							<li class="flex items-center">
-								<button
-									type="button"
-									class="dark:hover:bg-purple-300/20 p-2"
-									on:click={() => {
-										historyIndex.set($historyIndex - 1)
-									}}
-								>
-									<span class="text-gray-500 dark:text-violet-200">{dir}</span>
-								</button>
-								{#if i < cwdSplit.length - 1}
-									<span class="transform rotate-180 w-1.5 block mx-1">
-										<ArrowLeft />
-									</span>
-								{/if}
-							</li>
-						{/each}
-					</ul>
-					<button
-						type="button"
-						class="absolute inset-y-0 right-2"
-						on:click={$refreshExplorer}
-					>
-						<Reload />
-					</button>
-				</div>
-			{/if}
-		</button>
-	</div>
+		<div class="flex mx-3">
+			<span class="dark:text-purple-100 text-left border-r border-purple-100 text-sm w-[50%]"
+				>Name</span
+			>
+			<span
+				class="dark:text-purple-100 text-left border-r border-purple-100 pl-2 text-sm w-[20%]"
+				>Modified</span
+			>
+			<span
+				class="dark:text-purple-100 text-left border-r border-purple-100 pl-2 text-sm w-[15%]"
+				>Type</span
+			>
+			<span
+				class="dark:text-purple-100 text-left border-r border-purple-100 pl-2 text-sm w-[15%]"
+				>Size</span
+			>
+		</div>
+		<ul bind:this={explorerItemsNode} class="h-[calc(100%-40px-40px)] mx-3">
+			<Virtualist itemHeight={24} class="flex flex-col w-full mt-2 h-full" />
+		</ul>
 
-	<div class="flex mx-3">
-		<span class="dark:text-purple-100 text-left border-r border-purple-100 text-sm w-[50%]"
-			>Name</span
-		>
-		<span class="dark:text-purple-100 text-left border-r border-purple-100 pl-2 text-sm w-[20%]"
-			>Modified</span
-		>
-		<span class="dark:text-purple-100 text-left border-r border-purple-100 pl-2 text-sm w-[15%]"
-			>Type</span
-		>
-		<span class="dark:text-purple-100 text-left border-r border-purple-100 pl-2 text-sm w-[15%]"
-			>Size</span
-		>
-	</div>
-	<ul bind:this={explorerItemsNode} class="h-[calc(100%-40px-40px)] mx-3">
-		<Virtualist itemHeight={24} class="flex flex-col w-full mt-2 h-full" />
-	</ul>
-
-	<footer class="h-10 px-2 text-purple-300 border-t border-zinc-700 flex items-center">
-		{$footerText}
-	</footer>
+		<footer class="h-10 px-2 text-purple-300 border-t border-zinc-700 flex items-center">
+			{$footerText}
+		</footer>
+	{/if}
 </div>
