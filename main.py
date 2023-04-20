@@ -1,3 +1,4 @@
+import sys
 from pathlib import Path
 from threading import Thread
 from concurrent.futures import ThreadPoolExecutor, wait, ALL_COMPLETED
@@ -264,6 +265,7 @@ class StreamDelete:
 class API:
     def close(self):
         w.destroy()
+        sys.exit(0)
 
     def minimize(self):
         w.minimize()
