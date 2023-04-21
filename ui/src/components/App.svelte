@@ -58,6 +58,8 @@
 				break
 			}
 		}
+
+		events.emit('full_reload')
 	})
 	events.on('full_reload', async () => {
 		explorerItems.set(await __pywebview.ls($cwd))
