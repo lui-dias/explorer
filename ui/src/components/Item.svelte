@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
 
-	import { cwd, footer, history, historyIndex, refreshExplorer, selectedItem } from '../store'
+	import { cwd, footer, history, historyIndex, selectedItem } from '../store'
 	import type { ExplorerItem } from '../types'
 
 	import { events } from '../event'
@@ -23,6 +23,7 @@
 	import FileSVG from './icons/files/FileSVG.svelte'
 	import FileTsConfig from './icons/files/FileTSConfig.svelte'
 	import FileTailwind from './icons/files/FileTailwind.svelte'
+	import FileText from './icons/files/FileText.svelte'
 	import FileToml from './icons/files/FileToml.svelte'
 	import FileTypescript from './icons/files/FileTypescript.svelte'
 	import FileTypescriptDef from './icons/files/FileTypescriptDef.svelte'
@@ -30,13 +31,12 @@
 	import FolderAssets from './icons/folders/FolderAssets.svelte'
 	import FolderComponent from './icons/folders/FolderComponent.svelte'
 	import FolderDist from './icons/folders/FolderDist.svelte'
+	import FolderGit from './icons/folders/FolderGit.svelte'
 	import FolderNodeModules from './icons/folders/FolderNodeModules.svelte'
 	import FolderPublic from './icons/folders/FolderPublic.svelte'
 	import FolderSrc from './icons/folders/FolderSrc.svelte'
 	import FolderView from './icons/folders/FolderView.svelte'
 	import FolderVscode from './icons/folders/FolderVscode.svelte'
-	import FileText from './icons/files/FileText.svelte'
-	import FolderGit from './icons/folders/FolderGit.svelte'
 
 	export let file: ExplorerItem
 	let size = file.size ?? '0 B'
@@ -96,25 +96,24 @@
 
 	async function executeEdit() {
 		const path = `${file.parent}/${file.name}`
+		const exists = await __pywebview.exists(path)
 
-		if (file.action === 'create_file') {
-			events.emit('create_file', path)
-		} else if (file.action === 'create_folder') {
-			events.emit('create_folder', path)
-		} else if (file.action === 'rename') {
-			const exists = await __pywebview.exists(path, file.path)
-
-			if (file.name === '') {
-				footer.set({
-					text: 'The name cannot be empty',
-					type: 'warning',
-				})
-			} else if (exists) {
-				footer.set({
-					text: 'The name already exists',
-					type: 'warning',
-				})
-			} else {
+		if (file.name === '') {
+			footer.set({
+				text: 'The name cannot be empty',
+				type: 'warning',
+			})
+		} else if (exists) {
+			footer.set({
+				text: `'${file.name}' already exists`,
+				type: 'warning',
+			})
+		} else {
+			if (file.action === 'create_file') {
+				events.emit('create_file', path)
+			} else if (file.action === 'create_folder') {
+				events.emit('create_folder', path)
+			} else if (file.action === 'rename') {
 				events.emit('rename', file.path, path)
 			}
 		}
