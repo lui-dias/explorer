@@ -2,7 +2,6 @@
 	import { onMount } from 'svelte'
 	import { explorerItems, scrollExplorerToEnd } from '../store'
 	import Item from './Item.svelte'
-	import { sleep } from '../utils'
 
 	export let itemHeight: number = 0
 	let list: HTMLDivElement
