@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
 
-	import { cwd, footerText, history, historyIndex, refreshExplorer, selectedItem } from '../store'
+	import { cwd, footer, history, historyIndex, refreshExplorer, selectedItem } from '../store'
 	import type { ExplorerItem } from '../types'
 
 	import { events } from '../event'
@@ -105,9 +105,15 @@
 			const exists = await __pywebview.exists(path, file.path)
 
 			if (file.name === '') {
-				footerText.set('The name cannot be empty')
+				footer.set({
+					text: 'The name cannot be empty',
+					type: 'warning',
+				})
 			} else if (exists) {
-				footerText.set('The name already exists')
+				footer.set({
+					text: 'The name already exists',
+					type: 'warning',
+				})
 			} else {
 				events.emit('rename', file.path, path)
 			}

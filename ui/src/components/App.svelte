@@ -4,7 +4,7 @@
 	import {
 		cwd,
 		explorerItems,
-		footerText,
+		footer,
 		history,
 		historyIndex,
 		refreshExplorer,
@@ -21,6 +21,9 @@
 	import Close from './icons/Close.svelte'
 	import Maximize from './icons/Maximize.svelte'
 	import Minimize from './icons/Minimize.svelte'
+	import Warning from './icons/Warning.svelte'
+	import Info from './icons/Info.svelte'
+	import Error from './icons/Error.svelte'
 
 	let cwdSplit = [] as string[]
 
@@ -67,9 +70,12 @@
 		await __pywebview.reset_stream_size(path)
 	})
 
-	footerText.subscribe(v => {
+	footer.subscribe(v => {
 		setTimeout(() => {
-			footerText.set('')
+			footer.set({
+				text: '',
+				type: 'none',
+			})
 		}, 5000)
 	})
 
@@ -326,8 +332,22 @@
 			<Virtualist itemHeight={24} class="flex flex-col w-full mt-2 h-full" />
 		</ul>
 
-		<footer class="h-10 px-2 text-purple-300 border-t border-zinc-700 flex items-center">
-			{$footerText}
+		<footer
+			class="h-10 px-2 text-purple-300 border-t border-zinc-700 flex items-center gap-x-2"
+		>
+			{#if $footer.type !== 'none'}
+				{#if $footer.type === 'info'}
+					<Info class="fill-purple-200" />
+				{/if}
+				{#if $footer.type === 'warning'}
+					<Warning class="fill-purple-200" />
+				{/if}
+				{#if $footer.type === 'error'}
+					<Error class="fill-purple-200" />
+				{/if}
+			{/if}
+
+			{$footer.text}
 		</footer>
 	{/if}
 </div>

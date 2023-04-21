@@ -10,4 +10,7 @@ export const selectedItem = writable<ExplorerItem | null>(null)
 export const refreshExplorer = writable<() => Promise<void>>(async () => {})
 export const explorerItems = writable<ExplorerItem[]>([])
 
-export const footerText = writable<string>('')
+export const footer = writable<{
+	text: string
+	type: 'info' | 'warning' | 'error' | 'none'
+}>({ text: '', type: 'none' })
