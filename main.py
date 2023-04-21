@@ -384,10 +384,12 @@ class API:
             s.start()
             streams_files[path] = s
 
+        r = {'size': streams_files[path].size, 'end': streams_files[path].end}
+
         if streams_files[path].end:
             del streams_files[path]
 
-        return {'size': streams_files[path].size, 'end': streams_files[path].end}
+        return r
 
     def stream_delete(self, path: str, moveToTrash=True):
         s = StreamDelete(path, moveToTrash)
@@ -396,14 +398,16 @@ class API:
             s.start()
             streams_deletes[path] = s
 
-        if streams_deletes[path].end:
-            del streams_deletes[path]
-
-        return {
+        r = {
             'end': streams_deletes[path].end,
             'total': streams_deletes[path].total,
             'deleted': streams_deletes[path].deleted,
         }
+
+        if streams_deletes[path].end:
+            del streams_deletes[path]
+
+        return r
 
     def reset_stream_size(self, path: str):
         if path in streams_files:
