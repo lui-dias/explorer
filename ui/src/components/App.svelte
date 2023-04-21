@@ -77,6 +77,7 @@
 		}
 
 		events.emit('full_reload')
+        selectedItem.set([])
 	})
 	events.on('full_reload', async () => {
 		cwdSplit = $cwd.split('/')
