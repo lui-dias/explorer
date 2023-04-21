@@ -221,7 +221,6 @@
 					$selectedItem.map(i => i.path),
 					!e.shiftKey,
 				)
-				events.emit('full_reload')
 			}
 		}
 	}}
