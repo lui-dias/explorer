@@ -122,7 +122,7 @@ export const __pywebview = {
 		// @ts-ignore
 		return await pywebview.api.create_folder(path)
 	},
-	exists: async (path: string, ignore: string): Promise<boolean> => {
+	exists: async (path: string, ignore?: string): Promise<boolean> => {
 		// @ts-ignore
 		return await pywebview.api.exists(path, ignore)
 	},
