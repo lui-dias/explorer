@@ -151,3 +151,12 @@ export const __pywebview = {
 export function isClient() {
 	return typeof window !== 'undefined'
 }
+
+export function debounce(fn: () => void, s: number) {
+    let timeout: NodeJS.Timeout
+
+    return () => {
+        clearTimeout(timeout)
+        timeout = setTimeout(fn, s)
+    }
+}

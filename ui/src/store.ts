@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store'
-import type { ExplorerItem, TSortTypes } from './types'
+import type { ExplorerItem, TFooter, TSortTypes } from './types'
 
 export const cwd = writable<string>('')
 export const sortType = writable<TSortTypes>('name')
@@ -10,7 +10,4 @@ export const selectedItem = writable<ExplorerItem | null>(null)
 export const refreshExplorer = writable<() => Promise<void>>(async () => {})
 export const explorerItems = writable<ExplorerItem[]>([])
 
-export const footer = writable<{
-	text: string
-	type: 'info' | 'warning' | 'error' | 'none'
-}>({ text: '', type: 'none' })
+export const footer = writable<TFooter>({ text: '', type: 'none' })

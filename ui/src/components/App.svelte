@@ -11,8 +11,8 @@
 		selectedItem,
 		sortType,
 	} from '../store'
-	import type { TSortTypes } from '../types'
-	import { __pywebview, isNumber, outsideClick, sort } from '../utils'
+	import type { TFooter, TSortTypes } from '../types'
+	import { __pywebview, debounce, isNumber, outsideClick, sort } from '../utils'
 	import ContextMenu from './ContextMenu/ContextMenu.svelte'
 	import Loading from './Loading.svelte'
 	import Virtualist from './Virtualist.svelte'
@@ -33,6 +33,14 @@
 	let explorerItemsNode: HTMLUListElement
 
 	let isLoading = true
+	let footerDebounce = debounce(
+		() =>
+			footer.set({
+				text: '',
+				type: 'none',
+			}),
+		5000,
+	)
 
 	events.on('create_file', async (file: string) => {
 		console.log('create_file')
@@ -62,28 +70,18 @@
 		events.emit('full_reload')
 	})
 	events.on('full_reload', async () => {
+        cwdSplit = $cwd.split('/')
 		explorerItems.set(await __pywebview.ls($cwd))
+        sortItems()
 	})
 
-	footer.subscribe(v => {
-		setTimeout(() => {
-			footer.set({
-				text: '',
-				type: 'none',
-			})
-		}, 5000)
-	})
+	events.on('footer_text', ({ text, type }: TFooter) => {
+		footer.set({
+			text,
+			type,
+		})
 
-	refreshExplorer.set(async () => {
-		cwdSplit = $cwd.split('/')
-		explorerItems.set(
-			(await __pywebview.ls($cwd)).map(i => ({
-				...i,
-				isEditMode: false,
-			})),
-		)
-
-		sortItems()
+        footerDebounce()
 	})
 
 	function sortItems() {
@@ -137,9 +135,8 @@
 
 		cwd.subscribe(v => {
 			if (v) {
-				$refreshExplorer()
-
 				localStorage.setItem('cwd', $cwd)
+				events.emit('full_reload')
 			}
 		})
 

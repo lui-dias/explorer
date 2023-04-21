@@ -99,15 +99,15 @@
 		const exists = await __pywebview.exists(path)
 
 		if (file.name === '') {
-			footer.set({
+            events.emit('footer_text', {
 				text: 'The name cannot be empty',
 				type: 'warning',
 			})
 		} else if (exists) {
-			footer.set({
-				text: `'${file.name}' already exists`,
-				type: 'warning',
-			})
+            events.emit('footer_text', {
+                text: `'${file.name}' already exists`,
+                type: 'warning',
+            })
 		} else {
 			if (file.action === 'create_file') {
 				events.emit('create_file', path)
