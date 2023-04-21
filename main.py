@@ -384,6 +384,9 @@ class API:
             s.start()
             streams_files[path] = s
 
+        if streams_files[path].end:
+            del streams_files[path]
+
         return {'size': streams_files[path].size, 'end': streams_files[path].end}
 
     def stream_delete(self, path: str, moveToTrash=True):
@@ -392,6 +395,9 @@ class API:
         if path not in streams_deletes:
             s.start()
             streams_deletes[path] = s
+
+        if streams_deletes[path].end:
+            del streams_deletes[path]
 
         return {
             'end': streams_deletes[path].end,
