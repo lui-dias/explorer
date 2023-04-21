@@ -93,19 +93,6 @@
 		sortItems()
 	})
 
-	async function isPywebviewReady() {
-		// @ts-ignore
-		if (isClient()) {
-			return new Promise(resolve => {
-				setTimeout(() => {
-					resolve(isPywebviewReady())
-				}, 100)
-			})
-		}
-
-		return true
-	}
-
 	function sortItems() {
 		if ($sortType === 'name') {
 			explorerItems.set(
