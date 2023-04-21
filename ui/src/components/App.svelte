@@ -12,7 +12,7 @@
 		selectedItem,
 		sortType,
 	} from '../store'
-	import type { TFooter, TSortTypes } from '../types'
+	import type { ExplorerItem, TFooter, TSortTypes } from '../types'
 	import { __pywebview, debounce, gen_id, isNumber, outsideClick, sort } from '../utils'
 	import ContextMenu from './ContextMenu/ContextMenu.svelte'
 	import Loading from './Loading.svelte'
@@ -47,19 +47,19 @@
 		console.log('create_file')
 
 		await __pywebview.create_file(file)
-        events.emit('full_reload')
+		events.emit('full_reload')
 	})
 	events.on('create_folder', async (folder: string) => {
-        console.log('create_folder')
-        
+		console.log('create_folder')
+
 		await __pywebview.create_folder(folder)
-        events.emit('full_reload')
+		events.emit('full_reload')
 	})
 	events.on('rename', async (from: string, to: string) => {
-        console.log('rename')
-        
+		console.log('rename')
+
 		await __pywebview.rename(from, to)
-        events.emit('full_reload')
+		events.emit('full_reload')
 	})
 	events.on('delete', async (path: string | string[], moveToTrash: boolean) => {
 		const id = gen_id()
@@ -81,8 +81,7 @@
 	events.on('full_reload', async () => {
 		cwdSplit = $cwd.split('/')
 		explorerItems.set([])
-		explorerItems.set(await __pywebview.ls($cwd))
-		sortItems()
+		explorerItems.set(sortItems(await __pywebview.ls($cwd)))
 	})
 
 	events.on('footer_text', ({ text, type }: TFooter) => {
@@ -94,19 +93,19 @@
 		footerDebounce()
 	})
 
-	function sortItems() {
+	function sortItems(items: ExplorerItem[]) {
 		if ($sortType === 'name') {
-			explorerItems.set(
-				sort($explorerItems, i => (isNumber(i.name) ? Number(i.name) : i.name)),
-			)
+			return sort(items, i => (isNumber(i.name) ? Number(i.name) : i.name))
 		} else if ($sortType === 'modified') {
-			explorerItems.set(sort($explorerItems, i => i.modified))
+			return sort(items, i => i.modified)
 		} else if ($sortType === 'type') {
-			explorerItems.set(sort($explorerItems, i => i.kind))
+			return sort(items, i => i.kind)
 		} else if ($sortType === 'size') {
 			// FIXME: not working
-			explorerItems.set(sort($explorerItems, i => i.size))
+			return sort(items, i => i.size)
 		}
+
+		return items
 	}
 
 	function back() {
@@ -138,7 +137,7 @@
 		historyIndex.set(h.length - 1)
 
 		sortType.subscribe(v => {
-			sortItems()
+			explorerItems.set(sortItems($explorerItems))
 
 			localStorage.setItem('sortType', $sortType)
 		})
