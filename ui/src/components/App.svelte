@@ -47,16 +47,19 @@
 		console.log('create_file')
 
 		await __pywebview.create_file(file)
+        events.emit('full_reload')
 	})
 	events.on('create_folder', async (folder: string) => {
-		console.log('create_folder')
-
+        console.log('create_folder')
+        
 		await __pywebview.create_folder(folder)
+        events.emit('full_reload')
 	})
 	events.on('rename', async (from: string, to: string) => {
-		console.log('rename')
-
+        console.log('rename')
+        
 		await __pywebview.rename(from, to)
+        events.emit('full_reload')
 	})
 	events.on('delete', async (path: string | string[], moveToTrash: boolean) => {
 		const id = gen_id()
@@ -77,6 +80,7 @@
 	})
 	events.on('full_reload', async () => {
 		cwdSplit = $cwd.split('/')
+		explorerItems.set([])
 		explorerItems.set(await __pywebview.ls($cwd))
 		sortItems()
 	})
