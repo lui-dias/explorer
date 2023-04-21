@@ -1,13 +1,14 @@
 import sys
-from pathlib import Path
-from threading import Thread
-from concurrent.futures import ThreadPoolExecutor, wait, ALL_COMPLETED
-from typing import TypedDict, Literal
-from datetime import datetime, timezone
+from concurrent.futures import ALL_COMPLETED, ThreadPoolExecutor, wait
 from contextlib import suppress
-from send2trash import send2trash
+from datetime import datetime, timezone
+from pathlib import Path
+from subprocess import Popen, run
+from threading import Thread
+from typing import Literal, TypedDict
 
 import webview
+from send2trash import send2trash
 
 
 class ExplorerItem(TypedDict):
@@ -19,6 +20,7 @@ class ExplorerItem(TypedDict):
     size: str
     parent: str
 
+
 def get_folder_size(path: Path):
     if path.is_dir():
         yield sum(get_folder_size(i) for i in path.iterdir())
@@ -29,7 +31,6 @@ def get_folder_size(path: Path):
 
 def get_file_type(path: Path):
     name = path.name
-
 
     if path.is_dir():
         if any(name.endswith(i) for i in ['.vscode', 'vscode']):
@@ -44,21 +45,56 @@ def get_file_type(path: Path):
         if any(name.endswith(i) for i in ['src', 'source', 'sources']):
             return 'Src'
 
-        if any(name.endswith(i) for i in ['component',
-                                          'components', '.components', 'gui', 'ui', 'widgets']):
+        if any(
+            name.endswith(i)
+            for i in ['component', 'components', '.components', 'gui', 'ui', 'widgets']
+        ):
             return 'Component'
 
-        if any(name.endswith(i) for i in ['html', 'view', 'views', 'layout', 'layouts', 'page',
-                                          'pages', '_view', '_views', '_layout', '_layouts',
-                                          '_page', '_pages']):
+        if any(
+            name.endswith(i)
+            for i in [
+                'html',
+                'view',
+                'views',
+                'layout',
+                'layouts',
+                'page',
+                'pages',
+                '_view',
+                '_views',
+                '_layout',
+                '_layouts',
+                '_page',
+                '_pages',
+            ]
+        ):
             return 'View'
 
-        if any(name.endswith(i) for i in ['dist', '.dist', 'dists', 'out', 'outs', 'export',
-                                          'exports', 'build', '.build', 'builds', 'release',
-                                          'releases', 'target', 'targets']):
-                return 'Dist'
+        if any(
+            name.endswith(i)
+            for i in [
+                'dist',
+                '.dist',
+                'dists',
+                'out',
+                'outs',
+                'export',
+                'exports',
+                'build',
+                '.build',
+                'builds',
+                'release',
+                'releases',
+                'target',
+                'targets',
+            ]
+        ):
+            return 'Dist'
 
-        if any(name.endswith(i) for i in ['assets', '.assets', 'asset', '.asset', 'static']):
+        if any(
+            name.endswith(i) for i in ['assets', '.assets', 'asset', '.asset', 'static']
+        ):
             return 'Assets'
 
         if any(name.endswith(i) for i in ['git', '.git', 'submodules', '.submodules']):
@@ -72,27 +108,42 @@ def get_file_type(path: Path):
         if any(name.endswith(i) for i in ['.prettierrc', '.prettierignore']):
             return 'Prettier'
 
-        if any(name.endswith(i) for i in ['tsconfig.json',
-                                          'tsconfig.app.json',
-                                          'tsconfig.base.json',
-                                          'tsconfig.common.json',
-                                          'tsconfig.dev.json',
-                                          'tsconfig.development.json',
-                                          'tsconfig.e2e.json',
-                                          'tsconfig.eslint.json',
-                                          'tsconfig.node.json',
-                                          'tsconfig.prod.json',
-                                          'tsconfig.production.json',
-                                          'tsconfig.server.json',
-                                          'tsconfig.spec.json',
-                                          'tsconfig.staging.json',
-                                          'tsconfig.test.json',
-                                          'tsconfig.lib.json',
-                                          'tsconfig.lib.prod.json']):
+        if any(
+            name.endswith(i)
+            for i in [
+                'tsconfig.json',
+                'tsconfig.app.json',
+                'tsconfig.base.json',
+                'tsconfig.common.json',
+                'tsconfig.dev.json',
+                'tsconfig.development.json',
+                'tsconfig.e2e.json',
+                'tsconfig.eslint.json',
+                'tsconfig.node.json',
+                'tsconfig.prod.json',
+                'tsconfig.production.json',
+                'tsconfig.server.json',
+                'tsconfig.spec.json',
+                'tsconfig.staging.json',
+                'tsconfig.test.json',
+                'tsconfig.lib.json',
+                'tsconfig.lib.prod.json',
+            ]
+        ):
             return 'Tsconfig'
 
-        if any(name.endswith(i) for i in ['.gitattributes', '.gitconfig', '.gitignore',
-                                          '.gitmodules', '.gitkeep', '.mailmap', '.issuetracker']):
+        if any(
+            name.endswith(i)
+            for i in [
+                '.gitattributes',
+                '.gitconfig',
+                '.gitignore',
+                '.gitmodules',
+                '.gitkeep',
+                '.mailmap',
+                '.issuetracker',
+            ]
+        ):
             return 'Git'
 
         if any(name.endswith(i) for i in ['.yaml', '.yml', '.yaml-tmlanguage']):
@@ -107,31 +158,42 @@ def get_file_type(path: Path):
         if any(name.endswith(i) for i in ['.astro']):
             return 'Astro'
 
-        if any(name.endswith(i) for i in ['astro.config.js', 'astro.config.cjs',
-                                          'astro.config.mjs', 'astro.config.ts']):
+        if any(
+            name.endswith(i)
+            for i in [
+                'astro.config.js',
+                'astro.config.cjs',
+                'astro.config.mjs',
+                'astro.config.ts',
+            ]
+        ):
             return 'Astro Config'
 
-
-        if any(name.endswith(i) for i in ['tailwind.js',
-                                          'tailwind.cjs',
-                                          'tailwind.coffee',
-                                          'tailwind.ts',
-                                          'tailwind.json',
-                                          'tailwind.config.js',
-                                          'tailwind.config.cjs',
-                                          'tailwind.config.coffee',
-                                          'tailwind.config.ts',
-                                          'tailwind.config.json',
-                                          '.tailwind.js',
-                                          '.tailwind.cjs',
-                                          '.tailwind.coffee',
-                                          '.tailwind.ts',
-                                          '.tailwind.json',
-                                          '.tailwindrc.js',
-                                          '.tailwindrc.cjs',
-                                          '.tailwindrc.coffee',
-                                          '.tailwindrc.ts',
-                                          '.tailwindrc.json']):
+        if any(
+            name.endswith(i)
+            for i in [
+                'tailwind.js',
+                'tailwind.cjs',
+                'tailwind.coffee',
+                'tailwind.ts',
+                'tailwind.json',
+                'tailwind.config.js',
+                'tailwind.config.cjs',
+                'tailwind.config.coffee',
+                'tailwind.config.ts',
+                'tailwind.config.json',
+                '.tailwind.js',
+                '.tailwind.cjs',
+                '.tailwind.coffee',
+                '.tailwind.ts',
+                '.tailwind.json',
+                '.tailwindrc.js',
+                '.tailwindrc.cjs',
+                '.tailwindrc.coffee',
+                '.tailwindrc.ts',
+                '.tailwindrc.json',
+            ]
+        ):
             return 'Tailwind'
 
         if any(name.endswith(i) for i in ['.d.ts', '.d.cts', '.d.mts']):
@@ -149,8 +211,10 @@ def get_file_type(path: Path):
         if any(name.endswith(i) for i in ['.css']):
             return 'CSS'
 
-        if any(name.endswith(i) for i in ['.woff', '.woff2', '.ttf', '.otf', '.eot', '.pfa', '.pfb',
-                                          '.sfd']):
+        if any(
+            name.endswith(i)
+            for i in ['.woff', '.woff2', '.ttf', '.otf', '.eot', '.pfa', '.pfb', '.sfd']
+        ):
             return 'Font'
 
         if any(name.endswith(i) for i in ['.csv', '.tsv', '.txt']):
@@ -160,8 +224,10 @@ def get_file_type(path: Path):
         # ! KEEP ALWAYS AT THE END
         # ! --------------------------------------------
 
-        if any(name.endswith(i) for i in ['.json', '.jsonl', '.ndjson',
-                                          '.json-tmlanguage', '.jsonc']):
+        if any(
+            name.endswith(i)
+            for i in ['.json', '.jsonl', '.ndjson', '.json-tmlanguage', '.jsonc']
+        ):
             return 'Json'
 
         if any(name.endswith(i) for i in ['.js']):
@@ -172,6 +238,7 @@ def get_file_type(path: Path):
 
         return 'file'
     return 'unknown'
+
 
 class StreamFolderSize:
     def __init__(self, path: str):
@@ -196,8 +263,9 @@ class StreamFolderSize:
     def __eq__(self, other):
         return self.path == other.path
 
+
 class StreamDelete:
-    def __init__(self, path: str, moveToTrash = True):
+    def __init__(self, path: str, moveToTrash=True):
         self.path = Path(path)
         self.end = False
         self.items = []
@@ -262,9 +330,11 @@ class StreamDelete:
     def __eq__(self, other):
         return self.path == other.path
 
+
 class API:
     def close(self):
         w.destroy()
+        server_process.kill()
         sys.exit(0)
 
     def minimize(self):
@@ -280,12 +350,11 @@ class API:
                 path=i.as_posix(),
                 kind='folder' if i.is_dir() else 'file',
                 modified=datetime.fromtimestamp(
-                    i.stat().st_mtime,
-                    timezone.utc
+                    i.stat().st_mtime, timezone.utc
                 ).strftime('%d/%m/%Y %H:%M'),
                 type=get_file_type(i),
                 size=0,
-                parent=i.parent.as_posix()
+                parent=i.parent.as_posix(),
             )
             for i in Path(folder).iterdir()
         ]
@@ -315,12 +384,9 @@ class API:
             s.start()
             streams_files[path] = s
 
-        return {
-            'size': streams_files[path].size,
-            'end': streams_files[path].end
-        }
+        return {'size': streams_files[path].size, 'end': streams_files[path].end}
 
-    def stream_delete(self, path: str, moveToTrash = True):
+    def stream_delete(self, path: str, moveToTrash=True):
         s = StreamDelete(path, moveToTrash)
 
         if path not in streams_deletes:
@@ -330,7 +396,7 @@ class API:
         return {
             'end': streams_deletes[path].end,
             'total': streams_deletes[path].total,
-            'deleted': streams_deletes[path].deleted
+            'deleted': streams_deletes[path].deleted,
         }
 
     def reset_stream_size(self, path: str):
@@ -341,12 +407,77 @@ class API:
         if path in streams_deletes:
             del streams_deletes[path]
 
+
 streams_files = {}
 streams_deletes = {}
 
-w = webview.create_window('Explorer', 'http://localhost:3000', js_api=API(), frameless=True)
+UI_FOLDER = Path('ui')
+SEED_FOLDER = Path('seed')
 
-webview.start(debug=True)
+server_process = None
+
+if not SEED_FOLDER.exists():
+    SEED_FOLDER.mkdir()
 
 
+def start_server():
+    global server_process
+    server_process = Popen('cd ui && pnpm dev', shell=True)
 
+
+def show_ui():
+    run('python main.py', shell=True)
+
+
+def parse_size(size: str):
+    size = size.lower()
+
+    if size.endswith('gb'):
+        return int(size[:-2]) * 1024 * 1024 * 1024
+
+    if size.endswith('mb'):
+        return int(size[:-2]) * 1024 * 1024
+
+    if size.endswith('kb'):
+        return int(size[:-2]) * 1024
+
+    if size.endswith('b'):
+        return int(size[:-1])
+
+
+args = sys.argv[1:]
+
+if args:
+    command, *args = args
+
+    if command == 'seed':
+        if len(args) == 0:
+            raise Exception('No quantity provided')
+
+        quantity = int(args[0])
+
+        if len(args) == 1:
+            size = '1mb'
+
+        if len(args) == 2:
+            size = args[1]
+
+        size = parse_size(size)
+
+        def seed(i):
+            with open(SEED_FOLDER / f'{i}', 'wb') as f:
+                for _ in range(0, size, 1024 * 10):
+                    f.write('a'.encode('utf-8') * 1024 * 10)
+
+        with ThreadPoolExecutor(max_workers=16) as executor:
+            for i in range(quantity):
+                executor.submit(seed, i)
+
+else:
+    Thread(target=start_server).start()
+
+    w = webview.create_window(
+        'Explorer', 'http://localhost:3000', js_api=API(), frameless=True
+    )
+
+    webview.start(debug=True)
