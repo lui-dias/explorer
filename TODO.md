@@ -11,19 +11,18 @@
 - [x] Create new file or folder
 - [x] Add window buttons
 - [x] Add explorer loading
+- [x] Select multiples files/folders
 - [ ] Add settings
 - [ ] Add favorites folders sidebar
+- [ ] Add search
+- [ ] Offline PWA
+- [ ] Add file preview
 
 ### Fix
 - [ ] Sort by size
 - [ ] Memory leak that happens at any time and makes the server crash
-- [ ] Creating a file/folder makes the footer show a warning saying the last item in the list already exists, instead of checking just the created item
+- [x] Creating a file/folder makes the footer show a warning saying the last item in the list already exists, instead of checking just the created item
 
 ### UI
 - [ ] Better context appearance
 - [ ] Better footer appearance
-
-### Low priority
-- [ ] Add search
-- [ ] Offline PWA
-- [ ] Add file preview
