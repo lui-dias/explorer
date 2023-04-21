@@ -12,18 +12,18 @@
 		sortType,
 	} from '../store'
 	import type { TSortTypes } from '../types'
-	import { __pywebview, isClient, isNumber, outsideClick, sort } from '../utils'
+	import { __pywebview, isNumber, outsideClick, sort } from '../utils'
 	import ContextMenu from './ContextMenu/ContextMenu.svelte'
+	import Loading from './Loading.svelte'
 	import Virtualist from './Virtualist.svelte'
 	import ArrowLeft from './icons/ArrowLeft.svelte'
-	import Reload from './icons/Reload.svelte'
-	import Loading from './Loading.svelte'
 	import Close from './icons/Close.svelte'
+	import Error from './icons/Error.svelte'
+	import Info from './icons/Info.svelte'
 	import Maximize from './icons/Maximize.svelte'
 	import Minimize from './icons/Minimize.svelte'
+	import Reload from './icons/Reload.svelte'
 	import Warning from './icons/Warning.svelte'
-	import Info from './icons/Info.svelte'
-	import Error from './icons/Error.svelte'
 
 	let cwdSplit = [] as string[]
 
@@ -68,7 +68,6 @@
 		await __pywebview.reset_stream_delete(path)
 	})
 	events.on('reset_size', async (path: string) => {
-		// @ts-ignore
 		await __pywebview.reset_stream_size(path)
 	})
 
