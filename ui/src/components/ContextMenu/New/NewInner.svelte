@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { contextMenuOpen, cwd, explorerItems } from '../../../store'
+	import { contextMenuOpen, cwd, explorerItems, scrollExplorerToEnd } from '../../../store'
 	import { formatDate } from '../../../utils'
 </script>
 
@@ -24,6 +24,8 @@
 						action: 'create_file',
 					},
 				])
+
+				$scrollExplorerToEnd()
 			}}
 			class="w-full px-4 py-2 dark:hover:bg-zinc-500"
 		>
@@ -50,6 +52,9 @@
 						action: 'create_folder',
 					},
 				])
+
+                
+				$scrollExplorerToEnd()
 			}}
 			class="w-full px-4 py-2 dark:hover:bg-zinc-500"
 		>

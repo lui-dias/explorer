@@ -172,3 +172,7 @@ export function gen_id(size: number = 6) {
 
 	return id
 }
+
+export function sleep(s: number) {
+    return new Promise((resolve) => setTimeout(resolve, s * 1000))
+}

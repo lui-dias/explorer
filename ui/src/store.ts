@@ -10,5 +10,5 @@ export const selectedItem = writable<ExplorerItem[]>([])
 export const refreshExplorer = writable<() => Promise<void>>(async () => {})
 export const explorerItems = writable<ExplorerItem[]>([])
 export const isMultipleSelected = writable<boolean>(false)
-
+export const scrollExplorerToEnd = writable<() => void>(() => {})
 export const footer = writable<TFooter>({ text: '', type: 'none' })

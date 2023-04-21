@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
-	import { explorerItems } from '../store'
+	import { explorerItems, scrollExplorerToEnd } from '../store'
 	import Item from './Item.svelte'
+	import { sleep } from '../utils'
 
 	export let itemHeight: number = 0
 	let list: HTMLDivElement
@@ -12,6 +13,10 @@
 	let startIndex = Math.floor(scrollTop / itemHeight)
 	let endIndex = 0
 	let renderIndex = [] as number[]
+
+	scrollExplorerToEnd.set(async () => {
+        scrollTop = $explorerItems.length * itemHeight
+	})
 
 	$: {
 		if (typeof window !== 'undefined') {
