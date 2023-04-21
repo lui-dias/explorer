@@ -409,15 +409,6 @@ class API:
 
         return r
 
-    def reset_stream_size(self, path: str):
-        if path in streams_files:
-            del streams_files[path]
-
-    def reset_stream_delete(self, path: str):
-        if path in streams_deletes:
-            del streams_deletes[path]
-
-
 streams_files = {}
 streams_deletes = {}
 

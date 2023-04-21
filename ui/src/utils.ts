@@ -145,15 +145,7 @@ export const __pywebview = {
 	}> => {
 		// @ts-ignore
 		return await pywebview.api.stream_delete(path, moveToTrash)
-	},
-	reset_stream_size: async (path: string): Promise<void> => {
-		// @ts-ignore
-		return await pywebview.api.reset_stream_size(path)
-	},
-	reset_stream_delete: async (path: string): Promise<void> => {
-		// @ts-ignore
-		return await pywebview.api.reset_stream_delete(path)
-	},
+	}
 }
 
 export function isClient() {

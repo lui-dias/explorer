@@ -64,12 +64,6 @@
 	events.on('full_reload', async () => {
 		explorerItems.set(await __pywebview.ls($cwd))
 	})
-	events.on('reset_delete', async (path: string) => {
-		await __pywebview.reset_stream_delete(path)
-	})
-	events.on('reset_size', async (path: string) => {
-		await __pywebview.reset_stream_size(path)
-	})
 
 	footer.subscribe(v => {
 		setTimeout(() => {
@@ -124,7 +118,6 @@
 
 		console.log('ready')
 		sortType.set((localStorage.getItem('sortType') || $sortType) as TSortTypes)
-		// @ts-ignore
 		cwd.set(localStorage.getItem('cwd') || (await __pywebview.home()))
 
 		const h = [] as string[]
@@ -202,7 +195,6 @@
 			} else if (e.key === 'Delete') {
 				events.emit('delete', $selectedItem.path, !e.shiftKey)
 				events.emit('full_reload')
-				events.emit('reset_delete', $selectedItem.path)
 			}
 		}
 	}}
