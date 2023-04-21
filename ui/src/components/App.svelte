@@ -7,12 +7,13 @@
 		footer,
 		history,
 		historyIndex,
+		isMultipleSelected,
 		refreshExplorer,
 		selectedItem,
 		sortType,
 	} from '../store'
 	import type { TFooter, TSortTypes } from '../types'
-	import { __pywebview, debounce, isNumber, outsideClick, sort } from '../utils'
+	import { __pywebview, debounce, gen_id, isNumber, outsideClick, sort } from '../utils'
 	import ContextMenu from './ContextMenu/ContextMenu.svelte'
 	import Loading from './Loading.svelte'
 	import Virtualist from './Virtualist.svelte'
@@ -57,10 +58,15 @@
 
 		await __pywebview.rename(from, to)
 	})
-	events.on('delete', async (path: string, moveToTrash: boolean) => {
+	events.on('delete', async (path: string | string[], moveToTrash: boolean) => {
+		const id = gen_id()
+
 		while (true) {
-			const { end, total, deleted } = await __pywebview.stream_delete(path, moveToTrash)
-			console.log(`Deleted ${deleted} of ${total} files`)
+			const { end, total, deleted } = await __pywebview.stream_delete(id, path, moveToTrash)
+			events.emit('footer_text', {
+				text: `Deleted ${deleted}/${total}`,
+				type: 'info',
+			})
 
 			if (end) {
 				break
@@ -70,9 +76,9 @@
 		events.emit('full_reload')
 	})
 	events.on('full_reload', async () => {
-        cwdSplit = $cwd.split('/')
+		cwdSplit = $cwd.split('/')
 		explorerItems.set(await __pywebview.ls($cwd))
-        sortItems()
+		sortItems()
 	})
 
 	events.on('footer_text', ({ text, type }: TFooter) => {
@@ -81,7 +87,7 @@
 			type,
 		})
 
-        footerDebounce()
+		footerDebounce()
 	})
 
 	function sortItems() {
@@ -149,7 +155,7 @@
 		})
 
 		outsideClick(explorerItemsNode, () => {
-			selectedItem.set(null)
+			selectedItem.set([])
 		})
 
 		isLoading = false
@@ -164,21 +170,38 @@
 			forward()
 		}
 	}}
+	on:keyup={e => {
+		if (e.key === 'Control') {
+			isMultipleSelected.set(false)
+		}
+	}}
 	on:keydown={async e => {
 		if (e.key === 'Escape') {
 			isSearchSelected = false
-			selectedItem.set(null)
+			selectedItem.set([])
 		}
 
-		if ($selectedItem) {
+		if (e.key === 'Control') {
+			isMultipleSelected.set(true)
+		}
+
+		if ($selectedItem.length) {
 			if (e.key === 'F2') {
+				if ($selectedItem.length > 1) {
+					events.emit('footer_text', {
+						text: 'Cannot rename multiple items',
+						type: 'warning',
+					})
+					return
+				}
+
 				explorerItems.set(
 					$explorerItems.map(i => {
 						if (!$selectedItem) {
 							return i
 						}
 
-						if (i.path === $selectedItem.path) {
+						if (i.path === $selectedItem[0].path) {
 							return {
 								...i,
 								isEditMode: true,
@@ -190,7 +213,11 @@
 					}),
 				)
 			} else if (e.key === 'Delete') {
-				events.emit('delete', $selectedItem.path, !e.shiftKey)
+				events.emit(
+					'delete',
+					$selectedItem.map(i => i.path),
+					!e.shiftKey,
+				)
 				events.emit('full_reload')
 			}
 		}

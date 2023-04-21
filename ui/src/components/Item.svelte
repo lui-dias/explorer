@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
 
-	import { cwd, footer, history, historyIndex, selectedItem } from '../store'
+	import { cwd, footer, history, historyIndex, isMultipleSelected, selectedItem } from '../store'
 	import type { ExplorerItem } from '../types'
 
 	import { events } from '../event'
@@ -99,15 +99,15 @@
 		const exists = await __pywebview.exists(path)
 
 		if (file.name === '') {
-            events.emit('footer_text', {
+			events.emit('footer_text', {
 				text: 'The name cannot be empty',
 				type: 'warning',
 			})
 		} else if (exists) {
-            events.emit('footer_text', {
-                text: `'${file.name}' already exists`,
-                type: 'warning',
-            })
+			events.emit('footer_text', {
+				text: `'${file.name}' already exists`,
+				type: 'warning',
+			})
 		} else {
 			if (file.action === 'create_file') {
 				events.emit('create_file', path)
@@ -123,7 +123,9 @@
 
 	onMount(async () => {
 		outsideClick(itemNode, () => {
-			selectedItem.set(null)
+			if (!$isMultipleSelected) {
+				selectedItem.set([])
+			}
 		})
 
 		while (true) {
@@ -144,11 +146,15 @@
 
 <button
 	class={`flex w-full dark:hover:bg-purple-300/20 cursor-pointer outline-none ${
-		$selectedItem?.path === file.path ? 'bg-purple-300/20' : ''
+		$selectedItem.find(item => item.path === file.path) ? 'bg-purple-300/20' : ''
 	}`}
 	bind:this={itemNode}
 	on:click={() => {
-		selectedItem.set(file)
+		if (isMultipleSelected) {
+			selectedItem.set([...$selectedItem, file])
+		} else {
+			selectedItem.set([file])
+		}
 	}}
 	on:dblclick={() => {
 		if (file.kind === 'folder') {

@@ -265,8 +265,9 @@ class StreamFolderSize:
 
 
 class StreamDelete:
-    def __init__(self, path: str, moveToTrash=True):
-        self.path = Path(path)
+    def __init__(self, id: str, path: str | list[str], moveToTrash=True):
+        self.id = id
+        self.paths = path
         self.end = False
         self.items = []
         self.total = 0
@@ -281,11 +282,12 @@ class StreamDelete:
         self.items.append(path)
 
     def start(self):
-        self.thread = Thread(target=self.delete, args=(self.path,))
+        self.thread = Thread(target=self.delete)
         self.thread.start()
 
-    def delete(self, path: Path):
-        self.count(path)
+    def delete(self):
+        for path in self.paths:
+            self.count(Path(path))
         self.total = len(self.items)
 
         def delete_file(path):
@@ -378,7 +380,7 @@ class API:
 
         return p1.exists() and p1 != p2
 
-    def stream_folder_size(self, path: str):
+    def stream_folder_size(self, path: str | list[str]):
         s = StreamFolderSize(path)
 
         if path not in streams_files:
@@ -392,21 +394,21 @@ class API:
 
         return r
 
-    def stream_delete(self, path: str, moveToTrash=True):
-        s = StreamDelete(path, moveToTrash)
+    def stream_delete(self, id: str, path: str, moveToTrash=True):
+        s = StreamDelete(id, path, moveToTrash)
 
-        if path not in streams_deletes:
+        if s.id not in streams_deletes:
             s.start()
-            streams_deletes[path] = s
+            streams_deletes[s.id] = s
 
         r = {
-            'end': streams_deletes[path].end,
-            'total': streams_deletes[path].total,
-            'deleted': streams_deletes[path].deleted,
+            'end': streams_deletes[s.id].end,
+            'total': streams_deletes[s.id].total,
+            'deleted': streams_deletes[s.id].deleted,
         }
 
-        if streams_deletes[path].end:
-            del streams_deletes[path]
+        if streams_deletes[s.id].end:
+            del streams_deletes[s.id]
 
         return r
 

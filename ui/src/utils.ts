@@ -90,18 +90,18 @@ export const __pywebview = {
 			}
 		}, 100)
 	},
-    close: async (): Promise<void> => {
-        // @ts-ignore
-        return await pywebview.api.close()
-    },
-    minimize: async (): Promise<void> => {
-        // @ts-ignore
-        return await pywebview.api.minimize()
-    },
-    maximize: async (): Promise<void> => {
-        // @ts-ignore
-        return await pywebview.api.maximize()
-    },
+	close: async (): Promise<void> => {
+		// @ts-ignore
+		return await pywebview.api.close()
+	},
+	minimize: async (): Promise<void> => {
+		// @ts-ignore
+		return await pywebview.api.minimize()
+	},
+	maximize: async (): Promise<void> => {
+		// @ts-ignore
+		return await pywebview.api.maximize()
+	},
 	ls: async (folder: string): Promise<ExplorerItem[]> => {
 		// @ts-ignore
 		return await pywebview.api.ls(folder)
@@ -136,7 +136,8 @@ export const __pywebview = {
 		return await pywebview.api.stream_folder_size(path)
 	},
 	stream_delete: async (
-		path: string,
+        id: string,
+		path: string | string[],
 		moveToTrash: boolean,
 	): Promise<{
 		end: boolean
@@ -144,8 +145,8 @@ export const __pywebview = {
 		deleted: number
 	}> => {
 		// @ts-ignore
-		return await pywebview.api.stream_delete(path, moveToTrash)
-	}
+		return await pywebview.api.stream_delete(id, path, moveToTrash)
+	},
 }
 
 export function isClient() {
@@ -153,10 +154,21 @@ export function isClient() {
 }
 
 export function debounce(fn: () => void, s: number) {
-    let timeout: NodeJS.Timeout
+	let timeout: NodeJS.Timeout
 
-    return () => {
-        clearTimeout(timeout)
-        timeout = setTimeout(fn, s)
-    }
+	return () => {
+		clearTimeout(timeout)
+		timeout = setTimeout(fn, s)
+	}
+}
+
+export function gen_id(size: number = 6) {
+	const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+	let id = ''
+
+	for (let i = 0; i < size; i++) {
+		id += chars.charAt(Math.floor(Math.random() * chars.length))
+	}
+
+	return id
 }
