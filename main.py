@@ -357,6 +357,7 @@ class API:
                 parent=i.parent.as_posix(),
             )
             for i in Path(folder).iterdir()
+            if i.exists()
         ]
 
     def home(self):
