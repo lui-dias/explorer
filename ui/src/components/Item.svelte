@@ -126,17 +126,15 @@
 			selectedItem.set(null)
 		})
 
-		let interval = setInterval(async () => {
+		while (true) {
 			const { size: newSize, end } = await __pywebview.stream_folder_size(file.path)
 
 			size = newSize
 
 			if (end) {
-				clearInterval(interval)
+				break
 			}
-		}, 100)
-
-		await __pywebview.reset_stream_size(file.path)
+		}
 	})
 
 	$: if (file.isEditMode && inputEditNode) {
