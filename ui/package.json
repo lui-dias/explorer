@@ -21,6 +21,7 @@
     "tailwindcss": "^3.0.24"
   },
   "devDependencies": {
-    "@types/events": "^3.0.0"
+    "@types/events": "^3.0.0",
+    "@types/node": "^18.15.13"
   }
 }
