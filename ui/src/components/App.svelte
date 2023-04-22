@@ -77,7 +77,7 @@
 		}
 
 		events.emit('full_reload')
-        selectedItem.set([])
+		selectedItem.set([])
 	})
 	events.on('full_reload', async () => {
 		cwdSplit = $cwd.split('/')
@@ -164,6 +164,10 @@
 
 		isLoading = false
 	})
+
+	$: if (inputSearchNode) {
+		inputSearchNode.focus()
+	}
 </script>
 
 <svelte:window
@@ -269,11 +273,9 @@
 				bind:this={searchNode}
 			>
 				{#if isSearchSelected}
-					<!-- svelte-ignore a11y-autofocus -->
 					<input
 						type="text"
 						class="bg-transparent w-full h-10 px-4 outline-none focus:outline-purple-300"
-						autofocus
 						value={$cwd}
 						on:keyup={async e => {
 							if (e.key === 'Enter') {
