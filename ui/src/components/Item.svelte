@@ -122,6 +122,7 @@
 	onMount(async () => {
 		outsideClick(itemNode, () => {
 			if (!$isMultipleSelected) {
+                file.isEditMode = false
 				selected.set([])
 			}
 		})
