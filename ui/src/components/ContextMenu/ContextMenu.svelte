@@ -61,13 +61,15 @@
 	class:invisible={!$contextMenuOpen}
 >
 	<li class="dark:hover:bg-zinc-600">
-		{#if $selectedItem}
-            <span />
+		{#if $selectedItem.length}
+			<span>
+                Context menu item
+            </span>
 		{:else}
-        <ContextMenuItem {parentHeight}>
-            <NewItem slot="item" />
-            <NewInner slot="inner" />
-        </ContextMenuItem>
+			<ContextMenuItem {parentHeight}>
+				<NewItem slot="item" />
+				<NewInner slot="inner" />
+			</ContextMenuItem>
 			<ContextMenuItem {parentHeight}>
 				<SortItem slot="item" />
 				<SortInner slot="inner" />
