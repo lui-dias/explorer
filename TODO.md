@@ -12,7 +12,9 @@
 - [x] Add window buttons
 - [x] Add explorer loading
 - [x] Select multiples files/folders
-- [ ] Add settings
+- [x] Add settings
+- [ ] Resize columns
+
 - [ ] Add favorites folders sidebar
 - [ ] Add search
 - [ ] Offline PWA
@@ -20,12 +22,13 @@
 
 ### Fix
 - [ ] Sort by size
-- [ ] Memory leak that happens at any time and makes the server crash
+- [x] Memory leak that happens at any time and makes the server crash
 - [x] Creating a file/folder makes the footer show a warning saying the last item in the list already exists, instead of checking just the created item
 
 ### UI
 - [ ] Better context appearance
 - [ ] Better footer appearance
+- [ ] Better font (like Segoe UI)
 
 ### QOL
 - [ ] Add tests
