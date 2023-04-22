@@ -272,7 +272,7 @@
 					<!-- svelte-ignore a11y-autofocus -->
 					<input
 						type="text"
-						class="bg-transparent w-full h-full px-4 outline-none focus:outline-purple-300"
+						class="bg-transparent w-full h-10 px-4 outline-none focus:outline-purple-300"
 						autofocus
 						value={$cwd}
 						on:keyup={async e => {
