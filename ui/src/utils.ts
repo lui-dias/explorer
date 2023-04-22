@@ -38,7 +38,7 @@ export function sort<T>(arr: T[], fn: (key: T) => any, reverse = false) {
 	})
 }
 
-export function isPathChild(parent: string, child: string) {
+export function isPathChild(child: string, parent: string) {
 	return child.startsWith(parent) && child !== parent
 }
 
@@ -143,6 +143,7 @@ export const __pywebview = {
 		end: boolean
 		total: number
 		deleted: number
+        last_deleted: string
 	}> => {
 		// @ts-ignore
 		return await pywebview.api.stream_delete(id, path, moveToTrash)

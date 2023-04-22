@@ -1,24 +1,25 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
 	import { explorerItems, scrollExplorerToEnd } from '../store'
+	import { isClient } from '../utils'
 	import Item from './Item.svelte'
 
 	export let itemHeight: number = 0
+
 	let list: HTMLDivElement
-
 	let scrollTop = 0
-
-	let innerHeight = $explorerItems.length * itemHeight
-	let startIndex = Math.floor(scrollTop / itemHeight)
 	let endIndex = 0
 	let renderIndex = [] as number[]
 
-	scrollExplorerToEnd.set(async () => {
-        scrollTop = $explorerItems.length * itemHeight
+	let innerHeight = $explorerItems.length * itemHeight
+	let startIndex = Math.floor(scrollTop / itemHeight)
+
+	scrollExplorerToEnd.set(() => {
+		scrollTop = $explorerItems.length * itemHeight
 	})
 
 	$: {
-		if (typeof window !== 'undefined') {
+		if (isClient()) {
 			const endIndex = Math.min(
 				$explorerItems.length - 1,
 				Math.floor((scrollTop + window.innerHeight) / itemHeight),

@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
+	import { contextMenuOpen, selected } from '../../store'
 	import { outsideClick } from '../../utils'
 	import ContextMenuItem from './ContextMenuItem.svelte'
+	import NewInner from './New/NewInner.svelte'
+	import NewItem from './New/NewItem.svelte'
 	import SortInner from './Sort/SortInner.svelte'
 	import SortItem from './Sort/SortItem.svelte'
-	import { contextMenuOpen, selectedItem } from '../../store'
-	import NewItem from './New/NewItem.svelte'
-	import NewInner from './New/NewInner.svelte'
 
 	let contextMenuNode: HTMLMenuElement
 	let parentHeight = 0
@@ -61,10 +61,8 @@
 	class:invisible={!$contextMenuOpen}
 >
 	<li class="dark:hover:bg-zinc-600">
-		{#if $selectedItem.length}
-			<span>
-                Context menu item
-            </span>
+		{#if $selected.length}
+			<span> Context menu item </span>
 		{:else}
 			<ContextMenuItem {parentHeight}>
 				<NewItem slot="item" />

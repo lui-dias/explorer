@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
 
-	import { cwd, footer, history, historyIndex, isMultipleSelected, selectedItem } from '../store'
+	import { cwd, history, historyIndex, isMultipleSelected, selected } from '../store'
 	import type { ExplorerItem } from '../types'
 
 	import { events } from '../event'
@@ -101,12 +101,12 @@
 		if (file.name === '') {
 			events.emit('footer_text', {
 				text: 'The name cannot be empty',
-				type: 'warning',
+				type: 'error',
 			})
 		} else if (exists) {
 			events.emit('footer_text', {
 				text: `'${file.name}' already exists`,
-				type: 'warning',
+				type: 'error',
 			})
 		} else {
 			if (file.action === 'create_file') {
@@ -117,14 +117,12 @@
 				events.emit('rename', file.path, path)
 			}
 		}
-
-		events.emit('full_reload')
 	}
 
 	onMount(async () => {
 		outsideClick(itemNode, () => {
 			if (!$isMultipleSelected) {
-				selectedItem.set([])
+				selected.set([])
 			}
 		})
 
@@ -133,9 +131,7 @@
 
 			size = newSize
 
-			if (end) {
-				break
-			}
+			if (end) break
 		}
 	})
 
@@ -146,15 +142,11 @@
 
 <button
 	class={`flex w-full dark:hover:bg-purple-300/20 cursor-pointer outline-none ${
-		$selectedItem.find(item => item.path === file.path) ? 'bg-purple-300/20' : ''
+		$selected.find(item => item.path === file.path) ? 'bg-purple-300/20' : ''
 	}`}
 	bind:this={itemNode}
 	on:click={() => {
-		if (isMultipleSelected) {
-			selectedItem.set([...$selectedItem, file])
-		} else {
-			selectedItem.set([file])
-		}
+		selected.set(isMultipleSelected ? [...$selected, file] : [file])
 	}}
 	on:dblclick={() => {
 		if (file.kind === 'folder') {
@@ -164,12 +156,11 @@
 
 			let index = $history.length - 1
 
-			while (!isPathChild($history[index], file.path)) {
+			while (!isPathChild(file.path, $history[index])) {
 				index--
 			}
 
-			history.set($history.slice(0, index + 1))
-			history.set([...$history, file.path])
+			history.set([...$history.slice(0, index + 1), file.path])
 			historyIndex.set(index + 1)
 		}
 	}}

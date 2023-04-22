@@ -9,7 +9,7 @@
 		historyIndex,
 		isMultipleSelected,
 		refreshExplorer,
-		selectedItem,
+		selected,
 		sortType,
 	} from '../store'
 	import type { ExplorerItem, TFooter, TSortTypes } from '../types'
@@ -28,12 +28,15 @@
 
 	let cwdSplit = [] as string[]
 
-	let isSearchSelected = false
 	let searchNode: HTMLButtonElement
 	let inputSearchNode: HTMLInputElement
 	let explorerItemsNode: HTMLUListElement
 
 	let isLoading = true
+	let isSearchSelected = false
+
+	// Without this, the footer will be cleared after 5 seconds
+	// even if other events are emitted
 	let footerDebounce = debounce(
 		() =>
 			footer.set({
@@ -44,30 +47,31 @@
 	)
 
 	events.on('create_file', async (file: string) => {
-		console.log('create_file')
-
 		await __pywebview.create_file(file)
-		events.emit('full_reload')
+		events.emit('reload')
 	})
+
 	events.on('create_folder', async (folder: string) => {
-		console.log('create_folder')
-
 		await __pywebview.create_folder(folder)
-		events.emit('full_reload')
+		events.emit('reload')
 	})
-	events.on('rename', async (from: string, to: string) => {
-		console.log('rename')
 
+	events.on('rename', async (from: string, to: string) => {
 		await __pywebview.rename(from, to)
-		events.emit('full_reload')
+		events.emit('reload')
 	})
+
 	events.on('delete', async (path: string | string[], moveToTrash: boolean) => {
 		const id = gen_id()
 
 		while (true) {
-			const { end, total, deleted } = await __pywebview.stream_delete(id, path, moveToTrash)
+			const { end, total, deleted, last_deleted } = await __pywebview.stream_delete(
+				id,
+				path,
+				moveToTrash,
+			)
 			events.emit('footer_text', {
-				text: `Deleted ${deleted}/${total}`,
+				text: `Deleted ${deleted}/${total} - ${last_deleted}`,
 				type: 'info',
 			})
 
@@ -76,11 +80,16 @@
 			}
 		}
 
-		events.emit('full_reload')
-		selectedItem.set([])
+		events.emit('reload')
+		selected.set([])
 	})
-	events.on('full_reload', async () => {
+
+	events.on('reload', async () => {
 		cwdSplit = $cwd.split('/')
+
+		// When creating a file/folder, even using ls, the size of the files was buggy,
+		// a file had the size of another file
+		// Doing this causes a small flash in explorer, but it solves the problem :/
 		explorerItems.set([])
 		explorerItems.set(sortItems(await __pywebview.ls($cwd)))
 	})
@@ -97,12 +106,14 @@
 	function sortItems(items: ExplorerItem[]) {
 		if ($sortType === 'name') {
 			return sort(items, i => (isNumber(i.name) ? Number(i.name) : i.name))
-		} else if ($sortType === 'modified') {
+		}
+		if ($sortType === 'modified') {
 			return sort(items, i => i.modified)
-		} else if ($sortType === 'type') {
+		}
+		if ($sortType === 'type') {
 			return sort(items, i => i.kind)
-		} else if ($sortType === 'size') {
-			// FIXME: not working
+		}
+		if ($sortType === 'size') {
 			return sort(items, i => i.size)
 		}
 
@@ -122,15 +133,20 @@
 	}
 
 	onMount(async () => {
+		// Wait pywebview to be ready
 		await __pywebview.__wait()
-
 		console.log('ready')
+
+		// Load data from localStorage
 		sortType.set((localStorage.getItem('sortType') || $sortType) as TSortTypes)
 		cwd.set(localStorage.getItem('cwd') || (await __pywebview.home()))
 
-		const h = [] as string[]
-
 		const cwdSplit = $cwd.split('/')
+
+		// Add each parent path to history
+		// Example: /home/user/Downloads
+		// history: ['/home', '/home/user', '/home/user/Downloads']
+		const h = [] as string[]
 		for (let i = 0; i < cwdSplit.length; i++) {
 			h.push(cwdSplit.slice(0, i + 1).join('/'))
 		}
@@ -146,7 +162,7 @@
 		cwd.subscribe(v => {
 			if (v) {
 				localStorage.setItem('cwd', $cwd)
-				events.emit('full_reload')
+				events.emit('reload')
 			}
 		})
 
@@ -155,16 +171,18 @@
 		})
 
 		outsideClick(explorerItemsNode, () => {
-			selectedItem.set([])
+			selected.set([])
 		})
 
 		isLoading = false
 	})
 
+	// Focus search input when search button is clicked
 	$: if (inputSearchNode) {
 		inputSearchNode.focus()
 	}
 
+	// Close search when clicking outside
 	$: if (searchNode) {
 		outsideClick(searchNode, () => {
 			isSearchSelected = false
@@ -185,10 +203,10 @@
 			isMultipleSelected.set(false)
 		}
 	}}
-	on:keydown={async e => {
+	on:keydown={e => {
 		if (e.key === 'Escape') {
 			isSearchSelected = false
-			selectedItem.set([])
+			selected.set([])
 		}
 
 		if (e.key === 'Control') {
@@ -196,43 +214,45 @@
 		}
 
 		if (e.ctrlKey && e.key === 'a') {
-			selectedItem.set($explorerItems)
+			selected.set($explorerItems)
 		}
 
-		if ($selectedItem.length) {
-			if (e.key === 'F2') {
-				if ($selectedItem.length > 1) {
-					events.emit('footer_text', {
-						text: 'Cannot rename multiple items',
-						type: 'warning',
-					})
-					return
-				}
+		if ($selected.length === 0) return
 
-				explorerItems.set(
-					$explorerItems.map(i => {
-						if (!$selectedItem) {
-							return i
-						}
-
-						if (i.path === $selectedItem[0].path) {
-							return {
-								...i,
-								isEditMode: true,
-								action: 'rename',
-							}
-						}
-
-						return i
-					}),
-				)
-			} else if (e.key === 'Delete') {
-				events.emit(
-					'delete',
-					$selectedItem.map(i => i.path),
-					!e.shiftKey,
-				)
+		if (e.key === 'F2') {
+			if ($selected.length > 1) {
+				events.emit('footer_text', {
+					text: 'Cannot rename multiple items',
+					type: 'warning',
+				})
+				return
 			}
+
+			explorerItems.set(
+				$explorerItems.map(i => {
+					if (!$selected) {
+						return i
+					}
+
+					if (i.path === $selected[0].path) {
+						return {
+							...i,
+							isEditMode: true,
+							action: 'rename',
+						}
+					}
+
+					return i
+				}),
+			)
+		}
+
+		if (e.key === 'Delete') {
+			events.emit(
+				'delete',
+				$selected.map(i => i.path),
+				!e.shiftKey,
+			)
 		}
 	}}
 />
