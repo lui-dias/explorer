@@ -8,6 +8,10 @@ module.exports = {
 			fontFamily: {
 				poppins: ['poppins', ...defaultTheme.fontFamily.sans],
 			},
+			colors: {
+				primary: 'var(--primary)',
+                text: 'var(--text)',
+			},
 		},
 	},
 	plugins: [require('tailwind-scrollbar')],

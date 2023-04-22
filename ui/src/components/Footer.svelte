@@ -1,0 +1,31 @@
+<script lang="ts">
+	import { footer, settingsOpen } from '../store'
+	import Config from './icons/Config.svelte'
+	import Error from './icons/Error.svelte'
+	import Info from './icons/Info.svelte'
+	import Warning from './icons/Warning.svelte'
+</script>
+
+<footer class="h-10 px-2 text-text border-t border-zinc-700 flex justify-between items-center">
+	<div class="flex items-center gap-x-2">
+		{#if $footer.type !== 'none'}
+			{#if $footer.type === 'info'}
+				<Info class="fill-primary" />
+			{/if}
+			{#if $footer.type === 'warning'}
+				<Warning class="fill-primary" />
+			{/if}
+			{#if $footer.type === 'error'}
+				<Error class="fill-primary" />
+			{/if}
+		{/if}
+
+		{$footer.text}
+	</div>
+
+	<div class="flex items-center gap-x-2">
+		<button type="button" on:click={() => settingsOpen.set(true)}>
+			<Config class="fill-zinc-500" />
+		</button>
+	</div>
+</footer>

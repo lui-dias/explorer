@@ -15,16 +15,15 @@
 	import type { ExplorerItem, TFooter, TSortTypes } from '../types'
 	import { __pywebview, debounce, gen_id, isNumber, outsideClick, sort } from '../utils'
 	import ContextMenu from './ContextMenu/ContextMenu.svelte'
+	import Footer from './Footer.svelte'
 	import Loading from './Loading.svelte'
+	import Settings from './Settings.svelte'
 	import Virtualist from './Virtualist.svelte'
 	import ArrowLeft from './icons/ArrowLeft.svelte'
 	import Close from './icons/Close.svelte'
-	import Error from './icons/Error.svelte'
-	import Info from './icons/Info.svelte'
 	import Maximize from './icons/Maximize.svelte'
 	import Minimize from './icons/Minimize.svelte'
 	import Reload from './icons/Reload.svelte'
-	import Warning from './icons/Warning.svelte'
 
 	let cwdSplit = [] as string[]
 
@@ -258,17 +257,18 @@
 />
 
 <ContextMenu />
+<Settings />
 
 <div class="w-full h-full dark:bg-zinc-800 flex flex-col gap-y-2">
 	<div class="flex justify-end">
 		<button type="button" class="hover:bg-zinc-700 py-2 px-4" on:click={__pywebview.minimize}>
-			<Minimize class="fill-purple-200" />
+			<Minimize class="fill-primary" />
 		</button>
 		<button type="button" class="hover:bg-zinc-700 py-2 px-4" on:click={__pywebview.maximize}>
-			<Maximize class="fill-purple-200" />
+			<Maximize class="fill-primary" />
 		</button>
 		<button type="button" class="hover:bg-red-500 py-2 px-4" on:click={__pywebview.close}>
-			<Close class="fill-purple-200" />
+			<Close class="fill-primary" />
 		</button>
 	</div>
 	{#if isLoading}
@@ -277,7 +277,7 @@
 		<div class="flex gap-x-2 mx-3 mt-3">
 			<div class="flex gap-x-3">
 				<button type="button" class="w-3" disabled={$historyIndex === 0} on:click={back}>
-					<ArrowLeft />
+					<ArrowLeft class="fill-primary" />
 				</button>
 
 				<button
@@ -286,7 +286,7 @@
 					disabled={$historyIndex === $history.length - 1}
 					on:click={forward}
 				>
-					<ArrowLeft />
+					<ArrowLeft class="fill-primary" />
 				</button>
 			</div>
 
@@ -328,7 +328,7 @@
 									</button>
 									{#if i < cwdSplit.length - 1}
 										<span class="transform rotate-180 w-1.5 block mx-1">
-											<ArrowLeft />
+											<ArrowLeft class="fill-primary" />
 										</span>
 									{/if}
 								</li>
@@ -339,7 +339,7 @@
 							class="absolute inset-y-0 right-2"
 							on:click={$refreshExplorer}
 						>
-							<Reload />
+							<Reload class="stroke-primary" />
 						</button>
 					</div>
 				{/if}
@@ -347,19 +347,16 @@
 		</div>
 
 		<div class="flex mx-3">
-			<span class="dark:text-purple-100 text-left border-r border-purple-100 text-sm w-[50%]"
+			<span class="dark:text-text text-left border-r border-purple-100 text-sm w-[50%]"
 				>Name</span
 			>
-			<span
-				class="dark:text-purple-100 text-left border-r border-purple-100 pl-2 text-sm w-[20%]"
+			<span class="dark:text-text text-left border-r border-purple-100 pl-2 text-sm w-[20%]"
 				>Modified</span
 			>
-			<span
-				class="dark:text-purple-100 text-left border-r border-purple-100 pl-2 text-sm w-[15%]"
+			<span class="dark:text-text text-left border-r border-purple-100 pl-2 text-sm w-[15%]"
 				>Type</span
 			>
-			<span
-				class="dark:text-purple-100 text-left border-r border-purple-100 pl-2 text-sm w-[15%]"
+			<span class="dark:text-text text-left border-r border-purple-100 pl-2 text-sm w-[15%]"
 				>Size</span
 			>
 		</div>
@@ -367,22 +364,6 @@
 			<Virtualist itemHeight={24} class="flex flex-col w-full mt-2 h-full" />
 		</ul>
 
-		<footer
-			class="h-10 px-2 text-purple-300 border-t border-zinc-700 flex items-center gap-x-2"
-		>
-			{#if $footer.type !== 'none'}
-				{#if $footer.type === 'info'}
-					<Info class="fill-purple-200" />
-				{/if}
-				{#if $footer.type === 'warning'}
-					<Warning class="fill-purple-200" />
-				{/if}
-				{#if $footer.type === 'error'}
-					<Error class="fill-purple-200" />
-				{/if}
-			{/if}
-
-			{$footer.text}
-		</footer>
+		<Footer />
 	{/if}
 </div>

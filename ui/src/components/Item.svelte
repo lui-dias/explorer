@@ -169,7 +169,7 @@
 		{#if file.isEditMode}
 			<input
 				type="text"
-				class="dark:text-purple-100 dark:bg-transparent text-gray-900 outline-none rounded-md px-2 h-full w-full"
+				class="dark:text-text dark:bg-transparent text-gray-900 outline-none rounded-md px-2 h-full w-full"
 				spellcheck="false"
 				autocomplete="false"
 				bind:value={file.name}
@@ -185,7 +185,7 @@
 				}}
 			/>
 		{:else}
-			<div class="dark:text-purple-100 flex items-center gap-x-1.5 w-64 text-sm">
+			<div class="dark:text-text flex items-center gap-x-1.5 w-64 text-sm">
 				<svelte:component this={getFileIcon(file)} />
 				<span class="overflow-hidden text-ellipsis whitespace-nowrap w-full text-start">
 					{file.name}
@@ -194,17 +194,17 @@
 		{/if}
 	</div>
 
-	<span class="dark:text-purple-100 text-sm text-start w-[20%]">
+	<span class="dark:text-text text-sm text-start w-[20%]">
 		{file.modified}
 	</span>
-	<span class="dark:text-purple-100 text-sm capitalize text-start w-[15%]">
+	<span class="dark:text-text text-sm capitalize text-start w-[15%]">
 		{#if file.kind === 'folder'}
 			Folder
 		{:else}
 			{file.kind}
 		{/if}
 	</span>
-	<span class="dark:text-purple-100 text-sm text-right w-[15%]">
+	<span class="dark:text-text text-sm text-right w-[15%]">
 		{formatBytes(size)}
 	</span>
 </button>

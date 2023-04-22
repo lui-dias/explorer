@@ -12,3 +12,12 @@ export const explorerItems = writable<ExplorerItem[]>([])
 export const isMultipleSelected = writable<boolean>(false)
 export const scrollExplorerToEnd = writable<() => void>(() => {})
 export const footer = writable<TFooter>({ text: '', type: 'none' })
+export const settingsOpen = writable<boolean>(false)
+
+export const settings = writable<{
+	primaryColor: string
+    textColor: string
+}>({
+	primaryColor: '#ddd6fe',
+    textColor: '#f3e8ff'
+})
