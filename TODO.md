@@ -26,3 +26,8 @@
 ### UI
 - [ ] Better context appearance
 - [ ] Better footer appearance
+
+### QOL
+- [ ] Add tests
+- [ ] Add documentation
+- [ ] Comment code
