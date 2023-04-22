@@ -195,6 +195,10 @@
 			isMultipleSelected.set(true)
 		}
 
+		if (e.ctrlKey && e.key === 'a') {
+			selectedItem.set($explorerItems)
+		}
+
 		if ($selectedItem.length) {
 			if (e.key === 'F2') {
 				if ($selectedItem.length > 1) {
