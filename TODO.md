@@ -31,3 +31,4 @@
 - [ ] Add tests
 - [ ] Add documentation
 - [ ] Comment code
+- [ ] Refactor code
