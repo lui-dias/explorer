@@ -295,13 +295,13 @@ class StreamDelete:
             with suppress(FileNotFoundError):
                 path.unlink()
             self.deleted += 1
-            self.last_deleted = path
+            self.last_deleted = path.as_posix()
 
         def delete_folder(path):
             with suppress(FileNotFoundError):
                 path.rmdir()
             self.deleted += 1
-            self.last_deleted = path
+            self.last_deleted = path.as_posix()
 
         def move_to_trash(path):
             try:
@@ -311,7 +311,7 @@ class StreamDelete:
                 raise
 
             self.deleted += 1
-            self.last_deleted = path
+            self.last_deleted = path.as_posix()
 
         tasks = []
         with ThreadPoolExecutor(max_workers=16) as executor:
