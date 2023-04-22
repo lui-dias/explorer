@@ -154,10 +154,6 @@
 			cwd.set($history[$historyIndex])
 		})
 
-		outsideClick(searchNode, () => {
-			isSearchSelected = false
-		})
-
 		outsideClick(explorerItemsNode, () => {
 			selectedItem.set([])
 		})
@@ -167,6 +163,12 @@
 
 	$: if (inputSearchNode) {
 		inputSearchNode.focus()
+	}
+
+	$: if (searchNode) {
+		outsideClick(searchNode, () => {
+			isSearchSelected = false
+		})
 	}
 </script>
 
