@@ -71,7 +71,7 @@
 				moveToTrash,
 			)
 			events.emit('footer_text', {
-				text: `Deleted ${deleted}/${total} - ${last_deleted}`,
+				text: `Deleted ${deleted}/${total} ${!!last_deleted ? `- ${last_deleted}` : ''}`,
 				type: 'info',
 			})
 
