@@ -260,20 +260,29 @@
 <Settings />
 
 <div class="w-full h-full dark:bg-zinc-800 flex flex-col gap-y-2">
-	<div class="flex justify-end">
-		<button type="button" class="hover:bg-zinc-700 py-2 px-4" on:click={__pywebview.minimize}>
-			<Minimize class="fill-primary" />
-		</button>
-		<button type="button" class="hover:bg-zinc-700 py-2 px-4" on:click={__pywebview.maximize}>
-			<Maximize class="fill-primary" />
-		</button>
-		<button type="button" class="hover:bg-red-500 py-2 px-4" on:click={__pywebview.close}>
-			<Close class="fill-primary" />
-		</button>
-	</div>
 	{#if isLoading}
 		<Loading />
 	{:else}
+		<div class="flex justify-end">
+			<button
+				type="button"
+				class="hover:bg-zinc-700 py-2 px-4"
+				on:click={__pywebview.minimize}
+			>
+				<Minimize class="fill-primary" />
+			</button>
+			<button
+				type="button"
+				class="hover:bg-zinc-700 py-2 px-4"
+				on:click={__pywebview.maximize}
+			>
+				<Maximize class="fill-primary" />
+			</button>
+			<button type="button" class="hover:bg-red-500 py-2 px-4" on:click={__pywebview.close}>
+				<Close class="fill-primary" />
+			</button>
+		</div>
+
 		<div class="flex gap-x-2 mx-3 mt-3">
 			<div class="flex gap-x-3">
 				<button type="button" class="w-3" disabled={$historyIndex === 0} on:click={back}>
