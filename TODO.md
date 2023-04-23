@@ -14,6 +14,7 @@
 - [x] Select multiples files/folders
 - [x] Add settings
 - [ ] Resize columns
+- [ ] An Icon
 
 - [ ] Add favorites folders sidebar
 - [ ] Add search
@@ -28,7 +29,7 @@
 ### UI
 - [ ] Better context appearance
 - [ ] Better footer appearance
-- [ ] Better font (like Segoe UI)
+- [x] Better font (like Segoe UI)
 
 ### QOL
 - [ ] Add tests
