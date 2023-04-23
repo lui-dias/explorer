@@ -17,6 +17,7 @@
 - [ ] An Icon
 - [ ] Move window on drag header
 - [ ] Resize window
+- [ ] Use tauri instead pywebview
 
 - [ ] Add favorites folders sidebar
 - [ ] Add search
