@@ -15,6 +15,8 @@
 - [x] Add settings
 - [ ] Resize columns
 - [ ] An Icon
+- [ ] Move window on drag header
+- [ ] Resize window
 
 - [ ] Add favorites folders sidebar
 - [ ] Add search
