@@ -89,4 +89,4 @@
 	}
 </script>
 
-<svelte:component this={getFileIcon(file)} class={$$props.class} />
+<svelte:component this={getFileIcon(file)} />
