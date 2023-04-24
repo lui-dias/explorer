@@ -1,3 +1,5 @@
+import { cwd, history, historyIndex } from './store'
+import { get } from 'svelte/store'
 import type { ExplorerItem } from './types'
 
 const isVisible = (elem: any) =>
@@ -136,14 +138,14 @@ export const __pywebview = {
 		return await pywebview.api.stream_folder_size(path)
 	},
 	stream_delete: async (
-        id: string,
+		id: string,
 		path: string | string[],
 		moveToTrash: boolean,
 	): Promise<{
 		end: boolean
 		total: number
 		deleted: number
-        last_deleted: string
+		last_deleted: string
 	}> => {
 		// @ts-ignore
 		return await pywebview.api.stream_delete(id, path, moveToTrash)
@@ -175,5 +177,22 @@ export function gen_id(size: number = 6) {
 }
 
 export function sleep(s: number) {
-    return new Promise((resolve) => setTimeout(resolve, s * 1000))
+	return new Promise(resolve => setTimeout(resolve, s * 1000))
+}
+
+export function setPath(file: ExplorerItem) {
+	cwd.set(file.path)
+
+	history.update(h => [...h, file.path])
+
+	const h = get(history)
+
+	let index = h.length - 1
+
+	while (!isPathChild(file.path, h[index])) {
+		index--
+	}
+
+	history.set([...h.slice(0, index + 1), file.path])
+	historyIndex.set(index + 1)
 }

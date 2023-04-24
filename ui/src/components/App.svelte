@@ -24,6 +24,8 @@
 	import Maximize from './icons/Maximize.svelte'
 	import Minimize from './icons/Minimize.svelte'
 	import Reload from './icons/Reload.svelte'
+	import FolderVscode from './icons/folders/FolderVscode.svelte'
+	import QuickAccess from './QuickAccess.svelte'
 
 	let cwdSplit = [] as string[]
 
@@ -169,10 +171,6 @@
 			cwd.set($history[$historyIndex])
 		})
 
-		outsideClick(explorerItemsNode, () => {
-			selected.set([])
-		})
-
 		isLoading = false
 	})
 
@@ -259,7 +257,23 @@
 <ContextMenu />
 <Settings />
 
-<div class="w-full h-full dark:bg-zinc-800 flex flex-col gap-y-2">
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<div
+	class="w-full h-full dark:bg-zinc-800 flex flex-col gap-y-2"
+	on:click={e => {
+        // Idk other way to select all items
+        const allItems = document.querySelectorAll('._item')
+
+        for (const item of allItems) {
+            // @ts-ignore
+            if (item.contains(e.target)) {
+                return
+            }
+        }
+
+        selected.set([])
+	}}
+>
 	{#if isLoading}
 		<Loading />
 	{:else}
@@ -355,23 +369,33 @@
 			</button>
 		</div>
 
-		<div class="flex mx-3">
-			<span class="dark:text-text text-left border-r border-purple-100 text-sm w-[50%]"
-				>Name</span
-			>
-			<span class="dark:text-text text-left border-r border-purple-100 pl-2 text-sm w-[20%]"
-				>Modified</span
-			>
-			<span class="dark:text-text text-left border-r border-purple-100 pl-2 text-sm w-[15%]"
-				>Type</span
-			>
-			<span class="dark:text-text text-left border-r border-purple-100 pl-2 text-sm w-[15%]"
-				>Size</span
-			>
+		<div class="flex w-full h-full">
+			<QuickAccess />
+
+			<div class="flex flex-col gpa-y-2 w-full h-full">
+				<div class="flex mx-3">
+					<span
+						class="dark:text-text text-left border-r border-purple-100 text-sm w-[50%]"
+						>Name</span
+					>
+					<span
+						class="dark:text-text text-left border-r border-purple-100 pl-2 text-sm w-[20%]"
+						>Modified</span
+					>
+					<span
+						class="dark:text-text text-left border-r border-purple-100 pl-2 text-sm w-[15%]"
+						>Type</span
+					>
+					<span
+						class="dark:text-text text-left border-r border-purple-100 pl-2 text-sm w-[15%]"
+						>Size</span
+					>
+				</div>
+				<ul bind:this={explorerItemsNode} class="h-[calc(100%-40px-40px)] mx-3">
+					<Virtualist itemHeight={24} class="flex flex-col w-full mt-2 h-full" />
+				</ul>
+			</div>
 		</div>
-		<ul bind:this={explorerItemsNode} class="h-[calc(100%-40px-40px)] mx-3">
-			<Virtualist itemHeight={24} class="flex flex-col w-full mt-2 h-full" />
-		</ul>
 
 		<Footer />
 	{/if}

@@ -1,12 +1,14 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
-	import { contextMenuOpen, selected } from '../../store'
+	import { contextMenuOpen, quickAccess, selected } from '../../store'
 	import { outsideClick } from '../../utils'
 	import ContextMenuItem from './ContextMenuItem.svelte'
 	import NewInner from './New/NewInner.svelte'
 	import NewItem from './New/NewItem.svelte'
 	import SortInner from './Sort/SortInner.svelte'
 	import SortItem from './Sort/SortItem.svelte'
+	import PinQuickAccessItem from './PinQuickAccess/PinQuickAccessItem.svelte'
+	import UnpinQuickAccessItem from './UnpinQuickAccess/UnpinQuickAccessItem.svelte'
 
 	let contextMenuNode: HTMLMenuElement
 	let parentHeight = 0
@@ -63,6 +65,18 @@
 	<li class="dark:hover:bg-zinc-600">
 		{#if $selected.length}
 			<span> Context menu item </span>
+
+			{#if $selected.length === 1 && $selected[0].kind === 'folder'}
+				{#if $quickAccess.some(i => i.path === $selected[0].path)}
+					<ContextMenuItem {parentHeight}>
+						<UnpinQuickAccessItem slot="item" />
+					</ContextMenuItem>
+				{:else}
+					<ContextMenuItem {parentHeight}>
+						<PinQuickAccessItem slot="item" />
+					</ContextMenuItem>
+				{/if}
+			{/if}
 		{:else}
 			<ContextMenuItem {parentHeight}>
 				<NewItem slot="item" />

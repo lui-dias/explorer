@@ -5,38 +5,8 @@
 	import type { ExplorerItem } from '../types'
 
 	import { events } from '../event'
-	import { __pywebview, formatBytes, isPathChild, outsideClick } from '../utils'
-	import Folder from './icons/Folder.svelte'
-	import FileAstro from './icons/files/FileAstro.svelte'
-	import FileAstroConfig from './icons/files/FileAstroConfig.svelte'
-	import FileCSS from './icons/files/FileCSS.svelte'
-	import FileDatabase from './icons/files/FileDatabase.svelte'
-	import FileDefault from './icons/files/FileDefault.svelte'
-	import FileFont from './icons/files/FileFont.svelte'
-	import FileGit from './icons/files/FileGit.svelte'
-	import FileHTML from './icons/files/FileHTML.svelte'
-	import FileJavascript from './icons/files/FileJavascript.svelte'
-	import FileJson from './icons/files/FileJson.svelte'
-	import FileMarkdown from './icons/files/FileMarkdown.svelte'
-	import FilePrettier from './icons/files/FilePrettier.svelte'
-	import FilePython from './icons/files/FilePython.svelte'
-	import FileSVG from './icons/files/FileSVG.svelte'
-	import FileTsConfig from './icons/files/FileTSConfig.svelte'
-	import FileTailwind from './icons/files/FileTailwind.svelte'
-	import FileText from './icons/files/FileText.svelte'
-	import FileToml from './icons/files/FileToml.svelte'
-	import FileTypescript from './icons/files/FileTypescript.svelte'
-	import FileTypescriptDef from './icons/files/FileTypescriptDef.svelte'
-	import FileYaml from './icons/files/FileYaml.svelte'
-	import FolderAssets from './icons/folders/FolderAssets.svelte'
-	import FolderComponent from './icons/folders/FolderComponent.svelte'
-	import FolderDist from './icons/folders/FolderDist.svelte'
-	import FolderGit from './icons/folders/FolderGit.svelte'
-	import FolderNodeModules from './icons/folders/FolderNodeModules.svelte'
-	import FolderPublic from './icons/folders/FolderPublic.svelte'
-	import FolderSrc from './icons/folders/FolderSrc.svelte'
-	import FolderView from './icons/folders/FolderView.svelte'
-	import FolderVscode from './icons/folders/FolderVscode.svelte'
+	import { __pywebview, formatBytes, isPathChild, outsideClick, setPath } from '../utils'
+	import Icon from './Icon.svelte'
 
 	export let file: ExplorerItem
 	let size = file.size ?? '0 B'
@@ -45,53 +15,6 @@
 
 	$: if (size) {
 		file.size = size
-	}
-
-	// prettier-ignore
-	const fileIcon = {
-        'file'                 : FileDefault,
-        'Python'               : FilePython,
-        'Prettier'             : FilePrettier,
-        'Javascript'           : FileJavascript,
-        'Json'                 : FileJson,
-        'Tsconfig'             : FileTsConfig,
-        'Git'                  : FileGit,
-        'Yaml'                 : FileYaml,
-        'Markdown'             : FileMarkdown,
-        'Toml'                 : FileToml,
-        'Astro'                : FileAstro,
-        'Astro Config'         : FileAstroConfig,
-        'Tailwind'             : FileTailwind,
-        'Typescript'           : FileTypescript,
-        'Typescript Definition': FileTypescriptDef,
-        'Database'             : FileDatabase,
-        'SVG'                  : FileSVG,
-        'HTML'                 : FileHTML,
-        'CSS'                  : FileCSS,
-        'Font'                 : FileFont,
-        'Text'                 : FileText,
-	} as Record<string, any>
-
-	// prettier-ignore
-	const folderIcon = {
-        'Folder'      : Folder,
-        'Vscode'      : FolderVscode,
-        'Node Modules': FolderNodeModules,
-        'Public'      : FolderPublic,
-        'Src'         : FolderSrc,
-        'Component'   : FolderComponent,
-        'View'        : FolderView,
-        'Dist'        : FolderDist,
-        'Assets'      : FolderAssets,
-        'Git'         : FolderGit,
-    } as Record<string, any>
-
-	function getFileIcon(file: ExplorerItem) {
-		if (file.kind === 'folder') {
-			return folderIcon[file.type] || Folder
-		}
-
-		return fileIcon[file.type] || FileDefault
 	}
 
 	async function executeEdit() {
@@ -122,8 +45,7 @@
 	onMount(async () => {
 		outsideClick(itemNode, () => {
 			if (!$isMultipleSelected) {
-                file.isEditMode = false
-				selected.set([])
+				file.isEditMode = false
 			}
 		})
 
@@ -142,27 +64,16 @@
 </script>
 
 <button
-	class={`flex w-full dark:hover:bg-purple-300/20 cursor-pointer outline-none ${
+	class={`_item flex w-full dark:hover:bg-purple-300/20 cursor-pointer outline-none ${
 		$selected.find(item => item.path === file.path) ? 'bg-purple-300/20' : ''
 	}`}
 	bind:this={itemNode}
 	on:click={() => {
-		selected.set(isMultipleSelected ? [...$selected, file] : [file])
+		selected.set($isMultipleSelected ? [...$selected, file] : [file])
 	}}
 	on:dblclick={() => {
 		if (file.kind === 'folder') {
-			cwd.set(file.path)
-
-			history.set([...$history, file.path])
-
-			let index = $history.length - 1
-
-			while (!isPathChild(file.path, $history[index])) {
-				index--
-			}
-
-			history.set([...$history.slice(0, index + 1), file.path])
-			historyIndex.set(index + 1)
+			setPath(file)
 		}
 	}}
 >
@@ -187,7 +98,7 @@
 			/>
 		{:else}
 			<div class="dark:text-text flex items-center gap-x-1.5 w-64 text-sm">
-				<svelte:component this={getFileIcon(file)} />
+				<Icon {file} />
 				<span class="overflow-hidden text-ellipsis whitespace-nowrap w-full text-start">
 					{file.name}
 				</span>

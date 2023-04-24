@@ -21,3 +21,5 @@ export const settings = writable<{
 	primaryColor: '#ddd6fe',
     textColor: '#f3e8ff'
 })
+
+export const quickAccess = writable<ExplorerItem[]>([])
