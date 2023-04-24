@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { quickAccess, selected } from '../../../store'
+	import { contextMenuOpen, quickAccess, selected } from '../../../store'
 </script>
 
 <button
@@ -8,6 +8,7 @@
 	on:click={() => {
         quickAccess.set([...$quickAccess, $selected[0]])
         localStorage.setItem('quickAccess', JSON.stringify($quickAccess.map(item => item.path)))
+        contextMenuOpen.set(false)
     }}
 >
 	Pin to Quick Access
