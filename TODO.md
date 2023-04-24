@@ -17,9 +17,8 @@
 - [ ] An Icon
 - [ ] Move window on drag header
 - [ ] Resize window
-- [ ] Use tauri instead pywebview
 
-- [ ] Add favorites folders sidebar
+- [x] Add quick access folders sidebar
 - [ ] Add search
 - [ ] Offline PWA
 - [ ] Add file preview
