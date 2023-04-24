@@ -24,3 +24,4 @@ export const settings = writable<{
 
 export const cwdSplit = writable<string[]>([])
 export const quickAccess = writable<ExplorerItem[]>([])
+export const selectedQuickAccess = writable<ExplorerItem | null>(null)

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
-	import { contextMenuOpen, quickAccess, selected } from '../../store'
+	import { contextMenuOpen, quickAccess, selected, selectedQuickAccess } from '../../store'
 	import { outsideClick } from '../../utils'
 	import ContextMenuItem from './ContextMenuItem.svelte'
 	import NewInner from './New/NewInner.svelte'
@@ -63,20 +63,23 @@
 	class:invisible={!$contextMenuOpen}
 >
 	<li class="dark:hover:bg-zinc-600">
-		{#if $selected.length}
+        {#if $selectedQuickAccess}
+            <ContextMenuItem {parentHeight}>
+                <UnpinQuickAccessItem slot="item" />
+            </ContextMenuItem>
+		{:else if $selected.length}
 			<span> Context menu item </span>
-
-			{#if $selected.length === 1 && $selected[0].kind === 'folder'}
-				{#if $quickAccess.some(i => i.path === $selected[0].path)}
-					<ContextMenuItem {parentHeight}>
-						<UnpinQuickAccessItem slot="item" />
-					</ContextMenuItem>
-				{:else}
-					<ContextMenuItem {parentHeight}>
-						<PinQuickAccessItem slot="item" />
-					</ContextMenuItem>
-				{/if}
-			{/if}
+            {#if $selected.length === 1 && $selected[0].kind === 'folder'}
+                {#if $quickAccess.some(i => i.path === $selected[0].path)}
+                    <ContextMenuItem {parentHeight}>
+                        <UnpinQuickAccessItem slot="item" />
+                    </ContextMenuItem>
+                {:else}
+                    <ContextMenuItem {parentHeight}>
+                        <PinQuickAccessItem slot="item" />
+                    </ContextMenuItem>
+                {/if}
+            {/if}
 		{:else}
 			<ContextMenuItem {parentHeight}>
 				<NewItem slot="item" />

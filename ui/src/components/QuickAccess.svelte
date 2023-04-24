@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
-	import { quickAccess } from '../store'
+	import { quickAccess, selectedQuickAccess } from '../store'
 	import { __pywebview, setPath } from '../utils'
 	import Icon from './Icon.svelte'
 
@@ -17,7 +17,14 @@
 <aside class="min-w-[150px] text-primary text-sm border-r border-zinc-700">
 	<ul>
 		{#each $quickAccess as file}
-			<li class="hover:bg-purple-300/20">
+			<li
+				class={`hover:bg-purple-300/20 ${
+					$selectedQuickAccess?.path === file.path ? 'bg-purple-300/20' : ''
+				}`}
+				on:mouseenter={() => {
+					selectedQuickAccess.set(file)
+				}}
+			>
 				<div class="w-full h-full flex flex-col gap-y-2 px-2">
 					<button
 						type="button"

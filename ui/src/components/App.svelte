@@ -10,6 +10,7 @@
 		historyIndex,
 		isMultipleSelected,
 		selected,
+		selectedQuickAccess,
 		sortType,
 	} from '../store'
 	import type { ExplorerItem, TFooter, TSortTypes } from '../types'
@@ -249,6 +250,7 @@
 		}
 
 		selected.set([])
+        selectedQuickAccess.set(null)
 	}}
 >
 	{#if isLoading}
