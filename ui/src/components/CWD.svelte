@@ -1,26 +1,58 @@
 <script lang="ts">
+	import { onMount } from 'svelte'
 	import { events } from '../event'
 	import { cwd, cwdSplit, historyIndex, refreshExplorer, selected } from '../store'
-	import { outsideClick } from '../utils'
+	import { outsideClick, sleep } from '../utils'
 	import ArrowLeft from './icons/ArrowLeft.svelte'
 	import Reload from './icons/Reload.svelte'
 
 	let searchNode: HTMLButtonElement
 	let inputSearchNode: HTMLInputElement
+	let cwdList: HTMLUListElement
+	let hideNItems = 0
 
 	let isSearchSelected = false
+
+	async function fixHorizontalScroll() {
+		if (cwdList.scrollWidth <= cwdList.clientWidth) {
+			hideNItems = 0
+		} else {
+			while (cwdList.scrollWidth > cwdList.clientWidth) {
+				// This is necessary to avoid infinite loop
+				await sleep(0)
+
+				hideNItems += 1
+			}
+		}
+	}
 
 	// Focus search input when search button is clicked
 	$: if (inputSearchNode) {
 		inputSearchNode.focus()
 	}
 
-	// Close search when clicking outside
-	$: if (searchNode) {
+	$: if ($cwdSplit && cwdList) {
+		const observer = new MutationObserver(() => {
+			fixHorizontalScroll()
+
+            // Avoid infinite loop when setting hideNItems
+			observer.disconnect()
+		})
+		observer.observe(cwdList, { childList: true })
+	}
+
+	onMount(() => {
+		fixHorizontalScroll()
+
+		// Close search when clicking outside
 		outsideClick(searchNode, () => {
 			isSearchSelected = false
 		})
-	}
+
+		window.addEventListener('resize', () => {
+			fixHorizontalScroll()
+		})
+	})
 </script>
 
 <svelte:window
@@ -55,8 +87,8 @@
 		/>
 	{:else}
 		<div class="relative w-full">
-			<ul class="flex">
-				{#each $cwdSplit as dir, i}
+			<ul class="flex overflow-x-hidden" bind:this={cwdList}>
+				{#each $cwdSplit.slice(hideNItems, $cwdSplit.length) as dir, i}
 					<li class="flex items-center">
 						<button
 							type="button"
@@ -67,9 +99,11 @@
 								}
 							}}
 						>
-							<span class="text-gray-500 dark:text-violet-200">{dir}</span>
+							<span class="text-gray-500 dark:text-violet-200 whitespace-nowrap"
+								>{dir}</span
+							>
 						</button>
-						{#if i < $cwdSplit.length - 1}
+						{#if dir !== $cwdSplit.slice(-1)[0]}
 							<span class="transform rotate-180 w-1.5 block mx-1">
 								<ArrowLeft class="fill-primary" />
 							</span>
