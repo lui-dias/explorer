@@ -100,6 +100,39 @@ def get_file_type(path: Path):
         if any(name.endswith(i) for i in ['git', '.git', 'submodules', '.submodules']):
             return 'Git'
 
+        if any(
+            name.endswith(i)
+            for i in ['cli', 'cmd', 'command', 'commands', 'commandline', 'console']
+        ):
+            return 'CLI'
+
+        if any(name.endswith(i) for i in ['.github']):
+            return 'Github'
+        
+        if any(
+            name.endswith(i)
+            for i in [
+                'tests',
+                '.tests',
+                'test',
+                '.test',
+                '__tests__',
+                '__test__',
+                'spec',
+                '.spec',
+                'specs',
+                '.specs',
+                'integration',
+            ]
+        ):
+            return 'Test'
+        
+        if any(name.endswith(i) for i in ['docs', '.docs', 'doc', '.doc']):
+            return 'Docs'
+        
+        if any(name.endswith(i) for i in ['.next']):
+            return 'Next'
+
         return 'folder'
     elif path.is_file():
         if any(name.endswith(i) for i in ['.py']):
@@ -216,16 +249,167 @@ def get_file_type(path: Path):
 
         if any(name.endswith(i) for i in ['.csv', '.tsv', '.txt']):
             return 'Text'
-        
+
         if any(name.endswith(i) for i in ['.plist', '.properties', '.env']):
             return 'Config'
-        
-        if any(name.endswith(i) for i in ['yarn.lock', '.yarnrc', '.yarnrc.yml', '.yarnclean',
-                                          '.yarn-integrity', '.yarn-metadata.json', '.yarnignore']):
+
+        if any(
+            name.endswith(i)
+            for i in [
+                'yarn.lock',
+                '.yarnrc',
+                '.yarnrc.yml',
+                '.yarnclean',
+                '.yarn-integrity',
+                '.yarn-metadata.json',
+                '.yarnignore',
+            ]
+        ):
             return 'Yarn'
-        
-        if any(name.endswith(i) for i in ['pnpmfile.js', 'pnpm-lock.yaml', 'pnpm-workspace.yaml']):
+
+        if any(
+            name.endswith(i)
+            for i in ['pnpmfile.js', 'pnpm-lock.yaml', 'pnpm-workspace.yaml']
+        ):
             return 'PNPM'
+
+        if any(name.endswith(i) for i in ['.pdf']):
+            return 'PDF'
+
+        if any(
+            name.endswith(i)
+            for i in [
+                '.dockerignore',
+                'compose.yaml',
+                'compose.yml',
+                'docker-compose.yaml',
+                'docker-compose.yml',
+                'docker-compose.ci-build.yaml',
+                'docker-compose.ci-build.yml',
+                'docker-compose.override.yaml',
+                'docker-compose.override.yml',
+                'docker-compose.vs.debug.yaml',
+                'docker-compose.vs.debug.yml',
+                'docker-compose.vs.release.yaml',
+                'docker-compose.vs.release.yml',
+                'docker-cloud.yaml',
+                'docker-cloud.yml',
+                'Dockerfile',
+            ]
+        ):
+            return 'Docker'
+        
+        if any(
+            name.endswith(i)
+            for i in [
+                'LICENSE',
+                'enc',
+                'lic',
+                'license_dark',
+                'license',
+                'licence',
+                'copying',
+                'copying.lesser',
+                'license-mit',
+                'license-apache',
+                'license.md',
+                'license.txt',
+                'licence.md',
+                'licence.txt',
+                'copying.md',
+                'copying.txt',
+                'copying.lesser.md',
+                'copying.lesser.txt',
+                'license-mit.md',
+                'license-mit.txt',
+                'license-apache.md',
+                'license-apache.txt',
+            ]
+        ):
+            return 'License'
+        
+        if any(name.endswith(i) for i in ['.rst']):
+            return 'Rst'
+        
+        if any(
+            name.endswith(i)
+            for i in [
+                '.jpeg',
+                '.jpg',
+                '.gif',
+                '.png',
+                '.bmp',
+                '.tiff',
+                '.ico',
+                '.webp',
+            ]
+        ):
+            return 'Image'
+        
+        if any(
+            name.endswith(i)
+            for i in [
+                '.eslintrc',
+                '.eslintignore',
+                '.eslintcache',
+                '.eslintrc.js',
+                '.eslintrc.mjs',
+                '.eslintrc.cjs',
+                '.eslintrc.json',
+                '.eslintrc.yaml',
+                '.eslintrc.yml',
+            ]
+        ):
+            return 'ESLint'
+        
+        if any(
+            name.endswith(i)
+            for i in [
+                '.npmignore',
+                '.npmrc',
+                'package.json',
+                'package-lock.json',
+                'npm-shrinkwrap.json',
+            ]
+        ):
+            return 'NPM'
+        
+        # .postcssrc, .postcssrc.json, .postcssrc.yaml, .postcssrc.yml, .postcssrc.ts, .postcssrc.js, .postcssrc.cjs, postcss.config.ts, postcss.config.js, postcss.config.cjs
+        if any(
+            name.endswith(i)
+            for i in [
+                '.postcssrc',
+                '.postcssrc.json',
+                '.postcssrc.yaml',
+                '.postcssrc.yml',
+                '.postcssrc.ts',
+                '.postcssrc.js',
+                '.postcssrc.cjs',
+                'postcss.config.ts',
+                'postcss.config.js',
+                'postcss.config.cjs',
+            ]
+        ):
+            return 'PostCSSConfig'
+        
+        # zip, rar, 7z, tar, tgz, bz, gz, bzip2, xz, bz2, zipx
+        if any(
+            name.endswith(i)
+            for i in [
+                '.zip',
+                '.rar',
+                '.7z',
+                '.tar',
+                '.tgz',
+                '.bz',
+                '.gz',
+                '.bzip2',
+                '.xz',
+                '.bz2',
+                '.zipx',
+            ]
+        ):
+            return 'Zip'
 
         # ! --------------------------------------------
         # ! KEEP ALWAYS AT THE END
@@ -242,9 +426,40 @@ def get_file_type(path: Path):
 
         if any(name.endswith(i) for i in ['.ts']):
             return 'Typescript'
-        
+
         if any(name.endswith(i) for i in ['.yaml', '.yml', '.yaml-tmlanguage']):
             return 'Yaml'
+
+        if any(
+            name.endswith(i)
+            for i in [
+                'a',
+                'app',
+                'bin',
+                'cmo',
+                'cmx',
+                'cma',
+                'cmxa',
+                'cmi',
+                'dll',
+                'exe',
+                'hl',
+                'ilk',
+                'lib',
+                'n',
+                'ndll',
+                'o',
+                'obj',
+                'pyc',
+                'pyd',
+                'pyo',
+                'pdb',
+                'scpt',
+                'scptd',
+                'so',
+            ]
+        ):
+            return 'Binary'
 
         return 'file'
     return 'unknown'
@@ -440,6 +655,7 @@ class API:
             del streams_deletes[s.id]
 
         return r
+
 
 streams_files = {}
 streams_deletes = {}
