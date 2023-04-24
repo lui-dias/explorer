@@ -62,7 +62,9 @@
 							type="button"
 							class="dark:hover:bg-purple-300/20 p-2"
 							on:click={() => {
-								historyIndex.set($historyIndex - 1)
+								if (dir !== $cwdSplit.slice(-1)[0]) {
+									historyIndex.set($historyIndex - 1)
+								}
 							}}
 						>
 							<span class="text-gray-500 dark:text-violet-200">{dir}</span>
