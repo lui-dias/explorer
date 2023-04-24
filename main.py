@@ -359,6 +359,20 @@ class API:
     def maximize(self):
         w.toggle_fullscreen()
 
+    def get_path_info(self, path: str):
+        path = Path(path)
+        return ExplorerItem(
+            name=path.name,
+            path=path.as_posix(),
+            kind='folder' if path.is_dir() else 'file',
+            modified=datetime.fromtimestamp(
+                path.stat().st_mtime, timezone.utc
+            ).strftime('%d/%m/%Y %H:%M'),
+            type=get_file_type(path),
+            size=0,
+            parent=path.parent.as_posix(),
+        )
+
     def ls(self, folder: str):
         return [
             ExplorerItem(

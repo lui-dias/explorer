@@ -150,6 +150,11 @@ export const __pywebview = {
 		// @ts-ignore
 		return await pywebview.api.stream_delete(id, path, moveToTrash)
 	},
+
+    get_path_info: async (path: string): Promise<ExplorerItem> => {
+        // @ts-ignore
+        return await pywebview.api.get_path_info(path)
+    },
 }
 
 export function isClient() {

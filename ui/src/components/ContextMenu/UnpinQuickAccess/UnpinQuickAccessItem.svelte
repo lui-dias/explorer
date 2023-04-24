@@ -6,9 +6,8 @@
 	type="button"
 	class="flex justify-between items-center gap-x-3 w-full"
 	on:click={() => {
-		if ($quickAccess.some(i => i.path === $selected[0].path)) {
-			quickAccess.set([...$quickAccess.filter(i => i.path !== $selected[0].path)])
-		}
+        quickAccess.set([...$quickAccess.filter(i => i.path !== $selected[0].path)])
+        localStorage.setItem('quickAccess', JSON.stringify($quickAccess.map(item => item.path)))		
 	}}
 >
 	Unpin to Quick Access
