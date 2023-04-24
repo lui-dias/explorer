@@ -3,38 +3,32 @@
 	import { events } from '../event'
 	import {
 		cwd,
+		cwdSplit,
 		explorerItems,
 		footer,
 		history,
 		historyIndex,
 		isMultipleSelected,
-		refreshExplorer,
 		selected,
 		sortType,
 	} from '../store'
 	import type { ExplorerItem, TFooter, TSortTypes } from '../types'
-	import { __pywebview, debounce, gen_id, isNumber, outsideClick, sort } from '../utils'
+	import { __pywebview, debounce, gen_id, isNumber, sort } from '../utils'
 	import ContextMenu from './ContextMenu/ContextMenu.svelte'
 	import Footer from './Footer.svelte'
 	import Loading from './Loading.svelte'
+	import QuickAccess from './QuickAccess.svelte'
 	import Settings from './Settings.svelte'
 	import Virtualist from './Virtualist.svelte'
 	import ArrowLeft from './icons/ArrowLeft.svelte'
 	import Close from './icons/Close.svelte'
 	import Maximize from './icons/Maximize.svelte'
 	import Minimize from './icons/Minimize.svelte'
-	import Reload from './icons/Reload.svelte'
-	import FolderVscode from './icons/folders/FolderVscode.svelte'
-	import QuickAccess from './QuickAccess.svelte'
+	import Cwd from './CWD.svelte'
 
-	let cwdSplit = [] as string[]
-
-	let searchNode: HTMLButtonElement
-	let inputSearchNode: HTMLInputElement
 	let explorerItemsNode: HTMLUListElement
 
 	let isLoading = true
-	let isSearchSelected = false
 
 	// Without this, the footer will be cleared after 5 seconds
 	// even if other events are emitted
@@ -86,7 +80,7 @@
 	})
 
 	events.on('reload', async () => {
-		cwdSplit = $cwd.split('/')
+		cwdSplit.set($cwd.split('/'))
 
 		// When creating a file/folder, even using ls, the size of the files was buggy,
 		// a file had the size of another file
@@ -142,14 +136,14 @@
 		sortType.set((localStorage.getItem('sortType') || $sortType) as TSortTypes)
 		cwd.set(localStorage.getItem('cwd') || (await __pywebview.home()))
 
-		const cwdSplit = $cwd.split('/')
+		cwdSplit.set($cwd.split('/'))
 
 		// Add each parent path to history
 		// Example: /home/user/Downloads
 		// history: ['/home', '/home/user', '/home/user/Downloads']
 		const h = [] as string[]
-		for (let i = 0; i < cwdSplit.length; i++) {
-			h.push(cwdSplit.slice(0, i + 1).join('/'))
+		for (let i = 0; i < $cwdSplit.length; i++) {
+			h.push($cwdSplit.slice(0, i + 1).join('/'))
 		}
 		history.set(h)
 		historyIndex.set(h.length - 1)
@@ -173,18 +167,6 @@
 
 		isLoading = false
 	})
-
-	// Focus search input when search button is clicked
-	$: if (inputSearchNode) {
-		inputSearchNode.focus()
-	}
-
-	// Close search when clicking outside
-	$: if (searchNode) {
-		outsideClick(searchNode, () => {
-			isSearchSelected = false
-		})
-	}
 </script>
 
 <svelte:window
@@ -201,11 +183,6 @@
 		}
 	}}
 	on:keydown={e => {
-		if (e.key === 'Escape') {
-			isSearchSelected = false
-			selected.set([])
-		}
-
 		if (e.key === 'Control') {
 			isMultipleSelected.set(true)
 		}
@@ -261,17 +238,17 @@
 <div
 	class="w-full h-full dark:bg-zinc-800 flex flex-col gap-y-2"
 	on:click={e => {
-        // Idk other way to select all items
-        const allItems = document.querySelectorAll('._item')
+		// Idk other way to select all items
+		const allItems = document.querySelectorAll('._item')
 
-        for (const item of allItems) {
-            // @ts-ignore
-            if (item.contains(e.target)) {
-                return
-            }
-        }
+		for (const item of allItems) {
+			// @ts-ignore
+			if (item.contains(e.target)) {
+				return
+			}
+		}
 
-        selected.set([])
+		selected.set([])
 	}}
 >
 	{#if isLoading}
@@ -297,76 +274,30 @@
 			</button>
 		</div>
 
-		<div class="flex gap-x-2 mx-3 mt-3">
-			<div class="flex gap-x-3">
-				<button type="button" class="w-3" disabled={$historyIndex === 0} on:click={back}>
-					<ArrowLeft class="fill-primary" />
-				</button>
+		<div class="flex items-center pr-3">
+			<div class="flex gap-x-2 mx-3">
+				<div class="flex gap-x-3">
+					<button
+						type="button"
+						class="w-3"
+						disabled={$historyIndex === 0}
+						on:click={back}
+					>
+						<ArrowLeft class="fill-primary" />
+					</button>
 
-				<button
-					type="button"
-					class="transform rotate-180 w-3"
-					disabled={$historyIndex === $history.length - 1}
-					on:click={forward}
-				>
-					<ArrowLeft class="fill-primary" />
-				</button>
+					<button
+						type="button"
+						class="transform rotate-180 w-3"
+						disabled={$historyIndex === $history.length - 1}
+						on:click={forward}
+					>
+						<ArrowLeft class="fill-primary" />
+					</button>
+				</div>
 			</div>
 
-			<button
-				type="button"
-				class="dark:bg-zinc-700 w-full dark:text-violet-300 flex items-center overflow-x-auto"
-				on:focus={() => {
-					isSearchSelected = true
-				}}
-				bind:this={searchNode}
-			>
-				{#if isSearchSelected}
-					<input
-						type="text"
-						class="bg-transparent w-full h-10 px-2 outline-none focus:outline-purple-300"
-						value={$cwd}
-						on:keyup={async e => {
-							if (e.key === 'Enter') {
-								cwd.set(inputSearchNode.value)
-								$refreshExplorer()
-							}
-						}}
-						bind:this={inputSearchNode}
-					/>
-				{:else}
-					<div class="relative w-full">
-						<ul class="flex">
-							{#each cwdSplit as dir, i}
-								<li class="flex items-center">
-									<button
-										type="button"
-										class="dark:hover:bg-purple-300/20 p-2"
-										on:click={() => {
-											historyIndex.set($historyIndex - 1)
-										}}
-									>
-										<span class="text-gray-500 dark:text-violet-200">{dir}</span
-										>
-									</button>
-									{#if i < cwdSplit.length - 1}
-										<span class="transform rotate-180 w-1.5 block mx-1">
-											<ArrowLeft class="fill-primary" />
-										</span>
-									{/if}
-								</li>
-							{/each}
-						</ul>
-						<button
-							type="button"
-							class="absolute inset-y-0 right-2"
-							on:click={$refreshExplorer}
-						>
-							<Reload class="stroke-primary" />
-						</button>
-					</div>
-				{/if}
-			</button>
+			<Cwd />
 		</div>
 
 		<div class="flex w-full h-full">

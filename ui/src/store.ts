@@ -15,11 +15,12 @@ export const footer = writable<TFooter>({ text: '', type: 'none' })
 export const settingsOpen = writable<boolean>(false)
 
 export const settings = writable<{
-	primaryColor: string
+    primaryColor: string
     textColor: string
 }>({
-	primaryColor: '#ddd6fe',
+    primaryColor: '#ddd6fe',
     textColor: '#f3e8ff'
 })
 
+export const cwdSplit = writable<string[]>([])
 export const quickAccess = writable<ExplorerItem[]>([])
