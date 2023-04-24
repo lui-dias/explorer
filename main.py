@@ -146,9 +146,6 @@ def get_file_type(path: Path):
         ):
             return 'Git'
 
-        if any(name.endswith(i) for i in ['.yaml', '.yml', '.yaml-tmlanguage']):
-            return 'Yaml'
-
         if any(name.endswith(i) for i in ['.markdown', '.md', '.mdown']):
             return 'Markdown'
 
@@ -219,6 +216,16 @@ def get_file_type(path: Path):
 
         if any(name.endswith(i) for i in ['.csv', '.tsv', '.txt']):
             return 'Text'
+        
+        if any(name.endswith(i) for i in ['.plist', '.properties', '.env']):
+            return 'Config'
+        
+        if any(name.endswith(i) for i in ['yarn.lock', '.yarnrc', '.yarnrc.yml', '.yarnclean',
+                                          '.yarn-integrity', '.yarn-metadata.json', '.yarnignore']):
+            return 'Yarn'
+        
+        if any(name.endswith(i) for i in ['pnpmfile.js', 'pnpm-lock.yaml', 'pnpm-workspace.yaml']):
+            return 'PNPM'
 
         # ! --------------------------------------------
         # ! KEEP ALWAYS AT THE END
@@ -235,6 +242,9 @@ def get_file_type(path: Path):
 
         if any(name.endswith(i) for i in ['.ts']):
             return 'Typescript'
+        
+        if any(name.endswith(i) for i in ['.yaml', '.yml', '.yaml-tmlanguage']):
+            return 'Yaml'
 
         return 'file'
     return 'unknown'

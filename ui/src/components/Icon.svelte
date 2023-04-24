@@ -5,6 +5,7 @@
 	import FileAstro from './icons/files/FileAstro.svelte'
 	import FileAstroConfig from './icons/files/FileAstroConfig.svelte'
 	import FileCSS from './icons/files/FileCSS.svelte'
+	import FileConfig from './icons/files/FileConfig.svelte'
 	import FileDatabase from './icons/files/FileDatabase.svelte'
 	import FileDefault from './icons/files/FileDefault.svelte'
 	import FileFont from './icons/files/FileFont.svelte'
@@ -13,6 +14,7 @@
 	import FileJavascript from './icons/files/FileJavascript.svelte'
 	import FileJson from './icons/files/FileJson.svelte'
 	import FileMarkdown from './icons/files/FileMarkdown.svelte'
+	import FilePnpm from './icons/files/FilePNPM.svelte'
 	import FilePrettier from './icons/files/FilePrettier.svelte'
 	import FilePython from './icons/files/FilePython.svelte'
 	import FileSVG from './icons/files/FileSVG.svelte'
@@ -23,6 +25,7 @@
 	import FileTypescript from './icons/files/FileTypescript.svelte'
 	import FileTypescriptDef from './icons/files/FileTypescriptDef.svelte'
 	import FileYaml from './icons/files/FileYaml.svelte'
+	import FileYarn from './icons/files/FileYarn.svelte'
 	import FolderAssets from './icons/folders/FolderAssets.svelte'
 	import FolderComponent from './icons/folders/FolderComponent.svelte'
 	import FolderDist from './icons/folders/FolderDist.svelte'
@@ -58,6 +61,9 @@
         'CSS'                  : FileCSS,
         'Font'                 : FileFont,
         'Text'                 : FileText,
+        'Config'               : FileConfig,
+        'Yarn'                 : FileYarn,
+        'PNPM'                 : FilePnpm,
 	} as Record<string, any>
 
 	// prettier-ignore
