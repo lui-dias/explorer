@@ -30,7 +30,7 @@
 						type="button"
 						class="flex gap-x-2 items-center"
 						on:click={() => {
-							setPath(file)
+							setPath(file.path)
 						}}
 					>
 						<Icon {file} />

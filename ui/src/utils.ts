@@ -40,10 +40,6 @@ export function sort<T>(arr: T[], fn: (key: T) => any, reverse = false) {
 	})
 }
 
-export function isPathChild(child: string, parent: string) {
-	return child.startsWith(parent) && child !== parent
-}
-
 export function formatBytes(bytes: number) {
 	if (bytes < 1024) {
 		return `${bytes} B`
@@ -151,10 +147,10 @@ export const __pywebview = {
 		return await pywebview.api.stream_delete(id, path, moveToTrash)
 	},
 
-    get_path_info: async (path: string): Promise<ExplorerItem> => {
-        // @ts-ignore
-        return await pywebview.api.get_path_info(path)
-    },
+	get_path_info: async (path: string): Promise<ExplorerItem> => {
+		// @ts-ignore
+		return await pywebview.api.get_path_info(path)
+	},
 }
 
 export function isClient() {
@@ -185,19 +181,16 @@ export function sleep(s: number) {
 	return new Promise(resolve => setTimeout(resolve, s * 1000))
 }
 
-export function setPath(file: ExplorerItem) {
-	cwd.set(file.path)
-
-	history.update(h => [...h, file.path])
-
+export function setPath(path: string) {
+	const hi = get(historyIndex)
 	const h = get(history)
 
-	let index = h.length - 1
-
-	while (!isPathChild(file.path, h[index])) {
-		index--
+	if (hi === h.length - 1) {
+		history.set([...h, path])
+	} else {
+		history.set(h.slice(0, hi + 1).concat(path))
 	}
 
-	history.set([...h.slice(0, index + 1), file.path])
-	historyIndex.set(index + 1)
+	historyIndex.set(h.length)
+	cwd.set(path)
 }

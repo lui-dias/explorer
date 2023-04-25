@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
 	import { events } from '../event'
-	import { cwd, cwdSplit, historyIndex, refreshExplorer, selected } from '../store'
+	import { cwd, cwdSplit, history, historyIndex, refreshExplorer, selected } from '../store'
 	import { outsideClick, sleep } from '../utils'
 	import ArrowLeft from './icons/ArrowLeft.svelte'
 	import Reload from './icons/Reload.svelte'
@@ -35,7 +35,7 @@
 		const observer = new MutationObserver(() => {
 			fixHorizontalScroll()
 
-            // Avoid infinite loop when setting hideNItems
+			// Avoid infinite loop when setting hideNItems
 			observer.disconnect()
 		})
 		observer.observe(cwdList, { childList: true })
@@ -94,9 +94,11 @@
 							type="button"
 							class="dark:hover:bg-purple-300/20 p-2"
 							on:click={() => {
-								if (dir !== $cwdSplit.slice(-1)[0]) {
-									historyIndex.set($historyIndex - 1)
-								}
+								const path = $cwdSplit.slice(0, i + 1).join('/')
+
+								history.set([...$history, path])
+								historyIndex.set($history.length)
+								cwd.set(path)
 							}}
 						>
 							<span class="text-gray-500 dark:text-violet-200 whitespace-nowrap"

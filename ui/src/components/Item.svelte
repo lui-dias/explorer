@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
 
-	import { cwd, history, historyIndex, isMultipleSelected, selected } from '../store'
+	import { isMultipleSelected, selected } from '../store'
 	import type { ExplorerItem } from '../types'
 
 	import { events } from '../event'
-	import { __pywebview, formatBytes, isPathChild, outsideClick, setPath } from '../utils'
+	import { __pywebview, formatBytes, outsideClick, setPath } from '../utils'
 	import Icon from './Icon.svelte'
 
 	export let file: ExplorerItem
@@ -73,7 +73,7 @@
 	}}
 	on:dblclick={() => {
 		if (file.kind === 'folder') {
-			setPath(file)
+			setPath(file.path)
 		}
 	}}
 >
