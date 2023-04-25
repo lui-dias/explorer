@@ -14,6 +14,8 @@
 	let isSearchSelected = false
 
 	async function fixHorizontalScroll() {
+        if (!cwdList) return
+
 		if (cwdList.scrollWidth <= cwdList.clientWidth) {
 			hideNItems = 0
 		} else {
