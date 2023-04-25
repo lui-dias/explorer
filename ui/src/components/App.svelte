@@ -26,6 +26,8 @@
 	import Maximize from './icons/Maximize.svelte'
 	import Minimize from './icons/Minimize.svelte'
 	import Cwd from './CWD.svelte'
+	import WindowButtons from './WindowButtons.svelte'
+	import Arrows from './Arrows.svelte'
 
 	let explorerItemsNode: HTMLUListElement
 
@@ -250,55 +252,16 @@
 		}
 
 		selected.set([])
-        selectedQuickAccess.set(null)
+		selectedQuickAccess.set(null)
 	}}
 >
 	{#if isLoading}
 		<Loading />
 	{:else}
-		<div class="flex justify-end">
-			<button
-				type="button"
-				class="hover:bg-zinc-700 py-2 px-4"
-				on:click={__pywebview.minimize}
-			>
-				<Minimize class="fill-primary" />
-			</button>
-			<button
-				type="button"
-				class="hover:bg-zinc-700 py-2 px-4"
-				on:click={__pywebview.maximize}
-			>
-				<Maximize class="fill-primary" />
-			</button>
-			<button type="button" class="hover:bg-red-500 py-2 px-4" on:click={__pywebview.close}>
-				<Close class="fill-primary" />
-			</button>
-		</div>
+		<WindowButtons />
 
 		<div class="flex items-center pr-3">
-			<div class="flex gap-x-2 mx-3">
-				<div class="flex gap-x-3">
-					<button
-						type="button"
-						class="w-3"
-						disabled={$historyIndex === 0}
-						on:click={back}
-					>
-						<ArrowLeft class="fill-primary" />
-					</button>
-
-					<button
-						type="button"
-						class="transform rotate-180 w-3"
-						disabled={$historyIndex === $history.length - 1}
-						on:click={forward}
-					>
-						<ArrowLeft class="fill-primary" />
-					</button>
-				</div>
-			</div>
-
+			<Arrows {back} {forward} />
 			<Cwd />
 		</div>
 
