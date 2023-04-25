@@ -25,6 +25,7 @@
 
 ### Fix
 - [ ] Sort by size
+- [ ] Ctrl + A on input, selects all files
 - [x] Memory leak that happens at any time and makes the server crash
 - [x] Creating a file/folder makes the footer show a warning saying the last item in the list already exists, instead of checking just the created item
 
