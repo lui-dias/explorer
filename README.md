@@ -6,7 +6,7 @@ It's a file explorer with some features that I think it would be nice for a file
 
 ## How to run
 ```bash
-python make.py
+python main.py
 ```
 If the server doesn't load in time, wait a bit and reload the page.
 
