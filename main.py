@@ -715,8 +715,7 @@ if args:
 
         def seed(i):
             with open(SEED_FOLDER / f'{i}', 'wb') as f:
-                for _ in range(0, size, 1024 * 10):
-                    f.write('a'.encode('utf-8') * 1024 * 10)
+                f.write('a'.encode('utf-8') * size)
 
         with ThreadPoolExecutor(max_workers=16) as executor:
             for i in range(quantity):
