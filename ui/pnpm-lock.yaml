@@ -13,9 +13,6 @@ dependencies:
   astro:
     specifier: ^2.3.0
     version: 2.3.0(@types/node@18.15.13)
-  events:
-    specifier: ^3.3.0
-    version: 3.3.0
   svelte:
     specifier: ^3.54.0
     version: 3.58.0
@@ -25,11 +22,11 @@ dependencies:
   tailwindcss:
     specifier: ^3.0.24
     version: 3.3.1(postcss@8.4.21)
+  tiny-typed-emitter:
+    specifier: ^2.1.0
+    version: 2.1.0
 
 devDependencies:
-  '@types/events':
-    specifier: ^3.0.0
-    version: 3.0.0
   '@types/node':
     specifier: ^18.15.13
     version: 18.15.13
@@ -739,10 +736,6 @@ packages:
   /@types/estree@1.0.0:
     resolution: {integrity: sha512-WulqXMDUTYAXCjZnk6JtIHPigp55cVtDgDrO2gHRwhyJto21+1zbVCtOYB2L1F9w4qCQ0rOGWBnBe0FNTiEJIQ==}
     dev: false
-
-  /@types/events@3.0.0:
-    resolution: {integrity: sha512-EaObqwIvayI5a8dCzhFrjKzVwKLxjoG9T6Ppd5CEo07LRKfQ8Yokw54r5+Wq7FaBQ+yXRvQAYPrHwya1/UFt9g==}
-    dev: true
 
   /@types/hast@2.3.4:
     resolution: {integrity: sha512-wLEm0QvaoawEDoTRwzTXp4b4jpwiJDvR5KMnFnVodm3scufTlBOWRD6N1OBf9TZMhjlNsSfcO5V+7AF4+Vy+9g==}
@@ -3128,6 +3121,10 @@ packages:
     dependencies:
       globalyzer: 0.1.0
       globrex: 0.1.2
+    dev: false
+
+  /tiny-typed-emitter@2.1.0:
+    resolution: {integrity: sha512-qVtvMxeXbVej0cQWKqVSSAHmKZEHAvxdF8HEUBFWts8h+xEo5m/lEiPakuyZ3BnCBjOD8i24kzNOiOLLgsSxhA==}
     dev: false
 
   /to-fast-properties@2.0.0:

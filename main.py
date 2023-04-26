@@ -1,3 +1,4 @@
+import regex as re
 import sys
 from concurrent.futures import ALL_COMPLETED, ThreadPoolExecutor, wait
 from contextlib import suppress
@@ -5,10 +6,17 @@ from datetime import datetime, timezone
 from pathlib import Path
 from subprocess import Popen, run
 from threading import Thread
+from collections import deque
 from typing import Literal, TypedDict
+
 
 import webview
 from send2trash import send2trash
+
+try:
+    from rich import print
+except ImportError:
+    ...
 
 
 class ExplorerItem(TypedDict):
@@ -27,6 +35,21 @@ def get_folder_size(path: Path):
     elif path.is_file():
         yield path.stat().st_size
     yield 0
+
+
+def get_path_info(path: str):
+    path = Path(path)
+    return ExplorerItem(
+        name=path.name,
+        path=path.as_posix(),
+        kind='folder' if path.is_dir() else 'file',
+        modified=datetime.fromtimestamp(path.stat().st_mtime, timezone.utc).strftime(
+            '%d/%m/%Y %H:%M'
+        ),
+        type=get_file_type(path),
+        size=0,
+        parent=path.parent.as_posix(),
+    )
 
 
 def get_file_type(path: Path):
@@ -108,7 +131,7 @@ def get_file_type(path: Path):
 
         if any(name.endswith(i) for i in ['.github']):
             return 'Github'
-        
+
         if any(
             name.endswith(i)
             for i in [
@@ -126,10 +149,10 @@ def get_file_type(path: Path):
             ]
         ):
             return 'Test'
-        
+
         if any(name.endswith(i) for i in ['docs', '.docs', 'doc', '.doc']):
             return 'Docs'
-        
+
         if any(name.endswith(i) for i in ['.next']):
             return 'Next'
 
@@ -298,7 +321,7 @@ def get_file_type(path: Path):
             ]
         ):
             return 'Docker'
-        
+
         if any(
             name.endswith(i)
             for i in [
@@ -327,10 +350,10 @@ def get_file_type(path: Path):
             ]
         ):
             return 'License'
-        
+
         if any(name.endswith(i) for i in ['.rst']):
             return 'Rst'
-        
+
         if any(
             name.endswith(i)
             for i in [
@@ -345,7 +368,7 @@ def get_file_type(path: Path):
             ]
         ):
             return 'Image'
-        
+
         if any(
             name.endswith(i)
             for i in [
@@ -361,7 +384,7 @@ def get_file_type(path: Path):
             ]
         ):
             return 'ESLint'
-        
+
         if any(
             name.endswith(i)
             for i in [
@@ -373,8 +396,7 @@ def get_file_type(path: Path):
             ]
         ):
             return 'NPM'
-        
-        # .postcssrc, .postcssrc.json, .postcssrc.yaml, .postcssrc.yml, .postcssrc.ts, .postcssrc.js, .postcssrc.cjs, postcss.config.ts, postcss.config.js, postcss.config.cjs
+
         if any(
             name.endswith(i)
             for i in [
@@ -391,8 +413,7 @@ def get_file_type(path: Path):
             ]
         ):
             return 'PostCSSConfig'
-        
-        # zip, rar, 7z, tar, tgz, bz, gz, bzip2, xz, bz2, zipx
+
         if any(
             name.endswith(i)
             for i in [
@@ -562,6 +583,62 @@ class StreamDelete:
         return self.path == other.path
 
 
+class StreamFind:
+    def __init__(self, path: str, query: str):
+        self.path = Path(path)
+        self.query = query
+        self.end = False
+        self.items = []
+        self.total = 0
+        self.regex = self.create_regex(query)
+
+    def start(self):
+        self.thread = Thread(target=self.find)
+        self.thread.start()
+
+    def create_regex(self, search: str):
+        flags = {
+            'i': re.I,
+            'm': re.M,
+            's': re.S,
+            'x': re.X,
+            'a': re.A,
+            'u': re.U,
+            'l': re.L,
+        }
+        is_regex = re.search(r'\/(?<regex>.+)\/(?<flags>.*)', search)
+
+        if is_regex:
+            parsed_flags = 0
+
+            for i in is_regex.group('flags'):
+                parsed_flags |= flags.get(i, 0)
+
+            return re.compile(is_regex.group('regex'), parsed_flags)
+
+        return re.compile(re.escape(search), re.I)
+
+    def find(self):
+        paths = deque([self.path])
+
+        while paths:
+            path = paths.popleft()
+
+            for i in path.iterdir():
+                if i.is_dir():
+                    paths.append(i)
+
+                if self.regex.search(i.name):
+                    self.items.append(get_path_info(i.as_posix()))
+
+                self.total += 1
+
+        self.end = True
+
+    def __eq__(self, other):
+        return self.path == other.path
+
+
 class API:
     def close(self):
         w.destroy()
@@ -575,34 +652,11 @@ class API:
         w.toggle_fullscreen()
 
     def get_path_info(self, path: str):
-        path = Path(path)
-        return ExplorerItem(
-            name=path.name,
-            path=path.as_posix(),
-            kind='folder' if path.is_dir() else 'file',
-            modified=datetime.fromtimestamp(
-                path.stat().st_mtime, timezone.utc
-            ).strftime('%d/%m/%Y %H:%M'),
-            type=get_file_type(path),
-            size=0,
-            parent=path.parent.as_posix(),
-        )
+        return get_path_info(path)
 
     def ls(self, folder: str):
         return [
-            ExplorerItem(
-                name=i.name,
-                path=i.as_posix(),
-                kind='folder' if i.is_dir() else 'file',
-                modified=datetime.fromtimestamp(
-                    i.stat().st_mtime, timezone.utc
-                ).strftime('%d/%m/%Y %H:%M'),
-                type=get_file_type(i),
-                size=0,
-                parent=i.parent.as_posix(),
-            )
-            for i in Path(folder).iterdir()
-            if i.exists()
+            get_path_info(i.as_posix()) for i in Path(folder).iterdir() if i.exists()
         ]
 
     def home(self):
@@ -656,9 +710,52 @@ class API:
 
         return r
 
+    def stream_find(self, path: str, query: str):
+        s = StreamFind(path, query)
+
+        if path not in streams_finds:
+            s.start()
+            streams_finds[path] = s
+
+        r = {
+            'end': streams_finds[path].end,
+            'total': streams_finds[path].total,
+            'files': streams_finds[path].items,
+        }
+
+        if streams_finds[path].end:
+            del streams_finds[path]
+
+        return r
+
+    def stop_stream_delete(self, id: str):
+        if id in streams_deletes:
+            streams_deletes[id].end = True
+
+    def stop_stream_file_size(self, path: str):
+        if path in streams_files:
+            streams_files[path].end = True
+
+    def stop_stream_find(self, path: str):
+        if path in streams_finds:
+            streams_finds[path].end = True
+
+    def stop_all_streams_delete(self):
+        for i in streams_deletes.values():
+            i.end = True
+
+    def stop_all_streams_file_size(self):
+        for i in streams_files.values():
+            i.end = True
+
+    def stop_all_streams_find(self):
+        for i in streams_finds.values():
+            i.end = True
+
 
 streams_files = {}
 streams_deletes = {}
+streams_finds = {}
 
 UI_FOLDER = Path('ui')
 SEED_FOLDER = Path('seed')

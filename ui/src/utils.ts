@@ -1,4 +1,4 @@
-import { cwd, history, historyIndex } from './store'
+import { cwd, history, historyIndex, searchItems, sortType } from './store'
 import { get } from 'svelte/store'
 import type { ExplorerItem } from './types'
 
@@ -147,6 +147,48 @@ export const __pywebview = {
 		return await pywebview.api.stream_delete(id, path, moveToTrash)
 	},
 
+	stream_find: async (
+		path: string,
+		query: string,
+	): Promise<{
+		end: boolean
+		total: number
+		files: ExplorerItem[]
+	}> => {
+		// @ts-ignore
+		return await pywebview.api.stream_find(path, query)
+	},
+
+	stop_stream_delete: async (path: string): Promise<void> => {
+		// @ts-ignore
+		return await pywebview.api.stop_stream_delete(path)
+	},
+
+	stop_stream_file_size: async (path: string): Promise<void> => {
+		// @ts-ignore
+		return await pywebview.api.stop_stream_file_size(path)
+	},
+
+	stop_stream_find: async (path: string): Promise<void> => {
+		// @ts-ignore
+		return await pywebview.api.stop_stream_find(path)
+	},
+
+	stop_all_streams_delete: async (): Promise<void> => {
+		// @ts-ignore
+		return await pywebview.api.stop_all_streams_delete()
+	},
+
+	stop_all_streams_file_size: async (): Promise<void> => {
+		// @ts-ignore
+		return await pywebview.api.stop_all_streams_file_size()
+	},
+
+	stop_all_streams_find: async (): Promise<void> => {
+		// @ts-ignore
+		return await pywebview.api.stop_all_streams_find()
+	},
+
 	get_path_info: async (path: string): Promise<ExplorerItem> => {
 		// @ts-ignore
 		return await pywebview.api.get_path_info(path)
@@ -193,4 +235,23 @@ export function setPath(path: string) {
 
 	historyIndex.set(h.length)
 	cwd.set(path)
+}
+
+export function sortItems(items: ExplorerItem[]) {
+	const $sortType = get(sortType)
+
+	if ($sortType === 'name') {
+		return sort(items, i => (isNumber(i.name) ? Number(i.name) : i.name))
+	}
+	if ($sortType === 'modified') {
+		return sort(items, i => i.modified)
+	}
+	if ($sortType === 'type') {
+		return sort(items, i => i.kind)
+	}
+	if ($sortType === 'size') {
+		return sort(items, i => i.size)
+	}
+
+	return items
 }

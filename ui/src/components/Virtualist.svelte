@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
-	import { explorerItems, scrollExplorerToEnd } from '../store'
+	import { explorerItems, scrollExplorerToEnd, searchItems } from '../store'
 	import { isClient } from '../utils'
 	import Item from './Item.svelte'
+	import type { ExplorerItem } from '../types'
 
 	export let itemHeight: number = 0
 
@@ -10,18 +11,19 @@
 	let scrollTop = 0
 	let endIndex = 0
 	let renderIndex = [] as number[]
+	let items = [] as ExplorerItem[]
 
-	let innerHeight = $explorerItems.length * itemHeight
+	let innerHeight = items.length * itemHeight
 	let startIndex = Math.floor(scrollTop / itemHeight)
 
 	scrollExplorerToEnd.set(() => {
-		scrollTop = $explorerItems.length * itemHeight
+		scrollTop = items.length * itemHeight
 	})
 
 	$: {
 		if (isClient()) {
 			const endIndex = Math.min(
-				$explorerItems.length - 1,
+				items.length - 1,
 				Math.floor((scrollTop + window.innerHeight) / itemHeight),
 			)
 
@@ -33,9 +35,17 @@
 		}
 	}
 
+	$: if ($explorerItems) {
+		items = $explorerItems
+	}
+
+	$: if ($searchItems) {
+		items = $searchItems
+	}
+
 	onMount(() => {
 		endIndex = Math.min(
-			$explorerItems.length - 1,
+			items.length - 1,
 			Math.floor((scrollTop + window.innerHeight) / itemHeight),
 		)
 
@@ -54,7 +64,7 @@
 	<div class="relative" style={`height: ${innerHeight}px`}>
 		{#each renderIndex as index}
 			<li class="absolute w-full" style={`top: ${index * itemHeight}px`}>
-				<Item file={$explorerItems[index]} />
+				<Item file={items[index]} />
 			</li>
 		{/each}
 	</div>

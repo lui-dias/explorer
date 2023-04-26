@@ -5,118 +5,30 @@
 		cwd,
 		cwdSplit,
 		explorerItems,
-		footer,
 		history,
 		historyIndex,
 		isMultipleSelected,
+		searchItems,
 		selected,
 		selectedQuickAccess,
 		sortType,
 	} from '../store'
-	import type { ExplorerItem, TFooter, TSortTypes } from '../types'
-	import { __pywebview, debounce, gen_id, isNumber, sort } from '../utils'
+	import type { TSortTypes } from '../types'
+	import { __pywebview, sortItems } from '../utils'
+	import Arrows from './Arrows.svelte'
+	import Cwd from './CWD.svelte'
 	import ContextMenu from './ContextMenu/ContextMenu.svelte'
 	import Footer from './Footer.svelte'
 	import Loading from './Loading.svelte'
 	import QuickAccess from './QuickAccess.svelte'
+	import Search from './Search.svelte'
 	import Settings from './Settings.svelte'
 	import Virtualist from './Virtualist.svelte'
-	import ArrowLeft from './icons/ArrowLeft.svelte'
-	import Close from './icons/Close.svelte'
-	import Maximize from './icons/Maximize.svelte'
-	import Minimize from './icons/Minimize.svelte'
-	import Cwd from './CWD.svelte'
 	import WindowButtons from './WindowButtons.svelte'
-	import Arrows from './Arrows.svelte'
 
 	let explorerItemsNode: HTMLUListElement
 
 	let isLoading = true
-
-	// Without this, the footer will be cleared after 5 seconds
-	// even if other events are emitted
-	let footerDebounce = debounce(
-		() =>
-			footer.set({
-				text: '',
-				type: 'none',
-			}),
-		5000,
-	)
-
-	events.on('create_file', async (file: string) => {
-		await __pywebview.create_file(file)
-		events.emit('reload')
-	})
-
-	events.on('create_folder', async (folder: string) => {
-		await __pywebview.create_folder(folder)
-		events.emit('reload')
-	})
-
-	events.on('rename', async (from: string, to: string) => {
-		await __pywebview.rename(from, to)
-		events.emit('reload')
-	})
-
-	events.on('delete', async (path: string | string[], moveToTrash: boolean) => {
-		const id = gen_id()
-
-		while (true) {
-			const { end, total, deleted, last_deleted } = await __pywebview.stream_delete(
-				id,
-				path,
-				moveToTrash,
-			)
-			events.emit('footer_text', {
-				text: `Deleted ${deleted}/${total} ${!!last_deleted ? `- ${last_deleted}` : ''}`,
-				type: 'info',
-			})
-
-			if (end) {
-				break
-			}
-		}
-
-		events.emit('reload')
-		selected.set([])
-	})
-
-	events.on('reload', async () => {
-		cwdSplit.set($cwd.split('/'))
-
-		// When creating a file/folder, even using ls, the size of the files was buggy,
-		// a file had the size of another file
-		// Doing this causes a small flash in explorer, but it solves the problem :/
-		explorerItems.set([])
-		explorerItems.set(sortItems(await __pywebview.ls($cwd)))
-	})
-
-	events.on('footer_text', ({ text, type }: TFooter) => {
-		footer.set({
-			text,
-			type,
-		})
-
-		footerDebounce()
-	})
-
-	function sortItems(items: ExplorerItem[]) {
-		if ($sortType === 'name') {
-			return sort(items, i => (isNumber(i.name) ? Number(i.name) : i.name))
-		}
-		if ($sortType === 'modified') {
-			return sort(items, i => i.modified)
-		}
-		if ($sortType === 'type') {
-			return sort(items, i => i.kind)
-		}
-		if ($sortType === 'size') {
-			return sort(items, i => i.size)
-		}
-
-		return items
-	}
 
 	function back() {
 		if ($historyIndex > 0) {
@@ -151,8 +63,9 @@
 		history.set(h)
 		historyIndex.set(h.length - 1)
 
-		sortType.subscribe(v => {
+		sortType.subscribe(() => {
 			explorerItems.set(sortItems($explorerItems))
+            searchItems.set(sortItems($searchItems))
 
 			localStorage.setItem('sortType', $sortType)
 		})
@@ -160,6 +73,7 @@
 		cwd.subscribe(v => {
 			if (v) {
 				localStorage.setItem('cwd', $cwd)
+				events.emit('stop_all_find')
 				events.emit('reload')
 			}
 		})
@@ -263,6 +177,7 @@
 		<div class="flex items-center pr-3">
 			<Arrows {back} {forward} />
 			<Cwd />
+			<Search />
 		</div>
 
 		<div class="flex w-full h-full">
