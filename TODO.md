@@ -13,15 +13,16 @@
 - [x] Add explorer loading
 - [x] Select multiples files/folders
 - [x] Add settings
+- [x] Add search
+- [x] Add quick access folders sidebar
 - [ ] Resize columns
 - [ ] An Icon
 - [ ] Move window on drag header
 - [ ] Resize window
 
-- [x] Add quick access folders sidebar
-- [ ] Add search
 - [ ] Offline PWA
 - [ ] Add file preview
+- [ ] Add animations
 
 ### Fix
 - [ ] Sort by size
