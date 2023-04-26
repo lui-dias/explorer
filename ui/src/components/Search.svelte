@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { events } from '../event'
-	import { cwd, searchItems } from '../store'
+	import { cwd, isSearching, searchItems } from '../store'
 	import { __pywebview } from '../utils'
 
 	let query = ''
@@ -27,6 +27,7 @@
 
                     lastCwd = $cwd
                     const q = query
+                    isSearching.set(true)
 
 					while (true) {
 						const {
@@ -56,6 +57,8 @@
 							break
 						}
 					}
+
+                    isSearching.set(false)
 				})
 
 				events.emit('stop_all_find')

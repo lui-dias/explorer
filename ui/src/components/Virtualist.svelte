@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
-	import { explorerItems, scrollExplorerToEnd, searchItems } from '../store'
+	import { explorerItems, isSearching, scrollExplorerToEnd, searchItems } from '../store'
 	import { isClient } from '../utils'
 	import Item from './Item.svelte'
 	import type { ExplorerItem } from '../types'
+	import Loading from './Loading.svelte'
 
 	export let itemHeight: number = 0
 
@@ -62,11 +63,19 @@
 	on:scroll={() => (scrollTop = list.scrollTop)}
 >
 	{#if items.length === 0}
-		<div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col">
-			<p class="text-center text-zinc-200 font-medium text-3xl">Nothing found...</p>
-			<p class="text-center text-zinc-500 text-lg whitespace-nowrap">Check back later, maybe something will show up</p>
-			<p class="text-center text-zinc-500 text-3xl mt-2">😭</p>
-		</div>
+		{#if $isSearching}
+			<Loading />
+		{:else}
+			<div
+				class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col"
+			>
+				<p class="text-center text-zinc-200 font-medium text-3xl">Nothing found...</p>
+				<p class="text-center text-zinc-500 text-lg whitespace-nowrap">
+					Check back later, maybe something will show up
+				</p>
+				<p class="text-center text-zinc-500 text-3xl mt-2">😭</p>
+			</div>
+		{/if}
 	{:else}
 		<div class="relative" style={`height: ${innerHeight}px`}>
 			{#each renderIndex as index}
