@@ -57,15 +57,23 @@
 </script>
 
 <div
-	class={`${$$props.class} overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-700 pr-2`}
+	class={`${$$props.class} relative overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-700 pr-2`}
 	bind:this={list}
 	on:scroll={() => (scrollTop = list.scrollTop)}
 >
-	<div class="relative" style={`height: ${innerHeight}px`}>
-		{#each renderIndex as index}
-			<li class="absolute w-full" style={`top: ${index * itemHeight}px`}>
-				<Item file={items[index]} />
-			</li>
-		{/each}
-	</div>
+	{#if items.length === 0}
+		<div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col">
+			<p class="text-center text-zinc-200 font-medium text-3xl">Nothing found...</p>
+			<p class="text-center text-zinc-500 text-lg whitespace-nowrap">Check back later, maybe something will show up</p>
+			<p class="text-center text-zinc-500 text-3xl mt-2">😭</p>
+		</div>
+	{:else}
+		<div class="relative" style={`height: ${innerHeight}px`}>
+			{#each renderIndex as index}
+				<li class="absolute w-full" style={`top: ${index * itemHeight}px`}>
+					<Item file={items[index]} />
+				</li>
+			{/each}
+		</div>
+	{/if}
 </div>
