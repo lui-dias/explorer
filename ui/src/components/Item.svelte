@@ -97,7 +97,7 @@
 				}}
 			/>
 		{:else}
-			<div class="dark:text-text flex items-center gap-x-1.5 w-64 text-sm">
+			<div class="dark:text-text flex items-center gap-x-1.5 w-64 text-sm" title={file.path}>
 				<Icon {file} />
 				<span class="overflow-hidden text-ellipsis whitespace-nowrap w-full text-start">
 					{file.name}
