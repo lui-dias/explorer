@@ -3,7 +3,7 @@ import sys
 from concurrent.futures import ALL_COMPLETED, ThreadPoolExecutor, wait
 from contextlib import suppress
 from datetime import datetime, timezone
-from pathlib import Path
+from pathlib import Path, PurePath
 from subprocess import Popen, run
 from threading import Thread
 from collections import deque
@@ -628,7 +628,7 @@ class StreamFind:
                 if i.is_dir():
                     paths.append(i)
 
-                if self.regex.search(i.name):
+                if self.regex.search(i.name) or PurePath(i.name).match(self.query):
                     self.items.append(get_path_info(i.as_posix()))
 
                 self.total += 1
