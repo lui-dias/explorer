@@ -25,6 +25,9 @@
 				on:mouseenter={() => {
 					selectedQuickAccess.set(file)
 				}}
+                on:mouseleave={() => {
+                    selectedQuickAccess.set(null)
+                }}
 			>
 				<div class="w-full h-full flex flex-col gap-y-2 px-2">
 					<button
