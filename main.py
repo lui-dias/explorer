@@ -638,6 +638,27 @@ class StreamFind:
     def __eq__(self, other):
         return self.path == other.path
 
+class StreamLs:
+    def __init__(self, path: str):
+        self.path = Path(path)
+        self.end = False
+        self.items = []
+        self.total = 0
+
+    def start(self):
+        self.thread = Thread(target=self.ls)
+        self.thread.start()
+
+    def ls(self):
+        for i in self.path.iterdir():
+            if i.exists():
+                self.items.append(get_path_info(i.as_posix()))
+                self.total += 1
+
+        self.end = True
+
+    def __eq__(self, other):
+        return self.path == other.path
 
 class API:
     def close(self):
@@ -655,9 +676,18 @@ class API:
         return get_path_info(path)
 
     def ls(self, folder: str):
-        return [
-            get_path_info(i.as_posix()) for i in Path(folder).iterdir() if i.exists()
-        ]
+        s = StreamLs(folder)
+        
+        if folder not in streams_ls:
+            s.start()
+            streams_ls[folder] = s
+
+        r = {'items': streams_ls[folder].items, 'end': streams_ls[folder].end}
+
+        if streams_ls[folder].end:
+            del streams_ls[folder]
+
+        return r
 
     def home(self):
         return Path.home().as_posix()
@@ -752,6 +782,10 @@ class API:
         for i in streams_finds.values():
             i.end = True
 
+    def stop_all_streams_ls(self):
+        for i in streams_ls.values():
+            i.end = True
+
     def get_config(self):
         return load_toml(CONFIG_FILE)
     
@@ -762,6 +796,7 @@ class API:
 streams_files = {}
 streams_deletes = {}
 streams_finds = {}
+streams_ls = {}
 
 UI_FOLDER = Path('ui')
 SEED_FOLDER = Path('seed')

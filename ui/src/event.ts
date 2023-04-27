@@ -1,8 +1,8 @@
 import { get } from 'svelte/store'
 import { TypedEmitter } from 'tiny-typed-emitter'
-import { cwd, cwdSplit, explorerItems, footer, historyIndex, selected, history } from './store'
+import { cwd, cwdSplit, explorerItems, footer, history, historyIndex, selected } from './store'
 import type { TFooter } from './types'
-import { __pywebview, debounce, gen_id, sortItems } from './utils'
+import { __pywebview, debounce, gen_id, sleep, sortItems } from './utils'
 
 export const events = new TypedEmitter<{
 	create_file: (path: string) => Promise<void>
@@ -11,15 +11,24 @@ export const events = new TypedEmitter<{
 	delete: (path: string | string[], moveToTrash: boolean) => Promise<void>
 	reload: () => Promise<void>
 	footer_text: ({ text, type }: TFooter) => Promise<void>
-    stop_stream_delete: (path: string) => Promise<void>
-    stop_stream_file_size: (path: string) => Promise<void>
-    stop_stream_find: (path: string) => Promise<void>
-    stop_all_delete: () => Promise<void>
-    stop_all_file_size: () => Promise<void>
-    stop_all_find: () => Promise<void>
-    end_of_stream_find: () => Promise<void>
-    back: () => Promise<void>
-    forward: () => Promise<void>
+	stop_stream_delete: (path: string) => Promise<void>
+	stop_stream_file_size: (path: string) => Promise<void>
+	stop_stream_find: (path: string) => Promise<void>
+	stop_all_delete: () => Promise<void>
+	stop_all_file_size: () => Promise<void>
+	stop_all_find: () => Promise<void>
+	stop_all_streams_ls: () => Promise<void>
+	end_of_stream_find: () => Promise<void>
+	end_of_stream_ls: () => Promise<void>
+	back: () => Promise<void>
+	forward: () => Promise<void>
+	cwdClick: () => Promise<void>
+	quickAccessClick: () => Promise<void>
+	backClick: () => Promise<void>
+	forwardClick: () => Promise<void>
+	windowButtonsClick: () => Promise<void>
+	itemClick: () => Promise<void>
+	itemDoubleClick: () => Promise<void>
 }>()
 
 // Without this, the footer will be cleared after 5 seconds
@@ -71,6 +80,21 @@ events.on('delete', async (path: string | string[], moveToTrash: boolean) => {
 	selected.set([])
 })
 
+const queue = {
+	actualWorker: 0,
+	waitingWorker: 0,
+}
+
+events.on('cwdClick', async () => {
+	queue.waitingWorker += 1
+})
+events.on('quickAccessClick', async () => {
+	queue.waitingWorker += 1
+})
+events.on('itemDoubleClick', async () => {
+	queue.waitingWorker += 1
+})
+
 events.on('reload', async () => {
 	const $cwd = get(cwd)
 	cwdSplit.set($cwd.split('/'))
@@ -79,7 +103,31 @@ events.on('reload', async () => {
 	// a file had the size of another file
 	// Doing this causes a small flash in explorer, but it solves the problem :/
 	explorerItems.set([])
-	explorerItems.set(sortItems(await __pywebview.ls($cwd)))
+
+	events.once('end_of_stream_ls', async () => {
+		while (queue.actualWorker) await sleep(0)
+
+		queue.actualWorker = 1
+		queue.waitingWorker = Math.max(0, queue.waitingWorker - 1)
+
+		while (true) {
+			const { end, items: newItems } = await __pywebview.ls($cwd)
+
+			explorerItems.update(items => sortItems([...items, ...newItems]))
+
+			if (end || queue.waitingWorker) {
+				if (queue.waitingWorker) {
+					explorerItems.set([])
+				}
+
+				queue.actualWorker = 0
+
+				break
+			}
+		}
+	})
+
+	events.emit('stop_all_streams_ls')
 })
 
 events.on('footer_text', async ({ text, type }: TFooter) => {
@@ -92,44 +140,50 @@ events.on('footer_text', async ({ text, type }: TFooter) => {
 })
 
 events.on('stop_stream_delete', async (path: string) => {
-    await __pywebview.stop_stream_delete(path)
+	await __pywebview.stop_stream_delete(path)
 })
 
 events.on('stop_stream_file_size', async (path: string) => {
-    await __pywebview.stop_stream_file_size(path)
+	await __pywebview.stop_stream_file_size(path)
 })
 
 events.on('stop_stream_find', async (path: string) => {
-    await __pywebview.stop_stream_find(path)
+	await __pywebview.stop_stream_find(path)
 })
 
 events.on('stop_all_delete', async () => {
-    await __pywebview.stop_all_streams_delete()
+	await __pywebview.stop_all_streams_delete()
 })
 
 events.on('stop_all_file_size', async () => {
-    await __pywebview.stop_all_streams_file_size()
+	await __pywebview.stop_all_streams_file_size()
 })
 
 events.on('stop_all_find', async () => {
-    await __pywebview.stop_all_streams_find()
+	await __pywebview.stop_all_streams_find()
 
-    events.emit('end_of_stream_find')
+	events.emit('end_of_stream_find')
+})
+
+events.on('stop_all_streams_ls', async () => {
+	await __pywebview.stop_all_streams_ls()
+
+	events.emit('end_of_stream_ls')
 })
 
 events.on('back', async () => {
-    const $historyIndex = get(historyIndex)
+	const $historyIndex = get(historyIndex)
 
-    if ($historyIndex > 0) {
-        historyIndex.set($historyIndex - 1)
-    }
+	if ($historyIndex > 0) {
+		historyIndex.set($historyIndex - 1)
+	}
 })
 
 events.on('forward', async () => {
-    const $historyIndex = get(historyIndex)
-    const $history = get(history)
+	const $historyIndex = get(historyIndex)
+	const $history = get(history)
 
-    if ($historyIndex < $history.length - 1) {
-        historyIndex.set($historyIndex + 1)
-    }
+	if ($historyIndex < $history.length - 1) {
+		historyIndex.set($historyIndex + 1)
+	}
 })

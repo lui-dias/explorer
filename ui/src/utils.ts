@@ -100,7 +100,12 @@ export const __pywebview = {
 		// @ts-ignore
 		return await pywebview.api.maximize()
 	},
-	ls: async (folder: string): Promise<ExplorerItem[]> => {
+	ls: async (
+		folder: string,
+	): Promise<{
+		items: ExplorerItem[]
+		end: boolean
+	}> => {
 		// @ts-ignore
 		return await pywebview.api.ls(folder)
 	},
@@ -188,6 +193,11 @@ export const __pywebview = {
 		// @ts-ignore
 		return await pywebview.api.stop_all_streams_find()
 	},
+
+    stop_all_streams_ls: async (): Promise<void> => {
+        // @ts-ignore
+        return await pywebview.api.stop_all_streams_ls()
+    },
 
 	get_path_info: async (path: string): Promise<ExplorerItem> => {
 		// @ts-ignore

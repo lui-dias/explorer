@@ -103,6 +103,8 @@
 								history.set([...$history, path])
 								historyIndex.set($history.length)
 								cwd.set(path)
+
+                                events.emit('cwdClick')
 							}}
 						>
 							<span class="text-gray-500 dark:text-violet-200 whitespace-nowrap"

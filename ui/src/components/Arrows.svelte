@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { events } from '../event'
 	import { historyIndex, history } from '../store'
 	import ArrowLeft from './icons/ArrowLeft.svelte'
 
@@ -8,7 +9,10 @@
 
 <div class="flex gap-x-2 mx-3">
 	<div class="flex gap-x-3">
-		<button type="button" class="w-3" disabled={$historyIndex === 0} on:click={back}>
+		<button type="button" class="w-3" disabled={$historyIndex === 0} on:click={() => {
+            back()
+            events.emit('backClick')
+        }}>
 			<ArrowLeft class="fill-primary" />
 		</button>
 
@@ -16,7 +20,10 @@
 			type="button"
 			class="transform rotate-180 w-3"
 			disabled={$historyIndex === $history.length - 1}
-			on:click={forward}
+			on:click={() => {
+                forward()
+                events.emit('forwardClick')
+            }}
 		>
 			<ArrowLeft class="fill-primary" />
 		</button>
