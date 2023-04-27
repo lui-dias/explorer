@@ -1,5 +1,6 @@
 ### Performance
 - [x] Implement virtualized list
+- [x] Streamed files
 
 ### Features
 - [x] Add vscode-icons icons
@@ -10,7 +11,6 @@
 - [x] Add context menu for explorer item
 - [x] Create new file or folder
 - [x] Add window buttons
-- [x] Add explorer loading
 - [x] Select multiples files/folders
 - [x] Add settings
 - [x] Add search
@@ -20,8 +20,6 @@
 - [ ] An Icon
 - [ ] Move window on drag header
 - [ ] Resize window
-
-- [ ] Offline PWA
 - [ ] Add file preview
 
 ### Fix
