@@ -12,11 +12,13 @@
 	let hideNItems = 0
 
 	let isSearchSelected = false
+    // Without padding some long paths keep appearing under the reload icon
+    let padding = 10
 
 	async function fixHorizontalScroll() {
         if (!cwdList) return
 
-		if (cwdList.scrollWidth <= cwdList.clientWidth) {
+		if (cwdList.scrollWidth <= cwdList.clientWidth - padding) {
 			hideNItems = 0
 		} else {
 			while (cwdList.scrollWidth > cwdList.clientWidth) {
