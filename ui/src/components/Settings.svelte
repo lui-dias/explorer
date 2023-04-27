@@ -1,29 +1,17 @@
 <script>
+	import { settings, settingsOpen } from '../store'
 	import Close from './icons/Close.svelte'
-	import { settingsOpen, settings } from '../store'
-	import { isClient } from '../utils'
-	import { onMount } from 'svelte'
 	import Reload from './icons/Reload.svelte'
 
-	let isMounted = false
-
 	$: {
-		if (isMounted) {
-			document.documentElement.style.setProperty('--primary', $settings.primaryColor)
-			document.documentElement.style.setProperty('--text', $settings.textColor)
-			localStorage.setItem('settings', JSON.stringify($settings))
+		if (Object.keys($settings).length > 0) {
+			document.documentElement.style.setProperty('--primary', $settings.colors.primary)
+			document.documentElement.style.setProperty('--accent', $settings.colors.accent)
+			document.documentElement.style.setProperty('--text', $settings.colors.text)
+			document.documentElement.style.setProperty('--background', $settings.colors.background)
+			document.documentElement.style.setProperty('--divider', $settings.colors.divider)
 		}
 	}
-
-	onMount(() => {
-		if (isClient()) {
-			const localSettings = JSON.parse(localStorage.getItem('settings') ?? '{}')
-
-			settings.set({ ...$settings, ...localSettings })
-		}
-
-		isMounted = true
-	})
 </script>
 
 {#if $settingsOpen}
@@ -35,7 +23,7 @@
 					class="p-3 block ml-auto"
 					on:click={() => settingsOpen.set(false)}
 				>
-					<Close class="fill-purple-200" />
+					<Close class="fill-text" />
 				</button>
 			</div>
 
@@ -45,32 +33,97 @@
 					<input
 						type="color"
 						name="primary-color"
-						bind:value={$settings.primaryColor}
-						style="--primary: {$settings.primaryColor}"
+						bind:value={$settings.colors.primary}
+						style="--primary: {$settings.colors.primary}"
 						class="rounded-full w-10 h-10 appearance-none cursor-pointer [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:rounded-full"
 					/>
-					<label for="primary-color" class="text-purple-200 font-medium">
-						Primary color
-					</label>
+					<label for="primary-color" class="text-text font-medium"> Primary </label>
 					<button
 						type="button"
-						on:click={() => settings.set({ ...$settings, primaryColor: '#ddd6fe' })}
+						on:click={() => {
+							$settings.colors.primary = '#fecaca'
+							settings.set($settings)
+						}}
 					>
 						<Reload class="stroke-primary" />
 					</button>
 				</div>
+
 				<div class="flex items-center gap-x-3">
 					<input
 						type="color"
 						name="text-color"
-						bind:value={$settings.textColor}
-						style="--text: {$settings.textColor}"
+						bind:value={$settings.colors.accent}
+						style="--text: {$settings.colors.accent}"
 						class="rounded-full w-10 h-10 appearance-none cursor-pointer [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:rounded-full"
 					/>
-					<label for="text-color" class="text-purple-200 font-medium"> Text color </label>
+					<label for="text-color" class="text-text font-medium"> Accent </label>
 					<button
 						type="button"
-						on:click={() => settings.set({ ...$settings, textColor: '#f3e8ff' })}
+						on:click={() => {
+							$settings.colors.accent = '#dc2626'
+							settings.set($settings)
+						}}
+					>
+						<Reload class="stroke-primary" />
+					</button>
+				</div>
+
+				<div class="flex items-center gap-x-3">
+					<input
+						type="color"
+						name="text-color"
+						bind:value={$settings.colors.text}
+						style="--text: {$settings.colors.text}"
+						class="rounded-full w-10 h-10 appearance-none cursor-pointer [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:rounded-full"
+					/>
+					<label for="text-color" class="text-text font-medium"> Text </label>
+					<button
+						type="button"
+						on:click={() => {
+							$settings.colors.text = '#fee2e2'
+							settings.set($settings)
+						}}
+					>
+						<Reload class="stroke-primary" />
+					</button>
+				</div>
+
+				<div class="flex items-center gap-x-3">
+					<input
+						type="color"
+						name="text-color"
+						bind:value={$settings.colors.background}
+						style="--text: {$settings.colors.background}"
+						class="rounded-full w-10 h-10 appearance-none cursor-pointer [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:rounded-full"
+					/>
+					<label for="text-color" class="text-text font-medium"> Background </label>
+					<button
+						type="button"
+						on:click={() => {
+							$settings.colors.background = '#27272a'
+							settings.set($settings)
+						}}
+					>
+						<Reload class="stroke-primary" />
+					</button>
+				</div>
+
+				<div class="flex items-center gap-x-3">
+					<input
+						type="color"
+						name="text-color"
+						bind:value={$settings.colors.divider}
+						style="--text: {$settings.colors.divider}"
+						class="rounded-full w-10 h-10 appearance-none cursor-pointer [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:rounded-full"
+					/>
+					<label for="text-color" class="text-text font-medium"> Divider </label>
+					<button
+						type="button"
+						on:click={() => {
+							$settings.colors.divider = '#4b5563'
+							settings.set($settings)
+						}}
 					>
 						<Reload class="stroke-primary" />
 					</button>

@@ -11,6 +11,7 @@
 		searchItems,
 		selected,
 		selectedQuickAccess,
+		settings,
 		sortType,
 	} from '../store'
 	import type { TSortTypes } from '../types'
@@ -29,23 +30,33 @@
 	let explorerItemsNode: HTMLUListElement
 
 	let isLoading = true
+	let isConfigLoaded = false
 
-	function back() {
-		if ($historyIndex > 0) {
-			historyIndex.set($historyIndex - 1)
-		}
-	}
-
-	function forward() {
-		if ($historyIndex < $history.length - 1) {
-			historyIndex.set($historyIndex + 1)
-		}
-	}
+	const back = () => events.emit('back')
+	const forward = () => events.emit('forward')
 
 	onMount(async () => {
 		// Wait pywebview to be ready
 		await __pywebview.__wait()
 		console.log('ready')
+
+		const config = await __pywebview.get_config()
+
+        settings.subscribe(async v => {
+            await __pywebview.set_config(v)
+        })
+
+		settings.set(config)
+
+		document.documentElement.style.setProperty('--primary', config.colors.primary)
+		document.documentElement.style.setProperty('--accent', config.colors.accent)
+		document.documentElement.style.setProperty('--text', config.colors.text)
+		document.documentElement.style.setProperty('--background', config.colors.background)
+		document.documentElement.style.setProperty('--divider', config.colors.divider)
+
+		isConfigLoaded = true
+
+		console.log(config)
 
 		// Load data from localStorage
 		sortType.set((localStorage.getItem('sortType') || $sortType) as TSortTypes)
@@ -65,7 +76,7 @@
 
 		sortType.subscribe(() => {
 			explorerItems.set(sortItems($explorerItems))
-            searchItems.set(sortItems($searchItems))
+			searchItems.set(sortItems($searchItems))
 
 			localStorage.setItem('sortType', $sortType)
 		})
@@ -151,63 +162,67 @@
 <ContextMenu />
 <Settings />
 
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<div
-	class="w-full h-full dark:bg-zinc-800 flex flex-col gap-y-2"
-	on:click={e => {
-		// Idk other way to select all items
-		const allItems = document.querySelectorAll('._item')
+{#if isConfigLoaded}
+	<!-- svelte-ignore a11y-click-events-have-key-events -->
+	<div
+		class="w-full h-full dark:bg-background flex flex-col gap-y-2"
+		on:click={e => {
+			// Idk other way to select all items
+			const allItems = document.querySelectorAll('._item')
 
-		for (const item of allItems) {
-			// @ts-ignore
-			if (item.contains(e.target)) {
-				return
+			for (const item of allItems) {
+				// @ts-ignore
+				if (item.contains(e.target)) {
+					return
+				}
 			}
-		}
 
-		selected.set([])
-		selectedQuickAccess.set(null)
-	}}
->
-	{#if isLoading}
-		<Loading />
-	{:else}
-		<WindowButtons />
+			selected.set([])
+			selectedQuickAccess.set(null)
+		}}
+	>
+		{#if isLoading}
+			<Loading />
+		{:else}
+			<WindowButtons />
 
-		<div class="flex items-center pr-3">
-			<Arrows {back} {forward} />
-			<Cwd />
-			<Search />
-		</div>
-
-		<div class="flex w-full h-full">
-			<QuickAccess />
-
-			<div class="flex flex-col gpa-y-2 w-full h-full">
-				<div class="flex mx-3">
-					<span
-						class="dark:text-text text-left border-r border-purple-100 text-sm w-[50%]"
-						>Name</span
-					>
-					<span
-						class="dark:text-text text-left border-r border-purple-100 pl-2 text-sm w-[20%]"
-						>Modified</span
-					>
-					<span
-						class="dark:text-text text-left border-r border-purple-100 pl-2 text-sm w-[15%]"
-						>Type</span
-					>
-					<span
-						class="dark:text-text text-left border-r border-purple-100 pl-2 text-sm w-[15%]"
-						>Size</span
-					>
-				</div>
-				<ul bind:this={explorerItemsNode} class="h-[calc(100%-40px-40px)] mx-3">
-					<Virtualist itemHeight={24} class="flex flex-col w-full mt-2 h-full" />
-				</ul>
+			<div class="flex items-center pr-3">
+				<Arrows {back} {forward} />
+				<Cwd />
+				<Search />
 			</div>
-		</div>
 
-		<Footer />
-	{/if}
-</div>
+			<div class="flex w-full h-full">
+				<QuickAccess />
+
+				<div class="flex flex-col gpa-y-2 w-full h-full">
+					<div class="flex mx-3">
+						<span
+							class="dark:text-text text-left border-r border-purple-100 text-sm w-[50%]"
+							>Name</span
+						>
+						<span
+							class="dark:text-text text-left border-r border-purple-100 pl-2 text-sm w-[20%]"
+							>Modified</span
+						>
+						<span
+							class="dark:text-text text-left border-r border-purple-100 pl-2 text-sm w-[15%]"
+							>Type</span
+						>
+						<span
+							class="dark:text-text text-left border-r border-purple-100 pl-2 text-sm w-[15%]"
+							>Size</span
+						>
+					</div>
+					<ul bind:this={explorerItemsNode} class="h-[calc(100%-40px-40px)] mx-3">
+						<Virtualist itemHeight={24} class="flex flex-col w-full mt-2 h-full" />
+					</ul>
+				</div>
+			</div>
+
+			<Footer />
+		{/if}
+	</div>
+{:else}
+	<span />
+{/if}

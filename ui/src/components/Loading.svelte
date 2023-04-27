@@ -25,7 +25,7 @@
 		width: 44px;
 		height: 44px;
 		border-radius: 50%;
-		background: #263238;
+		background: #27272a;
 	}
 	@keyframes rotation {
 		0% {

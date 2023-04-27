@@ -16,3 +16,13 @@ export type TFooter = {
 	text: string
 	type: 'info' | 'warning' | 'error' | 'none'
 }
+
+export type TConfig = {
+	colors: {
+		primary: string
+		accent: string
+		text: string
+		background: string
+		divider: string
+	}
+}

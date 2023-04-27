@@ -14,7 +14,7 @@
 	})
 </script>
 
-<aside class="min-w-[150px] text-primary text-sm border-r border-zinc-700">
+<aside class="min-w-[150px] text-text text-sm border-r border-divider">
 	<ul>
 		{#each $quickAccess as file}
 			<li

@@ -1,6 +1,6 @@
 import { get } from 'svelte/store'
 import { TypedEmitter } from 'tiny-typed-emitter'
-import { cwd, cwdSplit, explorerItems, footer, selected } from './store'
+import { cwd, cwdSplit, explorerItems, footer, historyIndex, selected, history } from './store'
 import type { TFooter } from './types'
 import { __pywebview, debounce, gen_id, sortItems } from './utils'
 
@@ -18,6 +18,8 @@ export const events = new TypedEmitter<{
     stop_all_file_size: () => Promise<void>
     stop_all_find: () => Promise<void>
     end_of_stream_find: () => Promise<void>
+    back: () => Promise<void>
+    forward: () => Promise<void>
 }>()
 
 // Without this, the footer will be cleared after 5 seconds
@@ -113,4 +115,21 @@ events.on('stop_all_find', async () => {
     await __pywebview.stop_all_streams_find()
 
     events.emit('end_of_stream_find')
+})
+
+events.on('back', async () => {
+    const $historyIndex = get(historyIndex)
+
+    if ($historyIndex > 0) {
+        historyIndex.set($historyIndex - 1)
+    }
+})
+
+events.on('forward', async () => {
+    const $historyIndex = get(historyIndex)
+    const $history = get(history)
+
+    if ($historyIndex < $history.length - 1) {
+        historyIndex.set($historyIndex + 1)
+    }
 })

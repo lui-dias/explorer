@@ -1,6 +1,6 @@
 import { cwd, history, historyIndex, searchItems, sortType } from './store'
 import { get } from 'svelte/store'
-import type { ExplorerItem } from './types'
+import type { Config, ExplorerItem } from './types'
 
 const isVisible = (elem: any) =>
 	!!elem && !!(elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length)
@@ -193,6 +193,16 @@ export const __pywebview = {
 		// @ts-ignore
 		return await pywebview.api.get_path_info(path)
 	},
+
+    get_config: async (): Promise<Config> => {
+        // @ts-ignore
+        return await pywebview.api.get_config()
+    },
+
+    set_config: async (config: Config): Promise<void> => {
+        // @ts-ignore
+        return await pywebview.api.set_config(config)
+    }
 }
 
 export function isClient() {

@@ -9,9 +9,9 @@ from threading import Thread
 from collections import deque
 from typing import Literal, TypedDict
 
-
 import webview
 from send2trash import send2trash
+from toml import load as load_toml, dumps as dumps_toml
 
 try:
     from rich import print
@@ -752,6 +752,12 @@ class API:
         for i in streams_finds.values():
             i.end = True
 
+    def get_config(self):
+        return load_toml(CONFIG_FILE)
+    
+    def set_config(self, config: dict):
+        CONFIG_FILE.write_text(dumps_toml(config))
+
 
 streams_files = {}
 streams_deletes = {}
@@ -759,11 +765,23 @@ streams_finds = {}
 
 UI_FOLDER = Path('ui')
 SEED_FOLDER = Path('seed')
+CONFIG_FILE = Path('config.toml')
 
 server_process = None
 
 if not SEED_FOLDER.exists():
     SEED_FOLDER.mkdir()
+
+if not CONFIG_FILE.exists():
+    CONFIG_FILE.write_text(dumps_toml({
+        'colors': {
+            'primary': '#fecaca',
+            'accent': '#dc2626',
+            'text': '#fee2e2',
+            'background': '#27272a',
+            'divider': '#4b5563'
+        }
+    }))
 
 
 def start_server():

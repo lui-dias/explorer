@@ -10,7 +10,10 @@ module.exports = {
 			},
 			colors: {
 				primary: 'var(--primary)',
+                accent: 'var(--accent)',
                 text: 'var(--text)',
+                background: 'var(--background)',
+                divider: 'var(--divider)',
 			},
 		},
 	},
