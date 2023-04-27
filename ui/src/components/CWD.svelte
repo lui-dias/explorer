@@ -96,7 +96,7 @@
 							type="button"
 							class="dark:hover:bg-purple-300/20 p-2"
 							on:click={() => {
-								const path = $cwdSplit.slice(0, i + 1).join('/')
+								const path = $cwdSplit.slice(0, hideNItems + i + 1).join('/')
 
 								history.set([...$history, path])
 								historyIndex.set($history.length)
