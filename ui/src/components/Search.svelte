@@ -9,11 +9,11 @@
 	let lastCwd = ''
 </script>
 
-<div class="w-[30%] h-10 ml-2 dark:bg-zinc-700 dark:text-violet-300">
+<div class="w-[30%] h-10 ml-2 dark:bg-zinc-700">
 	<input
 		type="text"
 		placeholder="Search"
-		class="w-full h-full bg-transparent outline-none px-2 focus:outline-purple-300"
+		class="w-full h-full bg-transparent outline-none px-2 focus:outline-purple-300 dark:placeholder:text-violet-200 dark:text-violet-200"
 		spellcheck="false"
 		autocomplete="false"
 		bind:value={query}
