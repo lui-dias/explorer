@@ -53,8 +53,6 @@
 		document.documentElement.style.setProperty('--background', config.colors.background)
 		document.documentElement.style.setProperty('--divider', config.colors.divider)
 
-		console.log(config)
-
 		// Load data from localStorage
 		sortType.set((localStorage.getItem('sortType') || $sortType) as TSortTypes)
 		cwd.set(localStorage.getItem('cwd') || (await __pywebview.home()))
