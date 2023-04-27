@@ -1,32 +1,32 @@
 ### Performance
 - [x] Implement virtualized list
-- [x] Streamed files
+- [x] Streamed files list and search
+- [x] Streamed get file size
 
 ### Features
-- [x] Add vscode-icons icons
-- [x] Add history and navigation
-- [x] Rename on F2
-- [x] Delete file and move to trash
 - [x] Add context menu
-- [x] Add context menu for explorer item
-- [x] Create new file or folder
-- [x] Add window buttons
-- [x] Select multiples files/folders
-- [x] Add settings
-- [x] Add search
-- [x] Add quick access folders sidebar
+- [x] Add history and navigation
 - [x] Add loading on search and startup
-- [ ] Resize columns
+- [x] Add quick access folders sidebar
+- [x] Add search
+- [x] Add settings
+- [x] Add vscode-icons icons
+- [x] Add window buttons
+- [x] Create new file or folder
+- [x] Delete file and move to trash
+- [x] Rename on F2
+- [x] Select multiples files/folders
+- [ ] Add file preview
 - [ ] An Icon
 - [ ] Move window on drag header
+- [ ] Resize columns
 - [ ] Resize window
-- [ ] Add file preview
 
 ### Fix
-- [ ] Sort by size
 - [ ] Ctrl + A on input, selects all files
-- [x] Memory leak that happens at any time and makes the server crash
+- [ ] Sort by size
 - [x] Creating a file/folder makes the footer show a warning saying the last item in the list already exists, instead of checking just the created item
+- [x] Memory leak that happens at any time and makes the server crash
 
 ### UI
 - [ ] Better context appearance
