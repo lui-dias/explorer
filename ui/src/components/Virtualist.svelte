@@ -71,7 +71,7 @@
 			>
 				<p class="text-center text-zinc-200 font-medium text-3xl">Nothing found...</p>
 				<p class="text-center text-zinc-500 text-lg whitespace-nowrap">
-					Check back later, maybe something will show up
+					Come back later, maybe something will show up
 				</p>
 				<p class="text-center text-zinc-500 text-3xl mt-2">😭</p>
 			</div>
