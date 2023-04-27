@@ -15,6 +15,7 @@
 - [x] Add settings
 - [x] Add search
 - [x] Add quick access folders sidebar
+- [x] Add loading on search and startup
 - [ ] Resize columns
 - [ ] An Icon
 - [ ] Move window on drag header
@@ -22,7 +23,6 @@
 
 - [ ] Offline PWA
 - [ ] Add file preview
-- [ ] Add animations
 
 ### Fix
 - [ ] Sort by size
