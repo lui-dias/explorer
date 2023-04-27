@@ -214,7 +214,7 @@
 							>Size</span
 						>
 					</div>
-					<ul bind:this={explorerItemsNode} class="h-[calc(100%-40px-40px)] mx-3">
+					<ul bind:this={explorerItemsNode} class="h-full mx-3">
 						<Virtualist itemHeight={24} class="flex flex-col w-full mt-2 h-full" />
 					</ul>
 				</div>
