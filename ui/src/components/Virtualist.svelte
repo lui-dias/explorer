@@ -63,7 +63,7 @@
 	on:scroll={() => (scrollTop = list.scrollTop)}
 >
 	{#if items.length === 0}
-		{#if $isSearching}
+		{#if $isSearching && $explorerItems.length === 0}
 			<Loading />
 		{:else}
 			<div
