@@ -25,7 +25,7 @@ If the server doesn't load in time, wait a bit and reload the page.
 ### [Features/TODO](TODO.md)
 
 ## How to seed a folder with files
-The command will create the files in the seed folder, the folder is created if the folder does not exist
+The command will create the files in the `seed` folder, the folder is created if the folder does not exist
 
 ```
 python main.py seed <n_files> <size>
