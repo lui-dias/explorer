@@ -13,7 +13,7 @@
 
 	let isSearchSelected = false
     // Without padding some long paths keep appearing under the reload icon
-    let padding = 10
+    let padding = 40
 
 	async function fixHorizontalScroll() {
         if (!cwdList) return
