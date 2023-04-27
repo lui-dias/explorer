@@ -56,26 +56,26 @@ def get_file_type(path: Path):
     name = path.name
 
     if path.is_dir():
-        if any(name.endswith(i) for i in ['.vscode', 'vscode']):
+        if any(name.endswith(i.lower()) for i in ['.vscode', 'vscode']):
             return 'Vscode'
 
-        if any(name.endswith(i) for i in ['node_modules']):
+        if any(name.endswith(i.lower()) for i in ['node_modules']):
             return 'Node Modules'
 
-        if any(name.endswith(i) for i in ['public', '.public']):
+        if any(name.endswith(i.lower()) for i in ['public', '.public']):
             return 'Public'
 
-        if any(name.endswith(i) for i in ['src', 'source', 'sources']):
+        if any(name.endswith(i.lower()) for i in ['src', 'source', 'sources']):
             return 'Src'
 
         if any(
-            name.endswith(i)
+            name.endswith(i.lower())
             for i in ['component', 'components', '.components', 'gui', 'ui', 'widgets']
         ):
             return 'Component'
 
         if any(
-            name.endswith(i)
+            name.endswith(i.lower())
             for i in [
                 'html',
                 'view',
@@ -95,7 +95,7 @@ def get_file_type(path: Path):
             return 'View'
 
         if any(
-            name.endswith(i)
+            name.endswith(i.lower())
             for i in [
                 'dist',
                 '.dist',
@@ -116,24 +116,24 @@ def get_file_type(path: Path):
             return 'Dist'
 
         if any(
-            name.endswith(i) for i in ['assets', '.assets', 'asset', '.asset', 'static']
+            name.endswith(i.lower()) for i in ['assets', '.assets', 'asset', '.asset', 'static']
         ):
             return 'Assets'
 
-        if any(name.endswith(i) for i in ['git', '.git', 'submodules', '.submodules']):
+        if any(name.endswith(i.lower()) for i in ['git', '.git', 'submodules', '.submodules']):
             return 'Git'
 
         if any(
-            name.endswith(i)
+            name.endswith(i.lower())
             for i in ['cli', 'cmd', 'command', 'commands', 'commandline', 'console']
         ):
             return 'CLI'
 
-        if any(name.endswith(i) for i in ['.github']):
+        if any(name.endswith(i.lower()) for i in ['.github']):
             return 'Github'
 
         if any(
-            name.endswith(i)
+            name.endswith(i.lower())
             for i in [
                 'tests',
                 '.tests',
@@ -150,22 +150,22 @@ def get_file_type(path: Path):
         ):
             return 'Test'
 
-        if any(name.endswith(i) for i in ['docs', '.docs', 'doc', '.doc']):
+        if any(name.endswith(i.lower()) for i in ['docs', '.docs', 'doc', '.doc']):
             return 'Docs'
 
-        if any(name.endswith(i) for i in ['.next']):
+        if any(name.endswith(i.lower()) for i in ['.next']):
             return 'Next'
 
         return 'folder'
     elif path.is_file():
-        if any(name.endswith(i) for i in ['.py']):
+        if any(name.endswith(i.lower()) for i in ['.py']):
             return 'Python'
 
-        if any(name.endswith(i) for i in ['.prettierrc', '.prettierignore']):
+        if any(name.endswith(i.lower()) for i in ['.prettierrc', '.prettierignore']):
             return 'Prettier'
 
         if any(
-            name.endswith(i)
+            name.endswith(i.lower())
             for i in [
                 'tsconfig.json',
                 'tsconfig.app.json',
@@ -189,7 +189,7 @@ def get_file_type(path: Path):
             return 'Tsconfig'
 
         if any(
-            name.endswith(i)
+            name.endswith(i.lower())
             for i in [
                 '.gitattributes',
                 '.gitconfig',
@@ -202,17 +202,17 @@ def get_file_type(path: Path):
         ):
             return 'Git'
 
-        if any(name.endswith(i) for i in ['.markdown', '.md', '.mdown']):
+        if any(name.endswith(i.lower()) for i in ['.markdown', '.md', '.mdown']):
             return 'Markdown'
 
-        if any(name.endswith(i) for i in ['.toml']):
+        if any(name.endswith(i.lower()) for i in ['.toml']):
             return 'Toml'
 
-        if any(name.endswith(i) for i in ['.astro']):
+        if any(name.endswith(i.lower()) for i in ['.astro']):
             return 'Astro'
 
         if any(
-            name.endswith(i)
+            name.endswith(i.lower())
             for i in [
                 'astro.config.js',
                 'astro.config.cjs',
@@ -223,7 +223,7 @@ def get_file_type(path: Path):
             return 'Astro Config'
 
         if any(
-            name.endswith(i)
+            name.endswith(i.lower())
             for i in [
                 'tailwind.js',
                 'tailwind.cjs',
@@ -249,35 +249,35 @@ def get_file_type(path: Path):
         ):
             return 'Tailwind'
 
-        if any(name.endswith(i) for i in ['.d.ts', '.d.cts', '.d.mts']):
+        if any(name.endswith(i.lower()) for i in ['.d.ts', '.d.cts', '.d.mts']):
             return 'Typescript Definition'
 
-        if any(name.endswith(i) for i in ['.db']):
+        if any(name.endswith(i.lower()) for i in ['.db']):
             return 'Database'
 
-        if any(name.endswith(i) for i in ['.svg']):
+        if any(name.endswith(i.lower()) for i in ['.svg']):
             return 'SVG'
 
-        if any(name.endswith(i) for i in ['.html']):
+        if any(name.endswith(i.lower()) for i in ['.html']):
             return 'HTML'
 
-        if any(name.endswith(i) for i in ['.css']):
+        if any(name.endswith(i.lower()) for i in ['.css']):
             return 'CSS'
 
         if any(
-            name.endswith(i)
+            name.endswith(i.lower())
             for i in ['.woff', '.woff2', '.ttf', '.otf', '.eot', '.pfa', '.pfb', '.sfd']
         ):
             return 'Font'
 
-        if any(name.endswith(i) for i in ['.csv', '.tsv', '.txt']):
+        if any(name.endswith(i.lower()) for i in ['.csv', '.tsv', '.txt']):
             return 'Text'
 
-        if any(name.endswith(i) for i in ['.plist', '.properties', '.env']):
+        if any(name.endswith(i.lower()) for i in ['.plist', '.properties', '.env']):
             return 'Config'
 
         if any(
-            name.endswith(i)
+            name.endswith(i.lower())
             for i in [
                 'yarn.lock',
                 '.yarnrc',
@@ -291,16 +291,16 @@ def get_file_type(path: Path):
             return 'Yarn'
 
         if any(
-            name.endswith(i)
+            name.endswith(i.lower())
             for i in ['pnpmfile.js', 'pnpm-lock.yaml', 'pnpm-workspace.yaml']
         ):
             return 'PNPM'
 
-        if any(name.endswith(i) for i in ['.pdf']):
+        if any(name.endswith(i.lower()) for i in ['.pdf']):
             return 'PDF'
 
         if any(
-            name.endswith(i)
+            name.endswith(i.lower())
             for i in [
                 '.dockerignore',
                 'compose.yaml',
@@ -323,7 +323,7 @@ def get_file_type(path: Path):
             return 'Docker'
 
         if any(
-            name.endswith(i)
+            name.endswith(i.lower())
             for i in [
                 'LICENSE',
                 'enc',
@@ -351,11 +351,11 @@ def get_file_type(path: Path):
         ):
             return 'License'
 
-        if any(name.endswith(i) for i in ['.rst']):
+        if any(name.endswith(i.lower()) for i in ['.rst']):
             return 'Rst'
 
         if any(
-            name.endswith(i)
+            name.endswith(i.lower())
             for i in [
                 '.jpeg',
                 '.jpg',
@@ -370,7 +370,7 @@ def get_file_type(path: Path):
             return 'Image'
 
         if any(
-            name.endswith(i)
+            name.endswith(i.lower())
             for i in [
                 '.eslintrc',
                 '.eslintignore',
@@ -386,7 +386,7 @@ def get_file_type(path: Path):
             return 'ESLint'
 
         if any(
-            name.endswith(i)
+            name.endswith(i.lower())
             for i in [
                 '.npmignore',
                 '.npmrc',
@@ -398,7 +398,7 @@ def get_file_type(path: Path):
             return 'NPM'
 
         if any(
-            name.endswith(i)
+            name.endswith(i.lower())
             for i in [
                 '.postcssrc',
                 '.postcssrc.json',
@@ -415,7 +415,7 @@ def get_file_type(path: Path):
             return 'PostCSSConfig'
 
         if any(
-            name.endswith(i)
+            name.endswith(i.lower())
             for i in [
                 '.zip',
                 '.rar',
@@ -437,22 +437,22 @@ def get_file_type(path: Path):
         # ! --------------------------------------------
 
         if any(
-            name.endswith(i)
+            name.endswith(i.lower())
             for i in ['.json', '.jsonl', '.ndjson', '.json-tmlanguage', '.jsonc']
         ):
             return 'Json'
 
-        if any(name.endswith(i) for i in ['.js']):
+        if any(name.endswith(i.lower()) for i in ['.js']):
             return 'Javascript'
 
-        if any(name.endswith(i) for i in ['.ts']):
+        if any(name.endswith(i.lower()) for i in ['.ts']):
             return 'Typescript'
 
-        if any(name.endswith(i) for i in ['.yaml', '.yml', '.yaml-tmlanguage']):
+        if any(name.endswith(i.lower()) for i in ['.yaml', '.yml', '.yaml-tmlanguage']):
             return 'Yaml'
 
         if any(
-            name.endswith(i)
+            name.endswith(i.lower())
             for i in [
                 'a',
                 'app',
