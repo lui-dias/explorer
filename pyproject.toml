@@ -1,9 +1,6 @@
 [project]
 name = "explorer"
 version = "0.1.0"
-dependencies = [
-    "regex"
-]
 
 [tool.ruff]
 line-length = 100
