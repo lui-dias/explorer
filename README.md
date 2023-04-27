@@ -7,14 +7,14 @@ It's a file explorer with some features that I think it would be nice for a file
 ## How to run
 ```
 git clone https://github.com/lui-dias/explorer
-cd explorer
 
+cd explorer
 pip install -r requirements.txt
+
 cd ui
 pnpm install
 
 cd ..
-
 python main.py
 ```
 
