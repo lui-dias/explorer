@@ -1,34 +1,44 @@
 import { get } from 'svelte/store'
 import { TypedEmitter } from 'tiny-typed-emitter'
-import { cwd, cwdSplit, explorerItems, footer, history, historyIndex, selected } from './store'
+import {
+	cwd,
+	cwdSplit,
+	explorerItems,
+	footer,
+	history,
+	historyIndex,
+	isSearching,
+	selected,
+} from './store'
 import type { TFooter } from './types'
 import { __pywebview, debounce, gen_id, sleep, sortItems } from './utils'
 
+// prettier-ignore
 export const events = new TypedEmitter<{
-	create_file: (path: string) => Promise<void>
-	create_folder: (path: string) => Promise<void>
-	rename: (from: string, to: string) => Promise<void>
-	delete: (path: string | string[], moveToTrash: boolean) => Promise<void>
-	reload: () => Promise<void>
-	footer_text: ({ text, type }: TFooter) => Promise<void>
-	stop_stream_delete: (path: string) => Promise<void>
-	stop_stream_file_size: (path: string) => Promise<void>
-	stop_stream_find: (path: string) => Promise<void>
-	stop_all_delete: () => Promise<void>
-	stop_all_file_size: () => Promise<void>
-	stop_all_find: () => Promise<void>
-	stop_all_streams_ls: () => Promise<void>
-	end_of_stream_find: () => Promise<void>
-	end_of_stream_ls: () => Promise<void>
-	back: () => Promise<void>
-	forward: () => Promise<void>
-	cwdClick: () => Promise<void>
-	quickAccessClick: () => Promise<void>
-	backClick: () => Promise<void>
-	forwardClick: () => Promise<void>
-	windowButtonsClick: () => Promise<void>
-	itemClick: () => Promise<void>
-	itemDoubleClick: () => Promise<void>
+    create_file          : (path: string) => Promise<void>
+    create_folder        : (path: string) => Promise<void>
+    rename               : (from: string, to: string) => Promise<void>
+    delete               : (path: string | string[], moveToTrash: boolean) => Promise<void>
+    reload               : () => Promise<void>
+    footer_text          : ({ text, type }: TFooter) => Promise<void>
+    stop_stream_delete   : (path: string) => Promise<void>
+    stop_stream_file_size: (path: string) => Promise<void>
+    stop_stream_find     : (path: string) => Promise<void>
+    stop_all_delete      : () => Promise<void>
+    stop_all_file_size   : () => Promise<void>
+    stop_all_find        : () => Promise<void>
+    stop_all_streams_ls  : () => Promise<void>
+    end_of_stream_find   : () => Promise<void>
+    end_of_stream_ls     : () => Promise<void>
+    back                 : () => Promise<void>
+    forward              : () => Promise<void>
+    cwdClick             : () => Promise<void>
+    quickAccessClick     : () => Promise<void>
+    backClick            : () => Promise<void>
+    forwardClick         : () => Promise<void>
+    windowButtonsClick   : () => Promise<void>
+    itemClick            : () => Promise<void>
+    itemDoubleClick      : () => Promise<void>
 }>()
 
 // Without this, the footer will be cleared after 5 seconds
@@ -98,6 +108,7 @@ events.on('itemDoubleClick', async () => {
 events.on('reload', async () => {
 	const $cwd = get(cwd)
 	cwdSplit.set($cwd.split('/'))
+	isSearching.set(true)
 
 	// When creating a file/folder, even using ls, the size of the files was buggy,
 	// a file had the size of another file
@@ -118,6 +129,8 @@ events.on('reload', async () => {
 			if (end || queue.waitingWorker) {
 				if (queue.waitingWorker) {
 					explorerItems.set([])
+				} else {
+					isSearching.set(false)
 				}
 
 				queue.actualWorker = 0
