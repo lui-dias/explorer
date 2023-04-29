@@ -58,7 +58,7 @@
 />
 
 <menu
-	class="flex flex-col absolute dark:bg-zinc-600 dark:text-purple-100 z-10"
+	class="flex flex-col absolute dark:bg-zinc-600 dark:text-purple-100 z-20"
 	bind:this={contextMenuNode}
 	class:invisible={!$contextMenuOpen}
 >
