@@ -71,7 +71,7 @@
 
 <button
 	type="button"
-	class="dark:bg-zinc-700 w-full dark:text-violet-300 flex items-center overflow-x-auto"
+	class="dark:bg-zinc-700 w-full text-[#b9b9b9] flex items-center overflow-x-auto"
 	style="border-radius: 12px;
     background: linear-gradient(145deg, #32383b, #2a2f32);
     box-shadow:  4px 4px 8px #24282a,
@@ -84,7 +84,7 @@
 	{#if isSearchSelected}
 		<input
 			type="text"
-			class="bg-transparent w-full h-10 px-2 outline-none focus:outline-purple-300"
+			class="bg-transparent w-full h-10 px-2 outline-none focus:outline-purple-300 tracking-wide"
 			value={$cwd}
 			on:keyup={async e => {
 				if (e.key === 'Enter') {
