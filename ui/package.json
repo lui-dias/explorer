@@ -16,6 +16,7 @@
     "@fontsource/open-sans": "^4.5.14",
     "astro": "^2.3.0",
     "svelte": "^3.54.0",
+    "svelte-motion": "^0.11.5",
     "tailwind-scrollbar": "^3.0.0",
     "tailwindcss": "^3.0.24",
     "tiny-typed-emitter": "^2.1.0"

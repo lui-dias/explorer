@@ -28,9 +28,9 @@
 			}}
 		>
 			<ArrowLeft
-				class={`unsetFilterClick fill-primary group-disabled:fill-gray-400 transform rotate-180 ${
-					backDisabled ? '' : 'drop-shadow-[0_0_5px_#fecaca]'
-				}`}
+				class={`${
+					backDisabled ? '' : 'glow'
+				} unsetFilterClick fill-primary group-disabled:fill-gray-400 transform rotate-180`}
 			/>
 		</button>
 
@@ -44,9 +44,7 @@
 			}}
 		>
 			<ArrowLeft
-				class={`unsetFilterClick fill-primary group-disabled:fill-gray-400 ${
-					forwardDisabled ? '' : 'drop-shadow-[0_0_5px_#fecaca]'
-				}`}
+				class={`${forwardDisabled ? '' : 'glow'} fill-primary group-disabled:fill-gray-400`}
 			/>
 		</button>
 	</div>

@@ -245,69 +245,17 @@
 					></defs
 				><path fill="url(#a)" filter="url(#b)" d="M0 0h700v700H0z" /></svg
 			>
-
-			<svg
-				class="absolute left-0 top-0 -z-10"
-				xmlns="http://www.w3.org/2000/svg"
-				version="1.1"
-				xmlns:xlink="http://www.w3.org/1999/xlink"
-				width="100%"
-				height="100%"
-				><defs
-					><filter
-						id="nnnoise-filter"
-						x="-20%"
-						y="-20%"
-						width="140%"
-						height="140%"
-						filterUnits="objectBoundingBox"
-						primitiveUnits="userSpaceOnUse"
-						color-interpolation-filters="linearRGB"
-					>
-						<feTurbulence
-							type="fractalNoise"
-							baseFrequency="0.102"
-							numOctaves="4"
-							seed="15"
-							stitchTiles="stitch"
-							x="0%"
-							y="0%"
-							width="100%"
-							height="100%"
-							result="turbulence"
-						/>
-						<feSpecularLighting
-							surfaceScale="15"
-							specularConstant="0.75"
-							specularExponent="20"
-							lighting-color="#585766"
-							x="0%"
-							y="0%"
-							width="100%"
-							height="100%"
-							in="turbulence"
-							result="specularLighting"
-						>
-							<feDistantLight azimuth="3" elevation="100" />
-						</feSpecularLighting>
-					</filter></defs
-				><rect width="700" height="700" fill="transparent" /><rect
-					width="700"
-					height="700"
-					filter="url(#nnnoise-filter)"
-				/></svg
-			>
 		</aside>
 
 		<div
-			class="flex flex-col w-full h-full bg-gradient-to-b dark:from-[#363c43] dark:to-[#16171b]"
+			class="flex flex-col w-full h-full bg-gradient-to-b dark:from-[#32373e] dark:to-[#16171b]"
 		>
+			<WindowButtons />
+
 			<div
 				class="flex flex-col w-full h-full z-10 px-3 shadow-[-3px_0_20px_rgba(0,0,0,0.1)]"
 				style="clip-path: inset(0px 0px 0px -25px);"
 			>
-				<WindowButtons />
-
 				<div class="flex items-center my-3">
 					<Cwd />
 				</div>

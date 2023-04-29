@@ -101,7 +101,7 @@
 					<li class="flex items-center">
 						<button
 							type="button"
-							class="dark:hover:bg-purple-300/20 p-2"
+							class="dark:hover:bg-[#7f8388]/20 p-2"
 							on:click={() => {
 								const path = $cwdSplit.slice(0, hideNItems + i + 1).join('/')
 
@@ -112,13 +112,13 @@
 								events.emit('cwdClick')
 							}}
 						>
-							<span class="text-gray-500 dark:text-violet-200 whitespace-nowrap"
+							<span class="text-[#b9b9b9] whitespace-nowrap"
 								>{dir}</span
 							>
 						</button>
 						{#if dir !== $cwdSplit.slice(-1)[0]}
 							<span class="transform rotate-180">
-								<CwdChevron class="fill-purple-200 w-5" />
+								<CwdChevron class="fill-[#b9b9b9] w-5" />
 							</span>
 						{/if}
 					</li>

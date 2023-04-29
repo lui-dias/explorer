@@ -1,6 +1,7 @@
 ---
 import '@fontsource/open-sans'
 import '@fontsource/inter'
+import '../global.css'
 
 export interface Props {
 	title: string
@@ -19,21 +20,6 @@ const { title } = Astro.props
 		<title>{title}</title>
 	</head>
 	<body class="font-sans h-screen">
-		<style is:global>
-			.neuBtn {
-				background: linear-gradient(145deg, #32383b, #2a2f32);
-				box-shadow: 8px 8px 15px #24282a, -8px -8px 15px #3a4044;
-			}
-
-			.neuBtn:active {
-				background: linear-gradient(145deg, #2a2f32, #32383b);
-				box-shadow: 8px 8px 15px #24282a, -8px -8px 15px #3a4044;
-			}
-
-			.unsetFilterClick:active {
-				filter: unset;
-			}
-		</style>
 		<slot />
 	</body>
 </html>

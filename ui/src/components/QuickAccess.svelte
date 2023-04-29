@@ -19,7 +19,7 @@
 	<ul>
 		{#each $quickAccess as file}
 			<li
-				class={`pl-4 hover:bg-[rgba(255,255,255,0.15)] hover:border-r-4 hover:border-black ${
+				class={`pl-4 hover:font-bold hover:scale-[115%] transition-transform ${
 					$selectedQuickAccess?.path === file.path ? 'font-bold' : ''
 				}`}
 				on:mouseenter={() => {
