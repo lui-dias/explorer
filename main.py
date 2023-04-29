@@ -116,11 +116,15 @@ def get_file_type(path: Path):
             return 'Dist'
 
         if any(
-            name.endswith(i.lower()) for i in ['assets', '.assets', 'asset', '.asset', 'static']
+            name.endswith(i.lower())
+            for i in ['assets', '.assets', 'asset', '.asset', 'static']
         ):
             return 'Assets'
 
-        if any(name.endswith(i.lower()) for i in ['git', '.git', 'submodules', '.submodules']):
+        if any(
+            name.endswith(i.lower())
+            for i in ['git', '.git', 'submodules', '.submodules']
+        ):
             return 'Git'
 
         if any(
@@ -638,6 +642,7 @@ class StreamFind:
     def __eq__(self, other):
         return self.path == other.path
 
+
 class StreamLs:
     def __init__(self, path: str):
         self.path = Path(path)
@@ -660,6 +665,7 @@ class StreamLs:
     def __eq__(self, other):
         return self.path == other.path
 
+
 class API:
     def close(self):
         w.destroy()
@@ -677,7 +683,7 @@ class API:
 
     def ls(self, folder: str):
         s = StreamLs(folder)
-        
+
         if folder not in streams_ls:
             s.start()
             streams_ls[folder] = s
@@ -788,7 +794,7 @@ class API:
 
     def get_config(self):
         return load_toml(CONFIG_FILE)
-    
+
     def set_config(self, config: dict):
         CONFIG_FILE.write_text(dumps_toml(config))
 
@@ -808,15 +814,19 @@ if not SEED_FOLDER.exists():
     SEED_FOLDER.mkdir()
 
 if not CONFIG_FILE.exists():
-    CONFIG_FILE.write_text(dumps_toml({
-        'colors': {
-            'primary': '#fecaca',
-            'accent': '#dc2626',
-            'text': '#fee2e2',
-            'background': '#27272a',
-            'divider': '#4b5563'
-        }
-    }))
+    CONFIG_FILE.write_text(
+        dumps_toml(
+            {
+                'colors': {
+                    'primary': '#fecaca',
+                    'accent': '#dc2626',
+                    'text': '#fee2e2',
+                    'background': '#27272a',
+                    'divider': '#4b5563',
+                }
+            }
+        )
+    )
 
 
 def start_server():
@@ -875,7 +885,12 @@ else:
     Thread(target=start_server).start()
 
     w = webview.create_window(
-        'Explorer', 'http://localhost:3000', js_api=API(), frameless=True
+        'Explorer',
+        'http://localhost:3000',
+        js_api=API(),
+        frameless=True,
+        width=1280,
+        height=600,
     )
 
     webview.start(debug=True)

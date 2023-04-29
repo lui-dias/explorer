@@ -159,7 +159,7 @@
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div
-	class="w-full h-full dark:bg-background flex flex-col gap-y-2"
+	class="w-full h-full dark:bg-zinc-100 flex overflow-y-hidden"
 	class:dark:bg-zinc-800={isLoading}
 	on:click={e => {
 		// Idk other way to select all items
@@ -179,42 +179,170 @@
 	{#if isLoading}
 		<Loading />
 	{:else}
-		<WindowButtons />
-
-		<div class="flex items-center pr-3">
-			<Arrows {back} {forward} />
-			<Cwd />
-			<Search />
-		</div>
-
-		<div class="flex w-full h-full">
+		<aside
+			class="min-w-[250px] p-6 px-8 pt-[30px] h-full bg-zinc-200 relative isolate after:w-full after:h-full after:absolute after:top-0 after:left-0 after:-z-10 after:bg-[rgba(0,0,0,0.65)]"
+		>
+			<strong class="text-lg text-[#ececec] dark:text-text-light tracking-wide font-inter">
+				Quick access
+			</strong>
 			<QuickAccess />
 
-			<div class="flex flex-col gpa-y-2 w-full h-full">
-				<div class="flex mx-3">
-					<span
-						class="dark:text-text text-left border-r border-purple-100 text-sm w-[50%]"
-						>Name</span
-					>
-					<span
-						class="dark:text-text text-left border-r border-purple-100 pl-2 text-sm w-[20%]"
-						>Modified</span
-					>
-					<span
-						class="dark:text-text text-left border-r border-purple-100 pl-2 text-sm w-[15%]"
-						>Type</span
-					>
-					<span
-						class="dark:text-text text-left border-r border-purple-100 pl-2 text-sm w-[15%]"
-						>Size</span
-					>
-				</div>
-				<ul bind:this={explorerItemsNode} class="h-full mx-3">
-					<Virtualist itemHeight={24} class="flex flex-col w-full mt-2 h-full" />
-				</ul>
-			</div>
-		</div>
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				width="100%"
+				height="100%"
+				class="absolute left-0 top-0 -z-10"
+				><defs
+					><linearGradient
+						gradientTransform="rotate(70 .5 .5)"
+						x1="50%"
+						y1="0%"
+						x2="50%"
+						y2="100%"
+						id="a"
+						><stop stop-color="hsl(195, 75%, 43%)" offset="0%" /><stop
+							stop-color="hsl(235, 84%, 55%)"
+							offset="100%"
+						/></linearGradient
+					><filter
+						id="b"
+						x="-20%"
+						y="-20%"
+						width="140%"
+						height="140%"
+						filterUnits="objectBoundingBox"
+						primitiveUnits="userSpaceOnUse"
+						color-interpolation-filters="sRGB"
+						><feTurbulence
+							type="fractalNoise"
+							baseFrequency="0.005 0.003"
+							numOctaves="2"
+							seed="2"
+							stitchTiles="stitch"
+							x="0%"
+							y="0%"
+							width="100%"
+							height="100%"
+							result="turbulence"
+						/><feGaussianBlur
+							stdDeviation="20 0"
+							x="0%"
+							y="0%"
+							width="100%"
+							height="100%"
+							in="turbulence"
+							result="blur"
+						/><feBlend
+							mode="color-dodge"
+							x="0%"
+							y="0%"
+							width="100%"
+							height="100%"
+							in="SourceGraphic"
+							in2="blur"
+							result="blend"
+						/></filter
+					></defs
+				><path fill="url(#a)" filter="url(#b)" d="M0 0h700v700H0z" /></svg
+			>
 
-		<Footer />
+			<svg
+				class="absolute left-0 top-0 -z-10"
+				xmlns="http://www.w3.org/2000/svg"
+				version="1.1"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				width="100%"
+				height="100%"
+				><defs
+					><filter
+						id="nnnoise-filter"
+						x="-20%"
+						y="-20%"
+						width="140%"
+						height="140%"
+						filterUnits="objectBoundingBox"
+						primitiveUnits="userSpaceOnUse"
+						color-interpolation-filters="linearRGB"
+					>
+						<feTurbulence
+							type="fractalNoise"
+							baseFrequency="0.102"
+							numOctaves="4"
+							seed="15"
+							stitchTiles="stitch"
+							x="0%"
+							y="0%"
+							width="100%"
+							height="100%"
+							result="turbulence"
+						/>
+						<feSpecularLighting
+							surfaceScale="15"
+							specularConstant="0.75"
+							specularExponent="20"
+							lighting-color="#585766"
+							x="0%"
+							y="0%"
+							width="100%"
+							height="100%"
+							in="turbulence"
+							result="specularLighting"
+						>
+							<feDistantLight azimuth="3" elevation="100" />
+						</feSpecularLighting>
+					</filter></defs
+				><rect width="700" height="700" fill="transparent" /><rect
+					width="700"
+					height="700"
+					filter="url(#nnnoise-filter)"
+				/></svg
+			>
+		</aside>
+
+		<div
+			class="flex flex-col w-full h-full bg-gradient-to-b dark:from-[#363c43] dark:to-[#16171b]"
+		>
+			<div
+				class="flex flex-col w-full h-full z-10 px-3 shadow-[-3px_0_20px_rgba(0,0,0,0.1)]"
+				style="clip-path: inset(0px 0px 0px -25px);"
+			>
+				<WindowButtons />
+
+				<div class="flex items-center my-3">
+					<Cwd />
+				</div>
+
+				<div class="flex w-full h-full">
+					<div class="flex flex-col w-full h-full">
+						<div class="flex items-center gap-x-4 h-20">
+							<Arrows {back} {forward} />
+							<Search />
+						</div>
+						<div class="flex">
+							<span
+								class="text-[#7f8388] text-left border-r border-[#7f8388] text-sm w-[50%]"
+								>Name</span
+							>
+							<span
+								class="text-[#7f8388] text-left border-r border-[#7f8388] pl-2 text-sm w-[20%]"
+								>Modified</span
+							>
+							<span
+								class="text-[#7f8388] text-left border-r border-[#7f8388] pl-2 text-sm w-[15%]"
+								>Type</span
+							>
+							<span
+								class="text-[#7f8388] text-left border-r border-[#7f8388] pl-2 text-sm w-[15%]"
+								>Size</span
+							>
+						</div>
+						<ul bind:this={explorerItemsNode} class="h-full">
+							<Virtualist itemHeight={24} class="flex flex-col w-full mt-2 h-full" />
+						</ul>
+					</div>
+				</div>
+			</div>
+			<Footer />
+		</div>
 	{/if}
 </div>

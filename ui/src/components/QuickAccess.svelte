@@ -15,19 +15,19 @@
 	})
 </script>
 
-<aside class="min-w-[150px] text-text text-sm border-r border-divider">
+<aside class="w-full h-full text-text text-sm">
 	<ul>
 		{#each $quickAccess as file}
 			<li
-				class={`hover:bg-purple-300/20 ${
-					$selectedQuickAccess?.path === file.path ? 'bg-purple-300/20' : ''
+				class={`pl-4 hover:bg-[rgba(255,255,255,0.15)] hover:border-r-4 hover:border-black ${
+					$selectedQuickAccess?.path === file.path ? 'font-bold' : ''
 				}`}
 				on:mouseenter={() => {
 					selectedQuickAccess.set(file)
 				}}
-                on:mouseleave={() => {
-                    selectedQuickAccess.set(null)
-                }}
+				on:mouseleave={() => {
+					selectedQuickAccess.set(null)
+				}}
 			>
 				<div class="w-full h-full flex flex-col gap-y-2 px-2">
 					<button
@@ -35,11 +35,12 @@
 						class="flex gap-x-2 items-center"
 						on:click={() => {
 							setPath(file.path)
-                            events.emit('quickAccessClick')
+							events.emit('quickAccessClick')
 						}}
 					>
 						<Icon {file} />
-						<span class="whitespace-nowrap overflow-hidden text-ellipsis"
+						<span
+							class="whitespace-nowrap overflow-hidden text-ellipsis text-[#b9b9b9] font-inter hover:font-bold"
 							>{file.name}</span
 						>
 					</button>

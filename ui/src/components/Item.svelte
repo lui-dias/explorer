@@ -83,7 +83,7 @@
 		{#if file.isEditMode}
 			<input
 				type="text"
-				class="dark:text-text dark:bg-transparent text-gray-900 outline-none rounded-md px-2 h-full w-full"
+				class="dark:bg-transparent outline-none rounded-md px-2 h-full w-full"
 				spellcheck="false"
 				autocomplete="false"
 				bind:value={file.name}
@@ -99,7 +99,7 @@
 				}}
 			/>
 		{:else}
-			<div class="dark:text-text flex items-center gap-x-1.5 w-64 text-sm" title={file.path}>
+			<div class="text-[#b9b9b9] flex items-center gap-x-1.5 w-64 text-sm" title={file.path}>
 				<Icon {file} />
 				<span class="overflow-hidden text-ellipsis whitespace-nowrap w-full text-start">
 					{file.name}
@@ -108,17 +108,17 @@
 		{/if}
 	</div>
 
-	<span class="dark:text-text text-sm text-start w-[20%]">
+	<span class="text-[#b9b9b9] text-sm text-start w-[20%]">
 		{file.modified}
 	</span>
-	<span class="dark:text-text text-sm capitalize text-start w-[15%]">
+	<span class="text-[#b9b9b9] text-sm capitalize text-start w-[15%]">
 		{#if file.kind === 'folder'}
 			Folder
 		{:else}
 			{file.kind}
 		{/if}
 	</span>
-	<span class="dark:text-text text-sm text-right w-[15%]">
+	<span class="text-[#b9b9b9] text-sm text-right w-[15%]">
 		{formatBytes(size)}
 	</span>
 </button>

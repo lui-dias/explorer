@@ -5,6 +5,7 @@
 	import { outsideClick, sleep } from '../utils'
 	import ArrowLeft from './icons/ArrowLeft.svelte'
 	import Reload from './icons/Reload.svelte'
+	import CwdChevron from './icons/CWDChevron.svelte'
 
 	let searchNode: HTMLButtonElement
 	let inputSearchNode: HTMLInputElement
@@ -12,11 +13,11 @@
 	let hideNItems = 0
 
 	let isSearchSelected = false
-    // Without padding some long paths keep appearing under the reload icon
-    let padding = 40
+	// Without padding some long paths keep appearing under the reload icon
+	let padding = 40
 
 	async function fixHorizontalScroll() {
-        if (!cwdList) return
+		if (!cwdList) return
 
 		if (cwdList.scrollWidth <= cwdList.clientWidth - padding) {
 			hideNItems = 0
@@ -71,6 +72,10 @@
 <button
 	type="button"
 	class="dark:bg-zinc-700 w-full dark:text-violet-300 flex items-center overflow-x-auto"
+	style="border-radius: 12px;
+    background: linear-gradient(145deg, #32383b, #2a2f32);
+    box-shadow:  4px 4px 8px #24282a,
+                 -4px -4px 8px #3a4044;"
 	on:focus={() => {
 		isSearchSelected = true
 	}}
@@ -104,7 +109,7 @@
 								historyIndex.set($history.length)
 								cwd.set(path)
 
-                                events.emit('cwdClick')
+								events.emit('cwdClick')
 							}}
 						>
 							<span class="text-gray-500 dark:text-violet-200 whitespace-nowrap"
@@ -112,8 +117,8 @@
 							>
 						</button>
 						{#if dir !== $cwdSplit.slice(-1)[0]}
-							<span class="transform rotate-180 w-1.5 block mx-1">
-								<ArrowLeft class="fill-primary" />
+							<span class="transform rotate-180">
+								<CwdChevron class="fill-purple-200 w-5" />
 							</span>
 						{/if}
 					</li>

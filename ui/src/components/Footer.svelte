@@ -6,7 +6,7 @@
 	import Warning from './icons/Warning.svelte'
 </script>
 
-<footer class="h-10 px-2 text-text border-t border-divider flex justify-between items-center">
+<footer class="h-10 px-2 text-text flex justify-between items-center">
 	<div class="flex items-center gap-x-2">
 		{#if $footer.type !== 'none'}
 			{#if $footer.type === 'info'}
