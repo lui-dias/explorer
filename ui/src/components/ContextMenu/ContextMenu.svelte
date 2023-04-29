@@ -1,14 +1,17 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
-	import { contextMenuOpen, quickAccess, selected, selectedQuickAccess } from '../../store'
-	import { outsideClick } from '../../utils'
+	import {
+		contextMenuOpen,
+		cwd,
+		explorerItems,
+		quickAccess,
+		scrollExplorerToEnd,
+		selected,
+		selectedQuickAccess,
+		sortType,
+	} from '../../store'
+	import { formatDate, outsideClick } from '../../utils'
 	import ContextMenuItem from './ContextMenuItem.svelte'
-	import NewInner from './New/NewInner.svelte'
-	import NewItem from './New/NewItem.svelte'
-	import SortInner from './Sort/SortInner.svelte'
-	import SortItem from './Sort/SortItem.svelte'
-	import PinQuickAccessItem from './PinQuickAccess/PinQuickAccessItem.svelte'
-	import UnpinQuickAccessItem from './UnpinQuickAccess/UnpinQuickAccessItem.svelte'
 
 	let contextMenuNode: HTMLMenuElement
 	let parentHeight = 0
@@ -20,6 +23,110 @@
 			contextMenuOpen.set(false)
 		})
 	})
+
+	const components = {
+		pin: {
+			text: 'Pin to Quick Access',
+			icon: 'Maximize',
+			action: () => {
+				quickAccess.set([...$quickAccess, $selected[0]])
+				localStorage.setItem(
+					'quickAccess',
+					JSON.stringify($quickAccess.map(item => item.path)),
+				)
+				contextMenuOpen.set(false)
+			},
+		},
+		unpin: {
+			text: 'Unpin from Quick Access',
+			icon: 'Maximize',
+			action: () => {
+				if ($selectedQuickAccess) {
+					quickAccess.set([
+						...$quickAccess.filter(
+							i => $selectedQuickAccess && i.path !== $selectedQuickAccess.path,
+						),
+					])
+				} else {
+					quickAccess.set([...$quickAccess.filter(i => i.path !== $selected[0].path)])
+				}
+				localStorage.setItem(
+					'quickAccess',
+					JSON.stringify($quickAccess.map(item => item.path)),
+				)
+				contextMenuOpen.set(false)
+			},
+		},
+		new: {
+			text: 'New',
+			icon: 'Maximize',
+			action: () => {
+				contextMenuOpen.set(false)
+
+				explorerItems.set([
+					...$explorerItems,
+					{
+						name: 'file',
+						path: $cwd + '/file',
+						isEditMode: true,
+						kind: 'file',
+						size: 0,
+						parent: $cwd,
+						modified: formatDate(new Date()),
+						type: 'Text',
+						action: 'create_file',
+					},
+				])
+
+				$scrollExplorerToEnd()
+			},
+		},
+		sort: {
+			text: 'Sort',
+			icon: 'Maximize',
+			action: () => {
+				contextMenuOpen.set(false)
+			},
+			inner: [
+				{
+					text: 'Name',
+					icon: 'Maximize',
+					selected: $sortType === 'name',
+					action: () => {
+						sortType.set('name')
+						contextMenuOpen.set(false)
+					},
+				},
+				{
+					text: 'Modified',
+					icon: 'Maximize',
+					selected: $sortType === 'modified',
+					action: () => {
+						sortType.set('modified')
+						contextMenuOpen.set(false)
+					},
+				},
+				{
+					text: 'Size',
+					icon: 'Maximize',
+					selected: $sortType === 'size',
+					action: () => {
+						sortType.set('type')
+						contextMenuOpen.set(false)
+					},
+				},
+				{
+					text: 'Type',
+					icon: 'Maximize',
+					selected: $sortType === 'type',
+					action: () => {
+						sortType.set('size')
+						contextMenuOpen.set(false)
+					},
+				},
+			],
+		},
+	}
 </script>
 
 <svelte:window
@@ -63,10 +170,23 @@
 	class:invisible={!$contextMenuOpen}
 >
 	<li class="dark:hover:bg-zinc-600">
-        {#if $selectedQuickAccess}
-            <ContextMenuItem {parentHeight}>
-                <UnpinQuickAccessItem slot="item" />
-            </ContextMenuItem>
+		{#if $selectedQuickAccess}
+			<svelte:component this={ContextMenuItem} {parentHeight} {...components.unpin} />
+		{:else if $selected.length}
+			<span> Context menu item </span>
+			{#if $selected.length === 1 && $selected[0].kind === 'folder'}
+				{#if $quickAccess.some(i => i.path === $selected[0].path)}
+					<svelte:component this={ContextMenuItem} {parentHeight} {...components.unpin} />
+				{:else}
+					<svelte:component this={ContextMenuItem} {parentHeight} {...components.pin} />
+				{/if}
+			{/if}
+		{:else}
+			<svelte:component this={ContextMenuItem} {parentHeight} {...components.new} />
+			<svelte:component this={ContextMenuItem} {parentHeight} {...components.sort} />
+		{/if}
+		<!-- {#if $selectedQuickAccess}
+
 		{:else if $selected.length}
 			<span> Context menu item </span>
             {#if $selected.length === 1 && $selected[0].kind === 'folder'}
@@ -89,6 +209,6 @@
 				<SortItem slot="item" />
 				<SortInner slot="inner" />
 			</ContextMenuItem>
-		{/if}
+		{/if} -->
 	</li>
 </menu>

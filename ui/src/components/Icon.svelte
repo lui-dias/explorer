@@ -50,12 +50,23 @@
 	import FolderTest from './icons/folders/FolderTest.svelte'
 	import FolderView from './icons/folders/FolderView.svelte'
 	import FolderVscode from './icons/folders/FolderVscode.svelte'
+	import ArrowLeft from './icons/ArrowLeft.svelte'
+	import Close from './icons/Close.svelte'
+	import Config from './icons/Config.svelte'
+	import CwdChevron from './icons/CWDChevron.svelte'
+	import Info from './icons/Info.svelte'
+	import Maximize from './icons/Maximize.svelte'
+	import Minimize from './icons/Minimize.svelte'
+	import Reload from './icons/Reload.svelte'
+	import SearchIcon from './icons/SearchIcon.svelte'
+	import Warning from './icons/Warning.svelte'
 
-	export let file: ExplorerItem
+	export let icon: ExplorerItem | string
+	export let type: 'file' | 'folder' | 'other' | '' = ''
 
 	// prettier-ignore
 	const fileIcon = {
-        'file'                 : FileDefault,
+        'icon'                 : FileDefault,
         'Python'               : FilePython,
         'Prettier'             : FilePrettier,
         'Javascript'           : FileJavascript,
@@ -110,13 +121,37 @@
         'Next'        : FolderNext,
     } as Record<string, any>
 
-	function getFileIcon(file: ExplorerItem) {
-		if (file.kind === 'folder') {
-			return folderIcon[file.type] || Folder
-		}
+	// prettier-ignore
+	const otherIcon = {
+        'ArrowLeft' : ArrowLeft,
+        'Close'     : Close,
+        'Config'    : Config,
+        'CWDChevron': CwdChevron,
+        'Error'     : Error,
+        'Folder'    : Folder,
+        'Info'      : Info,
+        'Maximize'  : Maximize,
+        'Minimize'  : Minimize,
+        'Reload'    : Reload,
+        'SearchIcon': SearchIcon,
+        'Warning'   : Warning,
+    } as Record<string, any>
 
-		return fileIcon[file.type] || FileDefault
+	function getFileIcon(icon: ExplorerItem | string, type?: 'file' | 'folder' | 'other' | '') {
+		if (typeof icon === 'string' && type) {
+			if (type === 'folder') {
+				return folderIcon[icon] || Folder
+			} else if (type === 'file') {
+				return fileIcon[icon] || FileDefault
+			}
+			return otherIcon[icon]
+		} else if (typeof icon === 'object') {
+			if (icon.kind === 'folder') {
+				return folderIcon[icon.type] || Folder
+			}
+			return fileIcon[icon.type] || FileDefault
+		}
 	}
 </script>
 
-<svelte:component this={getFileIcon(file)} />
+<svelte:component this={getFileIcon(icon, type)} />

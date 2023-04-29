@@ -38,7 +38,7 @@
 							events.emit('quickAccessClick')
 						}}
 					>
-						<Icon {file} />
+						<Icon icon={file} />
 						<span
 							class="whitespace-nowrap overflow-hidden text-ellipsis text-[#b9b9b9] font-inter hover:font-bold"
 							>{file.name}</span
