@@ -71,7 +71,7 @@
 				{#if condition === undefined || condition()}
 					<button
 						type="button"
-						class={`px-4 py-2 flex justify-between items-center w-full ${
+						class={`px-4 py-2 flex justify-between items-center w-full hover:bg-zinc-500 ${
 							selected ? 'bg-zinc-600/20' : ''
 						}`}
 						on:click={action}
