@@ -20,7 +20,7 @@
 			<div class="w-full">
 				<button
 					type="button"
-					class="p-3 block ml-auto"
+					class="block p-3 ml-auto"
 					on:click={() => settingsOpen.set(false)}
 				>
 					<Close class="fill-text" />
@@ -28,7 +28,7 @@
 			</div>
 
 			<div class="flex flex-col gap-y-3">
-				<strong class="text-text text-3xl"> Colors </strong>
+				<strong class="text-3xl text-text"> Colors </strong>
 				<div class="flex items-center gap-x-3">
 					<input
 						type="color"
@@ -37,7 +37,7 @@
 						style="--primary: {$settings.colors.primary}"
 						class="rounded-full w-10 h-10 appearance-none cursor-pointer [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:rounded-full"
 					/>
-					<label for="primary-color" class="text-text font-medium"> Primary </label>
+					<label for="primary-color" class="font-medium text-text"> Primary </label>
 					<button
 						type="button"
 						on:click={() => {
@@ -57,7 +57,7 @@
 						style="--text: {$settings.colors.accent}"
 						class="rounded-full w-10 h-10 appearance-none cursor-pointer [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:rounded-full"
 					/>
-					<label for="text-color" class="text-text font-medium"> Accent </label>
+					<label for="text-color" class="font-medium text-text"> Accent </label>
 					<button
 						type="button"
 						on:click={() => {
@@ -77,7 +77,7 @@
 						style="--text: {$settings.colors.text}"
 						class="rounded-full w-10 h-10 appearance-none cursor-pointer [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:rounded-full"
 					/>
-					<label for="text-color" class="text-text font-medium"> Text </label>
+					<label for="text-color" class="font-medium text-text"> Text </label>
 					<button
 						type="button"
 						on:click={() => {
@@ -97,7 +97,7 @@
 						style="--text: {$settings.colors.background}"
 						class="rounded-full w-10 h-10 appearance-none cursor-pointer [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:rounded-full"
 					/>
-					<label for="text-color" class="text-text font-medium"> Background </label>
+					<label for="text-color" class="font-medium text-text"> Background </label>
 					<button
 						type="button"
 						on:click={() => {
@@ -117,7 +117,7 @@
 						style="--text: {$settings.colors.divider}"
 						class="rounded-full w-10 h-10 appearance-none cursor-pointer [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:rounded-full"
 					/>
-					<label for="text-color" class="text-text font-medium"> Divider </label>
+					<label for="text-color" class="font-medium text-text"> Divider </label>
 					<button
 						type="button"
 						on:click={() => {

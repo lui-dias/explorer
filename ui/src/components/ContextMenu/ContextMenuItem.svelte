@@ -49,7 +49,7 @@
 {#if condition()}
 	<button
 		type="button"
-		class="px-4 py-2 flex justify-between items-center w-full"
+		class="flex items-center justify-between w-full px-4 py-2"
 		on:mouseover={() => (isHovered = true)}
 		on:mouseleave={() => (isHovered = false)}
 		bind:this={btn}

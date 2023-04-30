@@ -16,11 +16,11 @@
 	}
 </script>
 
-<div class="flex gap-x-2 mx-3">
+<div class="flex mx-3 gap-x-2">
 	<div class="flex gap-x-5">
 		<button
 			type="button"
-			class="neuBtn w-11 h-11 rounded-full flex justify-center items-center group"
+			class="flex items-center justify-center rounded-full neuBtn w-11 h-11 group"
 			disabled={backDisabled}
 			on:click={() => {
 				back()
@@ -30,13 +30,13 @@
 			<ArrowLeft
 				class={`${
 					backDisabled ? '' : 'glow'
-				} unsetFilterClick fill-primary group-disabled:fill-gray-400 transform rotate-180`}
+				} fill-primary group-disabled:fill-gray-400 transform rotate-180`}
 			/>
 		</button>
 
 		<button
 			type="button"
-			class="w-11 h-11 group neuBtn rounded-full flex justify-center items-center"
+			class="flex items-center justify-center rounded-full w-11 h-11 group neuBtn"
 			disabled={$historyIndex === $history.length - 1}
 			on:click={() => {
 				forward()

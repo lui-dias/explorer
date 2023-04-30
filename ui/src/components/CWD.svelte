@@ -84,7 +84,7 @@
 	{#if isSearchSelected}
 		<input
 			type="text"
-			class="bg-transparent w-full h-10 px-2 outline-none focus:outline-purple-300 tracking-wide"
+			class="w-full h-10 px-2 tracking-wide bg-transparent outline-none focus:outline-purple-300"
 			value={$cwd}
 			on:keyup={async e => {
 				if (e.key === 'Enter') {

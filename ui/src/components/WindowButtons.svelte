@@ -6,13 +6,13 @@
 </script>
 
 <div class="flex justify-end">
-	<button type="button" class="hover:bg-zinc-700 py-2 px-4" on:click={__pywebview.minimize}>
+	<button type="button" class="px-4 py-2 hover:bg-zinc-700" on:click={__pywebview.minimize}>
 		<Minimize class="fill-primary" />
 	</button>
-	<button type="button" class="hover:bg-zinc-700 py-2 px-4" on:click={__pywebview.maximize}>
+	<button type="button" class="px-4 py-2 hover:bg-zinc-700" on:click={__pywebview.maximize}>
 		<Maximize class="fill-primary" />
 	</button>
-	<button type="button" class="hover:bg-red-500 py-2 px-4" on:click={__pywebview.close}>
+	<button type="button" class="px-4 py-2 hover:bg-red-500" on:click={__pywebview.close}>
 		<Close class="fill-primary" />
 	</button>
 </div>

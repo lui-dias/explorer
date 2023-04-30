@@ -67,13 +67,13 @@
 			<Loading />
 		{:else}
 			<div
-				class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col"
+				class="absolute flex flex-col transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
 			>
-				<p class="text-center text-zinc-200 font-medium text-3xl">Nothing found...</p>
-				<p class="text-center text-zinc-500 text-lg whitespace-nowrap">
+				<p class="text-3xl font-medium text-center text-zinc-200">Nothing found...</p>
+				<p class="text-lg text-center text-zinc-500 whitespace-nowrap">
 					Come back later, maybe something will show up
 				</p>
-				<p class="text-center text-zinc-500 text-3xl mt-2">😭</p>
+				<p class="mt-2 text-3xl text-center text-zinc-500">😭</p>
 			</div>
 		{/if}
 	{:else}

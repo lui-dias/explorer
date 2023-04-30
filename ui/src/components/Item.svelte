@@ -83,7 +83,7 @@
 		{#if file.isEditMode}
 			<input
 				type="text"
-				class="dark:bg-transparent outline-none rounded-md px-2 h-full w-full"
+				class="w-full h-full px-2 rounded-md outline-none dark:bg-transparent"
 				spellcheck="false"
 				autocomplete="false"
 				bind:value={file.name}
@@ -101,7 +101,7 @@
 		{:else}
 			<div class="text-[#b9b9b9] flex items-center gap-x-1.5 w-64 text-sm" title={file.path}>
 				<Icon icon={file} />
-				<span class="overflow-hidden text-ellipsis whitespace-nowrap w-full text-start">
+				<span class="w-full overflow-hidden text-ellipsis whitespace-nowrap text-start">
 					{file.name}
 				</span>
 			</div>

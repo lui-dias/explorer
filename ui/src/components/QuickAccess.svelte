@@ -15,7 +15,7 @@
 	})
 </script>
 
-<aside class="w-full h-full text-text text-sm">
+<aside class="w-full h-full text-sm text-text">
 	<ul>
 		{#each $quickAccess as file}
 			<li
@@ -29,10 +29,10 @@
 					selectedQuickAccess.set(null)
 				}}
 			>
-				<div class="w-full h-full flex flex-col gap-y-2 px-2">
+				<div class="flex flex-col w-full h-full px-2 gap-y-2">
 					<button
 						type="button"
-						class="flex gap-x-2 items-center"
+						class="flex items-center gap-x-2"
 						on:click={() => {
 							setPath(file.path)
 							events.emit('quickAccessClick')

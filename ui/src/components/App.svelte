@@ -159,7 +159,7 @@
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div
-	class="w-full h-full dark:bg-zinc-100 flex overflow-y-hidden isolate"
+	class="flex w-full h-full overflow-y-hidden dark:bg-zinc-100 isolate"
 	class:dark:bg-zinc-800={isLoading}
 	on:click={e => {
 		// Idk other way to select all items
@@ -191,7 +191,7 @@
 				xmlns="http://www.w3.org/2000/svg"
 				width="100%"
 				height="100%"
-				class="absolute left-0 top-0 -z-10"
+				class="absolute top-0 left-0 -z-10"
 				><defs
 					><linearGradient
 						gradientTransform="rotate(70 .5 .5)"
@@ -262,7 +262,7 @@
 
 				<div class="flex w-full h-full">
 					<div class="flex flex-col w-full h-full">
-						<div class="flex items-center gap-x-4 h-20">
+						<div class="flex items-center h-20 gap-x-4">
 							<Arrows {back} {forward} />
 							<Search />
 						</div>
@@ -285,7 +285,7 @@
 							>
 						</div>
 						<ul bind:this={explorerItemsNode} class="h-full">
-							<Virtualist itemHeight={24} class="flex flex-col w-full mt-2 h-full" />
+							<Virtualist itemHeight={24} class="flex flex-col w-full h-full mt-2" />
 						</ul>
 					</div>
 				</div>
