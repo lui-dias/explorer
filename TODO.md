@@ -31,6 +31,7 @@
 ### UI
 - [ ] Better context appearance
 - [ ] Better footer appearance
+- [x] Better UI (neumorphism)
 - [x] Better font (like Segoe UI)
 
 ### QOL
