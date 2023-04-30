@@ -1,4 +1,4 @@
-![](assets/explorer.webp)
+![](assets/explorer.png)
 
 _Icons from [vscode-icons](https://github.com/vscode-icons/vscode-icons)_
 
