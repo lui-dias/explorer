@@ -60,6 +60,14 @@
 	import Reload from './icons/Reload.svelte'
 	import SearchIcon from './icons/SearchIcon.svelte'
 	import Warning from './icons/Warning.svelte'
+	import NewFile from './icons/NewFile.svelte'
+    import Sort from './icons/Sort.svelte'
+    import Plus from './icons/Plus.svelte'
+    import NewFolder from './icons/NewFolder.svelte'
+    import Abc from './icons/Abc.svelte'
+    import Calendar from './icons/Calendar.svelte'
+    import Size from './icons/Size.svelte'
+    import Types from './icons/Types.svelte'
 
 	export let icon: ExplorerItem | string
 	export let type: 'file' | 'folder' | 'other' | '' = ''
@@ -135,6 +143,14 @@
         'Reload'    : Reload,
         'SearchIcon': SearchIcon,
         'Warning'   : Warning,
+        'NewFile'   : NewFile,
+        'Sort'      : Sort,
+        'Plus'      : Plus,
+        'NewFolder' : NewFolder,
+        'Abc'       : Abc,
+        'Calendar'  : Calendar,
+        'Size'      : Size,
+        'Types'     : Types,
     } as Record<string, any>
 
 	function getFileIcon(icon: ExplorerItem | string, type?: 'file' | 'folder' | 'other' | '') {

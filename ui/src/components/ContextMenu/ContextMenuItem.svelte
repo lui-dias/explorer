@@ -13,7 +13,7 @@
 		icon: string
 		condition?: () => boolean
 		action: () => void
-		selected: boolean
+		selected?: boolean
 	}[]
 
 	let menuList: HTMLDivElement | null = null

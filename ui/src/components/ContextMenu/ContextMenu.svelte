@@ -59,38 +59,65 @@
 		},
 		new: {
 			text: 'New',
-			icon: 'Maximize',
-			action: () => {
-				contextMenuOpen.set(false)
+			icon: 'Plus',
+			inner: [
+				{
+					text: 'File',
+					icon: 'NewFile',
+					action: () => {
+						contextMenuOpen.set(false)
 
-				explorerItems.set([
-					...$explorerItems,
-					{
-						name: 'file',
-						path: $cwd + '/file',
-						isEditMode: true,
-						kind: 'file',
-						size: 0,
-						parent: $cwd,
-						modified: formatDate(new Date()),
-						type: 'Text',
-						action: 'create_file',
+						explorerItems.set([
+							...$explorerItems,
+							{
+								name: 'file',
+								path: $cwd + '/file',
+								isEditMode: true,
+								kind: 'file',
+								size: 0,
+								parent: $cwd,
+								modified: formatDate(new Date()),
+								type: 'Text',
+								action: 'create_file',
+							},
+						])
+
+						$scrollExplorerToEnd()
 					},
-				])
+				},
+				{
+					text: 'Folder',
+					icon: 'NewFolder',
+					action: () => {
+						contextMenuOpen.set(false)
 
-				$scrollExplorerToEnd()
-			},
+						explorerItems.set([
+							...$explorerItems,
+							{
+								name: 'folder',
+								path: $cwd + '/folder',
+								isEditMode: true,
+								kind: 'folder',
+								size: 0,
+								parent: $cwd,
+								modified: formatDate(new Date()),
+								type: 'Folder',
+								action: 'create_folder',
+							},
+						])
+
+						$scrollExplorerToEnd()
+					},
+				},
+			],
 		},
 		sort: {
 			text: 'Sort',
-			icon: 'Maximize',
-			action: () => {
-				contextMenuOpen.set(false)
-			},
+			icon: 'Sort',
 			inner: [
 				{
 					text: 'Name',
-					icon: 'Maximize',
+					icon: 'Abc',
 					selected: $sortType === 'name',
 					action: () => {
 						sortType.set('name')
@@ -99,7 +126,7 @@
 				},
 				{
 					text: 'Modified',
-					icon: 'Maximize',
+					icon: 'Calendar',
 					selected: $sortType === 'modified',
 					action: () => {
 						sortType.set('modified')
@@ -108,7 +135,7 @@
 				},
 				{
 					text: 'Size',
-					icon: 'Maximize',
+					icon: 'Size',
 					selected: $sortType === 'size',
 					action: () => {
 						sortType.set('type')
@@ -117,7 +144,7 @@
 				},
 				{
 					text: 'Type',
-					icon: 'Maximize',
+					icon: 'Types',
 					selected: $sortType === 'type',
 					action: () => {
 						sortType.set('size')
