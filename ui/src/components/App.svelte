@@ -159,7 +159,7 @@
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div
-	class="w-full h-full dark:bg-zinc-100 flex overflow-y-hidden"
+	class="w-full h-full dark:bg-zinc-100 flex overflow-y-hidden isolate"
 	class:dark:bg-zinc-800={isLoading}
 	on:click={e => {
 		// Idk other way to select all items
@@ -180,7 +180,7 @@
 		<Loading />
 	{:else}
 		<aside
-			class="min-w-[250px] p-6 px-8 pt-[30px] h-full bg-zinc-200 relative isolate after:w-full after:h-full after:absolute after:top-0 after:left-0 after:-z-10 after:bg-[rgba(0,0,0,0.65)]"
+			class="w-[266px] p-6 px-8 pt-[30px] h-full bg-zinc-200 absolute left-0 -z-20 isolate after:w-full after:h-full after:absolute after:top-0 after:left-0 after:-z-10 after:bg-[rgba(0,0,0,0.65)]"
 		>
 			<strong class="text-lg text-[#ececec] dark:text-text-light tracking-wide font-inter">
 				Quick access
@@ -248,7 +248,7 @@
 		</aside>
 
 		<div
-			class="flex flex-col w-full h-full bg-gradient-to-b dark:from-[#32373e] dark:to-[#16171b]"
+			class="flex flex-col ml-auto w-[calc(100%-250px)] h-full bg-gradient-to-b dark:from-[#32373e] dark:to-[#16171b] rounded-l-2xl"
 		>
 			<WindowButtons />
 

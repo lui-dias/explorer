@@ -18,6 +18,18 @@
 	z-index: -1;
 }
 
+.neuBorder::before {
+	content: '';
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: calc(100% + 3px);
+	height: calc(100% + 3px);
+	background: linear-gradient(145deg, #3b3f42, #292c2e);
+	z-index: -1;
+}
+
 .neuBtn:not(:disabled):active {
 	background: linear-gradient(145deg, #272a2e, #3a4147);
 	box-shadow: 4px 4px 9px #24282b, -4px -4px 9px #30363a;

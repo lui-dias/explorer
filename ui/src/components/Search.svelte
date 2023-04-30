@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
+	import { Motion } from 'svelte-motion'
 	import { events } from '../event'
 	import { cwd, isSearching, searchItems } from '../store'
 	import { __pywebview, outsideClick, sleep } from '../utils'
 	import SearchIcon from './icons/SearchIcon.svelte'
-	import { Motion, animate, useAnimation } from 'svelte-motion'
 
 	let query = ''
 	let showSearch = false
@@ -57,14 +57,14 @@
 			let:motion
 		>
 			<div
-				class="w-full h-8 ml-2 dark:bg-zinc-700"
+				class="w-full h-10 ml-2 dark:bg-[#32373a] rounded relative neuBorder"
 				style:transform-origin="top left"
 				use:motion
 			>
 				<input
 					type="text"
 					placeholder="Search"
-					class="w-full h-full bg-transparent outline-none px-2 focus:outline-purple-300 dark:placeholder:text-violet-200 dark:text-violet-200"
+					class="w-full h-full bg-transparent outline-none px-2 rounded text-[#b9b9b9] placeholder:text-[#b9b9b9]"
 					spellcheck="false"
 					autocomplete="false"
 					bind:value={query}
