@@ -63,7 +63,7 @@
 		<span class="ml-2">{text}</span>
 
 		<div
-			class="absolute top-0 left-full bg-[#32373e] w-64"
+			class="absolute top-0 left-full bg-[#32373e]"
 			class:hidden={!isHovered}
 			bind:this={menuList}
 		>
@@ -77,7 +77,7 @@
 						<span class="w-8">
 							<Icon {icon} type="contextmenu" />
 						</span>
-						<span class="mx-auto">{text}</span>
+						<span class="ml-auto pl-6">{text}</span>
 					</button>
 				{/if}
 			{/each}
