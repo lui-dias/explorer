@@ -193,11 +193,11 @@
 />
 
 <menu
-	class="absolute z-20 flex flex-col dark:bg-zinc-600 dark:text-purple-100"
+	class="neuBorder absolute z-20 flex flex-col bg-[#383e45] dark:text-purple-100"
 	bind:this={contextMenuNode}
 	class:invisible={!$contextMenuOpen}
 >
-	<li class="dark:hover:bg-zinc-600">
+	<li class="dark:bg-[#32373e]">
 		{#if $selectedQuickAccess}
 			<svelte:component this={ContextMenuItem} {parentHeight} {...components.unpin} />
 		{:else if $selected.length}

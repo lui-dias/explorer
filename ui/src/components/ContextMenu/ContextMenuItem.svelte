@@ -63,7 +63,7 @@
 		<span class="ml-2">{text}</span>
 
 		<div
-			class="absolute top-0 left-full dark:bg-zinc-600 w-72"
+			class="absolute top-0 left-full bg-[#32373e] w-64"
 			class:hidden={!isHovered}
 			bind:this={menuList}
 		>
@@ -71,13 +71,13 @@
 				{#if condition === undefined || condition()}
 					<button
 						type="button"
-						class={`px-4 py-2 flex justify-between items-center w-full hover:bg-zinc-500 ${
-							selected ? 'bg-zinc-600/20' : ''
-						}`}
+						class={`px-4 py-2 flex items-center w-full ${selected ? '' : ''}`}
 						on:click={action}
 					>
-						<Icon {icon} type="contextmenu" />
-						<span class="ml-2">{text}</span>
+						<span class="w-8">
+							<Icon {icon} type="contextmenu" />
+						</span>
+						<span class="mx-auto">{text}</span>
 					</button>
 				{/if}
 			{/each}
