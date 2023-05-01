@@ -9,6 +9,7 @@
 	let query = ''
 	let showSearch = false
 	let container: HTMLDivElement
+    let input: HTMLInputElement
 
 	let s = [1]
 	let ss = [1]
@@ -46,6 +47,10 @@
 			}
 		})
 	})
+
+    $: if (input) {
+        input.focus()
+    }
 </script>
 
 <div bind:this={container}>
@@ -68,6 +73,7 @@
 					spellcheck="false"
 					autocomplete="false"
 					bind:value={query}
+                    bind:this={input}
 					on:keydown={e => {
 						if (e.key === 'Enter' && query) {
 							events.once('end_of_stream_find', async () => {
