@@ -59,7 +59,7 @@
 			}
 		}}
 	>
-		<Icon {icon} type="other" />
+		<Icon {icon} type="contextmenu" />
 		<span class="ml-2">{text}</span>
 
 		<div
@@ -76,7 +76,7 @@
 						}`}
 						on:click={action}
 					>
-						<Icon {icon} type="other" />
+						<Icon {icon} type="contextmenu" />
 						<span class="ml-2">{text}</span>
 					</button>
 				{/if}

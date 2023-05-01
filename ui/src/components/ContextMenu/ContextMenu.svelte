@@ -29,6 +29,7 @@
 			text: 'Pin to Quick Access',
 			icon: 'Maximize',
 			action: () => {
+                console.log('inner')
 				quickAccess.set([...$quickAccess, $selected[0]])
 				localStorage.setItem(
 					'quickAccess',

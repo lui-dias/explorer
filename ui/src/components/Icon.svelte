@@ -1,7 +1,15 @@
 <script lang="ts">
 	import type { ExplorerItem } from '../types'
 
+	import Abc from './icons/contextmenu/Abc.svelte'
+	import Calendar from './icons/contextmenu/Calendar.svelte'
 	import Folder from './icons/Folder.svelte'
+	import NewFile from './icons/contextmenu/NewFile.svelte'
+	import NewFolder from './icons/contextmenu/NewFolder.svelte'
+	import Plus from './icons/contextmenu/Plus.svelte'
+	import Size from './icons/contextmenu/Size.svelte'
+	import Sort from './icons/contextmenu/Sort.svelte'
+	import Types from './icons/contextmenu/Types.svelte'
 	import FileAstro from './icons/files/FileAstro.svelte'
 	import FileAstroConfig from './icons/files/FileAstroConfig.svelte'
 	import FileBinary from './icons/files/FileBinary.svelte'
@@ -50,27 +58,9 @@
 	import FolderTest from './icons/folders/FolderTest.svelte'
 	import FolderView from './icons/folders/FolderView.svelte'
 	import FolderVscode from './icons/folders/FolderVscode.svelte'
-	import ArrowLeft from './icons/ArrowLeft.svelte'
-	import Close from './icons/Close.svelte'
-	import Config from './icons/Config.svelte'
-	import CwdChevron from './icons/CWDChevron.svelte'
-	import Info from './icons/Info.svelte'
-	import Maximize from './icons/Maximize.svelte'
-	import Minimize from './icons/Minimize.svelte'
-	import Reload from './icons/Reload.svelte'
-	import SearchIcon from './icons/SearchIcon.svelte'
-	import Warning from './icons/Warning.svelte'
-	import NewFile from './icons/NewFile.svelte'
-    import Sort from './icons/Sort.svelte'
-    import Plus from './icons/Plus.svelte'
-    import NewFolder from './icons/NewFolder.svelte'
-    import Abc from './icons/Abc.svelte'
-    import Calendar from './icons/Calendar.svelte'
-    import Size from './icons/Size.svelte'
-    import Types from './icons/Types.svelte'
 
 	export let icon: ExplorerItem | string
-	export let type: 'file' | 'folder' | 'other' | '' = ''
+	export let type: 'file' | 'folder' | 'contextmenu' | '' = ''
 
 	// prettier-ignore
 	const fileIcon = {
@@ -130,19 +120,7 @@
     } as Record<string, any>
 
 	// prettier-ignore
-	const otherIcon = {
-        'ArrowLeft' : ArrowLeft,
-        'Close'     : Close,
-        'Config'    : Config,
-        'CWDChevron': CwdChevron,
-        'Error'     : Error,
-        'Folder'    : Folder,
-        'Info'      : Info,
-        'Maximize'  : Maximize,
-        'Minimize'  : Minimize,
-        'Reload'    : Reload,
-        'SearchIcon': SearchIcon,
-        'Warning'   : Warning,
+	const contextmenuIcon = {
         'NewFile'   : NewFile,
         'Sort'      : Sort,
         'Plus'      : Plus,
@@ -153,14 +131,17 @@
         'Types'     : Types,
     } as Record<string, any>
 
-	function getFileIcon(icon: ExplorerItem | string, type?: 'file' | 'folder' | 'other' | '') {
+	function getFileIcon(
+		icon: ExplorerItem | string,
+		type?: 'file' | 'folder' | 'contextmenu' | '',
+	) {
 		if (typeof icon === 'string' && type) {
 			if (type === 'folder') {
 				return folderIcon[icon] || Folder
 			} else if (type === 'file') {
 				return fileIcon[icon] || FileDefault
 			}
-			return otherIcon[icon]
+			return contextmenuIcon[icon]
 		} else if (typeof icon === 'object') {
 			if (icon.kind === 'folder') {
 				return folderIcon[icon.type] || Folder
