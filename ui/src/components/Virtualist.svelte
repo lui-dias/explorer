@@ -14,7 +14,6 @@
 	let renderIndex = [] as number[]
 	let items = [] as ExplorerItem[]
 
-	let innerHeight = items.length * itemHeight
 	let startIndex = Math.floor(scrollTop / itemHeight)
 
 	scrollExplorerToEnd.set(() => {
@@ -42,7 +41,7 @@
 
 	$: if ($searchItems) {
 		items = $searchItems
-	}
+    }
 
 	onMount(() => {
 		endIndex = Math.min(
@@ -77,7 +76,7 @@
 			</div>
 		{/if}
 	{:else}
-		<div class="relative" style={`height: ${innerHeight}px`}>
+		<div class="relative">
 			{#each renderIndex as index}
 				<li class="absolute w-full" style={`top: ${index * itemHeight}px`}>
 					<Item file={items[index]} />
