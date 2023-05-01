@@ -11,6 +11,7 @@
 	import Size from './icons/contextmenu/Size.svelte'
 	import Sort from './icons/contextmenu/Sort.svelte'
 	import Types from './icons/contextmenu/Types.svelte'
+	import Unpin from './icons/contextmenu/Unpin.svelte'
 	import FileAstro from './icons/files/FileAstro.svelte'
 	import FileAstroConfig from './icons/files/FileAstroConfig.svelte'
 	import FileBinary from './icons/files/FileBinary.svelte'
@@ -130,7 +131,8 @@
         'Calendar'  : Calendar,
         'Size'      : Size,
         'Types'     : Types,
-        'Pin'       : Pin
+        'Pin'       : Pin,
+        'Unpin'     : Unpin
     } as Record<string, any>
 
 	function getFileIcon(

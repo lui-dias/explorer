@@ -44,7 +44,7 @@
 		},
 		unpin: {
 			text: 'Unpin from Quick Access',
-			icon: 'Maximize',
+			icon: 'Unpin',
 			action: () => {
 				if ($selectedQuickAccess) {
 					quickAccess.set([
