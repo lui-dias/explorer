@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
 	import { events } from '../event'
-	import { cwd, cwdSplit, history, historyIndex, refreshExplorer, selected } from '../store'
+	import { cwd, cwdSplit, history, historyIndex, selected } from '../store'
 	import { outsideClick, sleep } from '../utils'
 	import CwdChevron from './icons/CWDChevron.svelte'
 	import Reload from './icons/Reload.svelte'
@@ -103,7 +103,7 @@
 							class="dark:hover:bg-[#7f8388]/20 p-2"
 							on:click={() => {
 								const path = $cwdSplit.slice(0, hideNItems + i + 1).join('/')
-                                const isLastItem = i === $cwdSplit.length - 1 - hideNItems
+								const isLastItem = i === $cwdSplit.length - 1 - hideNItems
 
 								if (isLastItem) {
 									events.emit('stop_find_and_reload')
@@ -126,7 +126,11 @@
 					</li>
 				{/each}
 			</ul>
-			<button type="button" class="absolute inset-y-0 right-2" on:click={$refreshExplorer}>
+			<button
+				type="button"
+				class="absolute inset-y-0 right-2"
+				on:click={() => events.emit('stop_find_and_reload')}
+			>
 				<Reload class="stroke-primary" />
 			</button>
 		</div>
