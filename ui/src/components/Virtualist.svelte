@@ -41,7 +41,7 @@
 
 	$: if ($searchItems) {
 		items = $searchItems
-    }
+	}
 
 	onMount(() => {
 		endIndex = Math.min(

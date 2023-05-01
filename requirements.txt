@@ -1,3 +1,4 @@
 pywebview
 regex
 toml
+pybase64

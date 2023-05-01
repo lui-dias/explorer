@@ -8,6 +8,7 @@ from subprocess import Popen, run
 from threading import Thread
 from collections import deque
 from typing import Literal, TypedDict
+from pybase64 import b64encode
 
 import webview
 from send2trash import send2trash
@@ -797,6 +798,9 @@ class API:
 
     def set_config(self, config: dict):
         CONFIG_FILE.write_text(dumps_toml(config))
+
+    def read(self, path: str):
+        return b64encode(Path(path).read_bytes()).decode()
 
 
 streams_files = {}

@@ -26,6 +26,7 @@
 	import Settings from './Settings.svelte'
 	import Virtualist from './Virtualist.svelte'
 	import WindowButtons from './WindowButtons.svelte'
+	import Preview from './Preview.svelte'
 
 	let explorerItemsNode: HTMLUListElement
 
@@ -158,7 +159,7 @@
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div
-	class="flex w-full h-full overflow-y-hidden dark:bg-zinc-100 isolate"
+	class="flex w-full h-full dark:bg-zinc-100 isolate"
 	class:dark:bg-zinc-800={isLoading}
 	on:click={e => {
 		// Idk other way to select all items
@@ -265,27 +266,35 @@
 							<Arrows {back} {forward} />
 							<Search />
 						</div>
-						<div class="flex">
-							<span
-								class="text-[#7f8388] text-left border-r border-[#7f8388] text-sm w-[50%]"
-								>Name</span
-							>
-							<span
-								class="text-[#7f8388] text-left border-r border-[#7f8388] pl-2 text-sm w-[20%]"
-								>Modified</span
-							>
-							<span
-								class="text-[#7f8388] text-left border-r border-[#7f8388] pl-2 text-sm w-[15%]"
-								>Type</span
-							>
-							<span
-								class="text-[#7f8388] text-left border-r border-[#7f8388] pl-2 text-sm w-[15%]"
-								>Size</span
-							>
+						<div class="flex w-full h-full">
+							<div class="w-full h-full">
+								<div class="flex">
+									<span
+										class="text-[#7f8388] text-left border-r border-[#7f8388] text-sm w-[50%]"
+										>Name</span
+									>
+									<span
+										class="text-[#7f8388] text-left border-r border-[#7f8388] pl-2 text-sm w-[20%]"
+										>Modified</span
+									>
+									<span
+										class="text-[#7f8388] text-left border-r border-[#7f8388] pl-2 text-sm w-[15%]"
+										>Type</span
+									>
+									<span
+										class="text-[#7f8388] text-left border-r border-[#7f8388] pl-2 text-sm w-[15%]"
+										>Size</span
+									>
+								</div>
+								<ul bind:this={explorerItemsNode} class="h-full">
+									<Virtualist
+										itemHeight={24}
+										class="flex flex-col w-full h-[calc(100%-28px)] mt-2"
+									/>
+								</ul>
+							</div>
+							<Preview />
 						</div>
-						<ul bind:this={explorerItemsNode} class="h-full">
-							<Virtualist itemHeight={24} class="flex flex-col w-full h-full mt-2" />
-						</ul>
 					</div>
 				</div>
 			</div>

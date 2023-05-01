@@ -213,6 +213,11 @@ export const __pywebview = {
 		// @ts-ignore
 		return await pywebview.api.set_config(config)
 	},
+
+    read: async (path: string): Promise<string> => {
+        // @ts-ignore
+        return await pywebview.api.read(path)
+    }
 }
 
 export function isClient() {
@@ -274,4 +279,8 @@ export function sortItems(items: ExplorerItem[]) {
 	}
 
 	return items
+}
+
+export const b64ToUint8Array = (b64: string) => {
+    return Uint8Array.from(atob(b64), c => c.charCodeAt(0))
 }
