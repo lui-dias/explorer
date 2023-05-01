@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
-	import { quickAccess, selectedQuickAccess } from '../store'
+	import { contextMenuOpen, quickAccess, selectedQuickAccess } from '../store'
 	import { __pywebview, setPath } from '../utils'
 	import Icon from './Icon.svelte'
 	import { events } from '../event'
@@ -26,7 +26,9 @@
 					selectedQuickAccess.set(file)
 				}}
 				on:mouseleave={() => {
-					selectedQuickAccess.set(null)
+					if (!$contextMenuOpen) {
+						selectedQuickAccess.set(null)
+					}
 				}}
 			>
 				<div class="flex flex-col w-full h-full px-2 gap-y-2">

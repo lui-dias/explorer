@@ -21,6 +21,10 @@
 
 		outsideClick(contextMenuNode, () => {
 			contextMenuOpen.set(false)
+
+            if ($selectedQuickAccess) {
+                selectedQuickAccess.set(null)
+            }
 		})
 	})
 
