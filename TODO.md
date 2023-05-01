@@ -16,7 +16,7 @@
 - [x] Delete file and move to trash
 - [x] Rename on F2
 - [x] Select multiples files/folders
-- [ ] Add file preview
+- [x] Add file preview
 - [ ] An Icon
 - [ ] Move window on drag header
 - [ ] Resize columns
@@ -29,7 +29,7 @@
 - [x] Memory leak that happens at any time and makes the server crash
 
 ### UI
-- [ ] Better context appearance
+- [x] Better context appearance
 - [ ] Better footer appearance
 - [x] Better UI (neumorphism)
 - [x] Better font (like Segoe UI)
