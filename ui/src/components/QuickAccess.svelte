@@ -15,41 +15,39 @@
 	})
 </script>
 
-<aside class="w-full h-full text-sm text-text">
-	<ul>
-		{#each $quickAccess as file}
-			<li
-				class={`pl-4 hover:font-bold hover:scale-[115%] transition-transform ${
-					$selectedQuickAccess?.path === file.path ? 'font-bold' : ''
-				}`}
-				on:mouseenter={() => {
-					if (!$contextMenuOpen) {
-						selectedQuickAccess.set(file)
-					}
-				}}
-				on:mouseleave={() => {
-					if (!$contextMenuOpen) {
-						selectedQuickAccess.set(null)
-					}
-				}}
-			>
-				<div class="flex flex-col w-full h-full px-2 gap-y-2">
-					<button
-						type="button"
-						class="flex items-center gap-x-2"
-						on:click={() => {
-							setPath(file.path)
-							events.emit('quickAccessClick')
-						}}
+<ul class="text-sm text-text">
+	{#each $quickAccess as file}
+		<li
+			class={`pl-4 hover:font-bold hover:scale-[115%] transition-transform ${
+				$selectedQuickAccess?.path === file.path ? 'font-bold' : ''
+			}`}
+			on:mouseenter={() => {
+				if (!$contextMenuOpen) {
+					selectedQuickAccess.set(file)
+				}
+			}}
+			on:mouseleave={() => {
+				if (!$contextMenuOpen) {
+					selectedQuickAccess.set(null)
+				}
+			}}
+		>
+			<div class="flex flex-col w-full h-full px-2 gap-y-2">
+				<button
+					type="button"
+					class="flex items-center gap-x-2"
+					on:click={() => {
+						setPath(file.path)
+						events.emit('quickAccessClick')
+					}}
+				>
+					<Icon icon={file} />
+					<span
+						class="whitespace-nowrap overflow-hidden text-ellipsis text-[#b9b9b9] font-inter hover:font-bold"
+						>{file.name}</span
 					>
-						<Icon icon={file} />
-						<span
-							class="whitespace-nowrap overflow-hidden text-ellipsis text-[#b9b9b9] font-inter hover:font-bold"
-							>{file.name}</span
-						>
-					</button>
-				</div>
-			</li>
-		{/each}
-	</ul>
-</aside>
+				</button>
+			</div>
+		</li>
+	{/each}
+</ul>
