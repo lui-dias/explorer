@@ -23,7 +23,9 @@
 					$selectedQuickAccess?.path === file.path ? 'font-bold' : ''
 				}`}
 				on:mouseenter={() => {
-					selectedQuickAccess.set(file)
+					if (!$contextMenuOpen) {
+						selectedQuickAccess.set(file)
+					}
 				}}
 				on:mouseleave={() => {
 					if (!$contextMenuOpen) {
