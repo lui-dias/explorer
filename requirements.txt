@@ -2,3 +2,4 @@ pywebview
 regex
 toml
 pybase64
+send2trash
