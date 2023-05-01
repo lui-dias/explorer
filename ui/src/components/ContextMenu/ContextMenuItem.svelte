@@ -54,7 +54,7 @@
 		on:mouseleave={() => (isHovered = false)}
 		bind:this={btn}
 		on:click={e => {
-			if (inner.length < 0) {
+			if (inner.length === 0) {
 				action()
 			}
 		}}
