@@ -3,9 +3,8 @@
 	import { events } from '../event'
 	import { cwd, cwdSplit, history, historyIndex, refreshExplorer, selected } from '../store'
 	import { outsideClick, sleep } from '../utils'
-	import ArrowLeft from './icons/ArrowLeft.svelte'
-	import Reload from './icons/Reload.svelte'
 	import CwdChevron from './icons/CWDChevron.svelte'
+	import Reload from './icons/Reload.svelte'
 
 	let searchNode: HTMLButtonElement
 	let inputSearchNode: HTMLInputElement
@@ -104,17 +103,20 @@
 							class="dark:hover:bg-[#7f8388]/20 p-2"
 							on:click={() => {
 								const path = $cwdSplit.slice(0, hideNItems + i + 1).join('/')
+                                const isLastItem = i === $cwdSplit.length - 1 - hideNItems
 
-								history.set([...$history, path])
-								historyIndex.set($history.length)
-								cwd.set(path)
+								if (isLastItem) {
+									events.emit('stop_find_and_reload')
+								} else {
+									history.set([...$history, path])
+									historyIndex.set($history.length)
+									cwd.set(path)
+								}
 
-								events.emit('cwdClick')
+								events.emit('cwdClick', path)
 							}}
 						>
-							<span class="text-[#b9b9b9] whitespace-nowrap"
-								>{dir}</span
-							>
+							<span class="text-[#b9b9b9] whitespace-nowrap">{dir}</span>
 						</button>
 						{#if dir !== $cwdSplit.slice(-1)[0]}
 							<span class="transform rotate-180">

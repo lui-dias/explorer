@@ -32,13 +32,14 @@ export const events = new TypedEmitter<{
     end_of_stream_ls     : () => Promise<void>
     back                 : () => Promise<void>
     forward              : () => Promise<void>
-    cwdClick             : () => Promise<void>
+    cwdClick             : (path: string) => Promise<void>
     quickAccessClick     : () => Promise<void>
     backClick            : () => Promise<void>
     forwardClick         : () => Promise<void>
     windowButtonsClick   : () => Promise<void>
     itemClick            : () => Promise<void>
     itemDoubleClick      : () => Promise<void>
+    stop_find_and_reload : () => Promise<void>
 }>()
 
 // Without this, the footer will be cleared after 5 seconds
@@ -199,4 +200,12 @@ events.on('forward', async () => {
 	if ($historyIndex < $history.length - 1) {
 		historyIndex.set($historyIndex + 1)
 	}
+})
+
+events.on('stop_find_and_reload', async () => {
+	events.emit('stop_all_find')
+
+	events.once('end_of_stream_find', async () => {
+		events.emit('reload')
+	})
 })

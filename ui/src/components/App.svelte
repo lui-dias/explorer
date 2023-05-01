@@ -79,8 +79,7 @@
 		cwd.subscribe(v => {
 			if (v) {
 				localStorage.setItem('cwd', $cwd)
-				events.emit('stop_all_find')
-				events.emit('reload')
+				events.emit('stop_find_and_reload')
 			}
 		})
 
