@@ -41,7 +41,7 @@
 				si = 2
 
 				// Reset search
-				await sleep(0.5)
+				await sleep(0.4)
 				si = 0
 			}
 		})
@@ -121,7 +121,7 @@
 	{:else}
 		<Motion
 			animate={{ scale: s }}
-			transition={{ duration: 0.45, ease: 'easeInOut' }}
+			transition={{ duration: 0.4, ease: 'easeInOut' }}
 			let:motion
 		>
 			<button
@@ -130,7 +130,7 @@
 				on:click={async () => {
 					si = (si + 1) % 2
 
-					await sleep(0.5)
+					await sleep(0.4)
 					ssi = 0
 					showSearch = true
 				}}
