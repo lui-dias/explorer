@@ -1,11 +1,12 @@
 <script lang="ts">
 	import type { ExplorerItem } from '../types'
 
+	import Folder from './icons/Folder.svelte'
 	import Abc from './icons/contextmenu/Abc.svelte'
 	import Calendar from './icons/contextmenu/Calendar.svelte'
-	import Folder from './icons/Folder.svelte'
 	import NewFile from './icons/contextmenu/NewFile.svelte'
 	import NewFolder from './icons/contextmenu/NewFolder.svelte'
+	import Pin from './icons/contextmenu/Pin.svelte'
 	import Plus from './icons/contextmenu/Plus.svelte'
 	import Size from './icons/contextmenu/Size.svelte'
 	import Sort from './icons/contextmenu/Sort.svelte'
@@ -129,6 +130,7 @@
         'Calendar'  : Calendar,
         'Size'      : Size,
         'Types'     : Types,
+        'Pin'       : Pin
     } as Record<string, any>
 
 	function getFileIcon(

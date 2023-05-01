@@ -27,7 +27,7 @@
 	const components = {
 		pin: {
 			text: 'Pin to Quick Access',
-			icon: 'Maximize',
+			icon: 'Pin',
 			action: () => {
                 console.log('inner')
 				quickAccess.set([...$quickAccess, $selected[0]])
