@@ -164,10 +164,16 @@
 	on:click={e => {
 		// Idk other way to select all items
 		const allItems = document.querySelectorAll('._item')
+		const preview = document.querySelector('._preview')
 
 		for (const item of allItems) {
 			// @ts-ignore
 			if (item.contains(e.target)) {
+				return
+			}
+
+			// @ts-ignore
+			if (e.target === preview || preview?.contains(e.target)) {
 				return
 			}
 		}

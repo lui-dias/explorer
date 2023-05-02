@@ -92,7 +92,7 @@
 	{@html githubDark}
 </svelte:head>
 
-<div class="w-full max-w-[250px] h-full pl-4 overflow-y-auto">
+<div class="_preview w-full max-w-[250px] h-full pl-4 overflow-y-auto">
 	{#if $selected.length}
 		{#if isLoading}
 			<span />
