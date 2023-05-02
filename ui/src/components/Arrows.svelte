@@ -16,7 +16,7 @@
 	}
 </script>
 
-<div class="flex mx-3 gap-x-2">
+<div class="flex gap-x-2">
 	<div class="flex gap-x-5">
 		<button
 			type="button"
