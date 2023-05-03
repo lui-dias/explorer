@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte'
 	import { contextMenuOpen, quickAccess, selectedQuickAccess } from '../store'
 	import { __pywebview, setPath } from '../utils'
-	import Icon from './Icon.svelte'
+	import Icon from './ui/Icon.svelte'
 	import { events } from '../event'
 
 	onMount(async () => {
@@ -41,7 +41,7 @@
 						events.emit('quickAccessClick')
 					}}
 				>
-					<Icon icon={file} />
+					<Icon icon={file.type} glow={false} />
 					<span
 						class="whitespace-nowrap overflow-hidden text-ellipsis text-[#b9b9b9] font-inter hover:font-bold"
 						>{file.name}</span

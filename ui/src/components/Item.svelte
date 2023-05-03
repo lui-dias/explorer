@@ -6,7 +6,7 @@
 
 	import { events } from '../event'
 	import { __pywebview, formatBytes, outsideClick, setPath } from '../utils'
-	import Icon from './Icon.svelte'
+	import Icon from './ui/Icon.svelte'
 
 	export let file: ExplorerItem
 	let size = file.size ?? '0 B'
@@ -100,7 +100,7 @@
 			/>
 		{:else}
 			<div class="text-[#b9b9b9] flex items-center gap-x-1.5 w-64 text-sm" title={file.path}>
-				<Icon icon={file} />
+				<Icon icon={file.type} glow={false}/>
 				<span class="w-full overflow-hidden text-ellipsis whitespace-nowrap text-start">
 					{file.name}
 				</span>

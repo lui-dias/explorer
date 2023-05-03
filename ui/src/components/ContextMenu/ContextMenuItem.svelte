@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Icon from '../Icon.svelte'
+	import Icon from '../ui/Icon.svelte'
 
 	export let parentHeight: number
 	let isHovered = false
@@ -59,7 +59,7 @@
 			}
 		}}
 	>
-		<Icon {icon} type="contextmenu" />
+		<Icon {icon} glow={false} />
 		<span class="ml-2">{text}</span>
 
 		<div
@@ -75,7 +75,7 @@
 						on:click={action}
 					>
 						<span class="w-8">
-							<Icon {icon} type="contextmenu" />
+							<Icon {icon} glow={false} />
 						</span>
 						<span class="ml-auto pl-6">{text}</span>
 					</button>

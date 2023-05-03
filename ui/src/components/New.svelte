@@ -1,10 +1,8 @@
 <script lang="ts">
 	import { events } from '../event'
 	import Animate from './Animate.svelte'
-	import NewFile from './icons/NewFile.svelte'
-	import NewFolder from './icons/NewFolder.svelte'
-	import Plus from './icons/Plus.svelte'
 	import Button from './ui/Button.svelte'
+	import Icon from './ui/Icon.svelte'
 
 	const animate = {
 		y: [-55, 0],
@@ -29,17 +27,17 @@
 	on:mouseenter={() => (isHover = true)}
 	on:mouseleave={() => (isHover = false)}
 >
-	<button type="button" class="z-20">
+	<div class="z-20">
 		<Button>
-			<Plus slot="icon" />
+			<Icon icon="OtherPlus" slot="icon" />
 		</Button>
-	</button>
+	</div>
 
 	<div class="absolute top-[calc(100%-8px)] flex flex-col gap-y-2 z-10 pt-4">
 		<Animate {animate} transition={{ ease: 'linear' }} let:motion bind:cycle={cycleBtn}>
 			<div use:motion>
 				<Button on:click={() => events.emit('createNewFile')}>
-					<NewFile slot="icon" />
+					<Icon icon="OtherNewFile" slot="icon" />
 				</Button>
 			</div>
 		</Animate>
@@ -51,7 +49,7 @@
 		>
 			<div use:motion>
 				<Button on:click={() => events.emit('createNewFolder')}>
-					<NewFolder slot="icon" />
+					<Icon icon="OtherNewFolder" slot="icon" />
 				</Button>
 			</div>
 		</Animate>

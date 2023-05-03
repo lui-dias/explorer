@@ -4,12 +4,13 @@
 	import { events } from '../event'
 	import { cwd, isSearching, searchItems } from '../store'
 	import { __pywebview, outsideClick, sleep } from '../utils'
-	import SearchIcon from './icons/SearchIcon.svelte'
+	import Button from './ui/Button.svelte'
+	import Icon from './ui/Icon.svelte'
 
 	let query = ''
 	let showSearch = false
 	let container: HTMLDivElement
-    let input: HTMLInputElement
+	let input: HTMLInputElement
 
 	let s = [1]
 	let ss = [1]
@@ -48,9 +49,9 @@
 		})
 	})
 
-    $: if (input) {
-        input.focus()
-    }
+	$: if (input) {
+		input.focus()
+	}
 </script>
 
 <div bind:this={container}>
@@ -73,7 +74,7 @@
 					spellcheck="false"
 					autocomplete="false"
 					bind:value={query}
-                    bind:this={input}
+					bind:this={input}
 					on:keydown={e => {
 						if (e.key === 'Enter' && query) {
 							events.once('end_of_stream_find', async () => {
@@ -125,27 +126,20 @@
 			</div>
 		</Motion>
 	{:else}
-		<Motion
-			animate={{ scale: s }}
-			transition={{ duration: 0.4, ease: 'easeInOut' }}
-			let:motion
-		>
-			<button
-				type="button"
-				class="neuBtn flex items-center justify-center p-2.5 rounded-full"
-				on:click={async () => {
-					si = (si + 1) % 2
+		<Motion animate={{ scale: s }} transition={{ duration: 0.4, ease: 'easeInOut' }} let:motion>
+			<div use:motion>
+				<Button
+					on:click={async () => {
+						si = (si + 1) % 2
 
-					await sleep(0.4)
-					ssi = 0
-					showSearch = true
-				}}
-				use:motion
-			>
-				<span class="glow">
-					<SearchIcon class="fill-primary " />
-				</span>
-			</button>
+						await sleep(0.4)
+						ssi = 0
+						showSearch = true
+					}}
+				>
+					<Icon icon="OtherSearch" slot="icon" />
+				</Button>
+			</div>
 		</Motion>
 	{/if}
 </div>

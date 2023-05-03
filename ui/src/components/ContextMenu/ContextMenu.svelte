@@ -32,7 +32,7 @@
 	const components = {
 		pin: {
 			text: 'Pin to Quick Access',
-			icon: 'Pin',
+			icon: 'OtherPin',
 			action: () => {
 				console.log('inner')
 				quickAccess.set([...$quickAccess, $selected[0]])
@@ -45,7 +45,7 @@
 		},
 		unpin: {
 			text: 'Unpin from Quick Access',
-			icon: 'Unpin',
+			icon: 'OtherUnpin',
 			action: () => {
 				if ($selectedQuickAccess) {
 					quickAccess.set([
@@ -65,27 +65,27 @@
 		},
 		new: {
 			text: 'New',
-			icon: 'Plus',
+			icon: 'OtherPlus',
 			inner: [
 				{
 					text: 'File',
-					icon: 'NewFile',
+					icon: 'OtherNewFile',
 					action: () => events.emit('createNewFile'),
 				},
 				{
 					text: 'Folder',
-					icon: 'NewFolder',
+					icon: 'OtherNewFolder',
 					action: () => events.emit('createNewFolder'),
 				},
 			],
 		},
 		sort: {
 			text: 'Sort',
-			icon: 'Sort',
+			icon: 'OtherSort',
 			inner: [
 				{
 					text: 'Name',
-					icon: 'Abc',
+					icon: 'OtherAbc',
 					selected: $sortType === 'name',
 					action: () => {
 						sortType.set('name')
@@ -94,7 +94,7 @@
 				},
 				{
 					text: 'Modified',
-					icon: 'Calendar',
+					icon: 'OtherCalendar',
 					selected: $sortType === 'modified',
 					action: () => {
 						sortType.set('modified')
@@ -103,7 +103,7 @@
 				},
 				{
 					text: 'Size',
-					icon: 'Size',
+					icon: 'OtherSize',
 					selected: $sortType === 'size',
 					action: () => {
 						sortType.set('type')
@@ -112,7 +112,7 @@
 				},
 				{
 					text: 'Type',
-					icon: 'Types',
+					icon: 'OtherTypes',
 					selected: $sortType === 'type',
 					action: () => {
 						sortType.set('size')
@@ -180,30 +180,5 @@
 			<svelte:component this={ContextMenuItem} {parentHeight} {...components.new} />
 			<svelte:component this={ContextMenuItem} {parentHeight} {...components.sort} />
 		{/if}
-		<!-- {#if $selectedQuickAccess}
-
-		{:else if $selected.length}
-			<span> Context menu item </span>
-            {#if $selected.length === 1 && $selected[0].kind === 'folder'}
-                {#if $quickAccess.some(i => i.path === $selected[0].path)}
-                    <ContextMenuItem {parentHeight}>
-                        <UnpinQuickAccessItem slot="item" />
-                    </ContextMenuItem>
-                {:else}
-                    <ContextMenuItem {parentHeight}>
-                        <PinQuickAccessItem slot="item" />
-                    </ContextMenuItem>
-                {/if}
-            {/if}
-		{:else}
-			<ContextMenuItem {parentHeight}>
-				<NewItem slot="item" />
-				<NewInner slot="inner" />
-			</ContextMenuItem>
-			<ContextMenuItem {parentHeight}>
-				<SortItem slot="item" />
-				<SortInner slot="inner" />
-			</ContextMenuItem>
-		{/if} -->
 	</li>
 </menu>

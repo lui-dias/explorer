@@ -58,22 +58,22 @@ def get_file_type(path: Path):
 
     if path.is_dir():
         if any(name.endswith(i.lower()) for i in ['.vscode', 'vscode']):
-            return 'Vscode'
+            return 'FolderVscode'
 
         if any(name.endswith(i.lower()) for i in ['node_modules']):
-            return 'Node Modules'
+            return 'FolderNode Modules'
 
         if any(name.endswith(i.lower()) for i in ['public', '.public']):
-            return 'Public'
+            return 'FolderPublic'
 
         if any(name.endswith(i.lower()) for i in ['src', 'source', 'sources']):
-            return 'Src'
+            return 'FolderSrc'
 
         if any(
             name.endswith(i.lower())
             for i in ['component', 'components', '.components', 'gui', 'ui', 'widgets']
         ):
-            return 'Component'
+            return 'FolderComponent'
 
         if any(
             name.endswith(i.lower())
@@ -93,7 +93,7 @@ def get_file_type(path: Path):
                 '_pages',
             ]
         ):
-            return 'View'
+            return 'FolderView'
 
         if any(
             name.endswith(i.lower())
@@ -114,28 +114,28 @@ def get_file_type(path: Path):
                 'targets',
             ]
         ):
-            return 'Dist'
+            return 'FolderDist'
 
         if any(
             name.endswith(i.lower())
             for i in ['assets', '.assets', 'asset', '.asset', 'static']
         ):
-            return 'Assets'
+            return 'FolderAssets'
 
         if any(
             name.endswith(i.lower())
             for i in ['git', '.git', 'submodules', '.submodules']
         ):
-            return 'Git'
+            return 'FolderGit'
 
         if any(
             name.endswith(i.lower())
             for i in ['cli', 'cmd', 'command', 'commands', 'commandline', 'console']
         ):
-            return 'CLI'
+            return 'FolderCLI'
 
         if any(name.endswith(i.lower()) for i in ['.github']):
-            return 'Github'
+            return 'FolderGithub'
 
         if any(
             name.endswith(i.lower())
@@ -153,21 +153,21 @@ def get_file_type(path: Path):
                 'integration',
             ]
         ):
-            return 'Test'
+            return 'FolderTest'
 
         if any(name.endswith(i.lower()) for i in ['docs', '.docs', 'doc', '.doc']):
-            return 'Docs'
+            return 'FolderDocs'
 
         if any(name.endswith(i.lower()) for i in ['.next']):
-            return 'Next'
+            return 'FolderNext'
 
-        return 'folder'
+        return 'Folder'
     elif path.is_file():
         if any(name.endswith(i.lower()) for i in ['.py']):
-            return 'Python'
+            return 'FilePython'
 
         if any(name.endswith(i.lower()) for i in ['.prettierrc', '.prettierignore']):
-            return 'Prettier'
+            return 'FilePrettier'
 
         if any(
             name.endswith(i.lower())
@@ -191,7 +191,7 @@ def get_file_type(path: Path):
                 'tsconfig.lib.prod.json',
             ]
         ):
-            return 'Tsconfig'
+            return 'FileTsconfig'
 
         if any(
             name.endswith(i.lower())
@@ -205,16 +205,16 @@ def get_file_type(path: Path):
                 '.issuetracker',
             ]
         ):
-            return 'Git'
+            return 'FileGit'
 
         if any(name.endswith(i.lower()) for i in ['.markdown', '.md', '.mdown']):
-            return 'Markdown'
+            return 'FileMarkdown'
 
         if any(name.endswith(i.lower()) for i in ['.toml']):
-            return 'Toml'
+            return 'FileToml'
 
         if any(name.endswith(i.lower()) for i in ['.astro']):
-            return 'Astro'
+            return 'FileAstro'
 
         if any(
             name.endswith(i.lower())
@@ -225,7 +225,7 @@ def get_file_type(path: Path):
                 'astro.config.ts',
             ]
         ):
-            return 'Astro Config'
+            return 'FileAstro Config'
 
         if any(
             name.endswith(i.lower())
@@ -252,34 +252,34 @@ def get_file_type(path: Path):
                 '.tailwindrc.json',
             ]
         ):
-            return 'Tailwind'
+            return 'FileTailwind'
 
         if any(name.endswith(i.lower()) for i in ['.d.ts', '.d.cts', '.d.mts']):
-            return 'Typescript Definition'
+            return 'FileTypescript Definition'
 
         if any(name.endswith(i.lower()) for i in ['.db']):
-            return 'Database'
+            return 'FileDatabase'
 
         if any(name.endswith(i.lower()) for i in ['.svg']):
-            return 'SVG'
+            return 'FileSVG'
 
         if any(name.endswith(i.lower()) for i in ['.html']):
-            return 'HTML'
+            return 'FileHTML'
 
         if any(name.endswith(i.lower()) for i in ['.css']):
-            return 'CSS'
+            return 'FileCSS'
 
         if any(
             name.endswith(i.lower())
             for i in ['.woff', '.woff2', '.ttf', '.otf', '.eot', '.pfa', '.pfb', '.sfd']
         ):
-            return 'Font'
+            return 'FileFont'
 
         if any(name.endswith(i.lower()) for i in ['.csv', '.tsv', '.txt']):
-            return 'Text'
+            return 'FileText'
 
         if any(name.endswith(i.lower()) for i in ['.plist', '.properties', '.env']):
-            return 'Config'
+            return 'FileConfig'
 
         if any(
             name.endswith(i.lower())
@@ -293,16 +293,16 @@ def get_file_type(path: Path):
                 '.yarnignore',
             ]
         ):
-            return 'Yarn'
+            return 'FileYarn'
 
         if any(
             name.endswith(i.lower())
             for i in ['pnpmfile.js', 'pnpm-lock.yaml', 'pnpm-workspace.yaml']
         ):
-            return 'PNPM'
+            return 'FilePNPM'
 
         if any(name.endswith(i.lower()) for i in ['.pdf']):
-            return 'PDF'
+            return 'FilePDF'
 
         if any(
             name.endswith(i.lower())
@@ -325,7 +325,7 @@ def get_file_type(path: Path):
                 'Dockerfile',
             ]
         ):
-            return 'Docker'
+            return 'FileDocker'
 
         if any(
             name.endswith(i.lower())
@@ -354,10 +354,10 @@ def get_file_type(path: Path):
                 'license-apache.txt',
             ]
         ):
-            return 'License'
+            return 'FileLicense'
 
         if any(name.endswith(i.lower()) for i in ['.rst']):
-            return 'Rst'
+            return 'FileRst'
 
         if any(
             name.endswith(i.lower())
@@ -372,7 +372,7 @@ def get_file_type(path: Path):
                 '.webp',
             ]
         ):
-            return 'Image'
+            return 'FileImage'
 
         if any(
             name.endswith(i.lower())
@@ -388,7 +388,7 @@ def get_file_type(path: Path):
                 '.eslintrc.yml',
             ]
         ):
-            return 'ESLint'
+            return 'FileESLint'
 
         if any(
             name.endswith(i.lower())
@@ -400,7 +400,7 @@ def get_file_type(path: Path):
                 'npm-shrinkwrap.json',
             ]
         ):
-            return 'NPM'
+            return 'FileNPM'
 
         if any(
             name.endswith(i.lower())
@@ -417,7 +417,7 @@ def get_file_type(path: Path):
                 'postcss.config.cjs',
             ]
         ):
-            return 'PostCSSConfig'
+            return 'FilePostCSSConfig'
 
         if any(
             name.endswith(i.lower())
@@ -435,7 +435,7 @@ def get_file_type(path: Path):
                 '.zipx',
             ]
         ):
-            return 'Zip'
+            return 'FileZip'
 
         # ! --------------------------------------------
         # ! KEEP ALWAYS AT THE END
@@ -445,16 +445,16 @@ def get_file_type(path: Path):
             name.endswith(i.lower())
             for i in ['.json', '.jsonl', '.ndjson', '.json-tmlanguage', '.jsonc']
         ):
-            return 'Json'
+            return 'FileJson'
 
         if any(name.endswith(i.lower()) for i in ['.js']):
-            return 'Javascript'
+            return 'FileJavascript'
 
         if any(name.endswith(i.lower()) for i in ['.ts']):
-            return 'Typescript'
+            return 'FileTypescript'
 
         if any(name.endswith(i.lower()) for i in ['.yaml', '.yml', '.yaml-tmlanguage']):
-            return 'Yaml'
+            return 'FileYaml'
 
         if any(
             name.endswith(i.lower())
@@ -485,9 +485,9 @@ def get_file_type(path: Path):
                 'so',
             ]
         ):
-            return 'Binary'
+            return 'FileBinary'
 
-        return 'file'
+        return 'File'
     return 'unknown'
 
 
