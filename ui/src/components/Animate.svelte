@@ -1,9 +1,15 @@
 <script lang="ts">
-	import { Motion } from 'svelte-motion'
+	import {
+		AnimationControls,
+		Motion,
+		Target,
+		TargetAndTransition,
+		Transition,
+	} from 'svelte-motion'
 
-	export let initial = {}
-	export let animate = {} as Record<string, any[]>
-	export let transition = {}
+	export let initial = {} as Target
+	export let animate = {} as TargetAndTransition | AnimationControls
+	export let transition = {} as Transition
 
 	let motionAnimate = {}
 	let index = 0
