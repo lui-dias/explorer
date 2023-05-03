@@ -10,7 +10,7 @@
 		y: [-55, 0],
 	}
 	const animate2 = {
-		y: [-105, 0],
+		y: [-110, 0],
 	}
 
 	let cycleBtn: () => number
