@@ -1,7 +1,5 @@
 <script lang="ts">
 	import { events } from '../event'
-	import { explorerItems, cwd, scrollExplorerToEnd, contextMenuOpen } from '../store'
-	import { formatDate } from '../utils'
 	import Animate from './Animate.svelte'
 	import NewFile from './icons/NewFile.svelte'
 	import NewFolder from './icons/NewFolder.svelte'
@@ -49,7 +47,7 @@
 			animate={animate2}
 			let:motion
 			bind:cycle={cycleBtn2}
-			transition={{ delay: 0.1, ease: 'linear' }}
+			transition={{ delay: 0.08, ease: 'linear' }}
 		>
 			<div use:motion>
 				<Button on:click={() => events.emit('createNewFolder')}>
