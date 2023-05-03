@@ -21,12 +21,13 @@
 	import ContextMenu from './ContextMenu/ContextMenu.svelte'
 	import Footer from './Footer.svelte'
 	import Loading from './Loading.svelte'
+	import New from './New.svelte'
+	import Preview from './Preview.svelte'
 	import QuickAccess from './QuickAccess.svelte'
 	import Search from './Search.svelte'
 	import Settings from './Settings.svelte'
 	import Virtualist from './Virtualist.svelte'
 	import WindowButtons from './WindowButtons.svelte'
-	import Preview from './Preview.svelte'
 
 	let explorerItemsNode: HTMLUListElement
 
@@ -271,6 +272,7 @@
 						<div class="flex items-center h-20 gap-x-4">
 							<Arrows {back} {forward} />
 							<Search />
+							<New />
 						</div>
 						<div class="flex w-full h-full">
 							<div class="w-full h-full">

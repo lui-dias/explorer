@@ -2,6 +2,7 @@
 	background: linear-gradient(145deg, #2d3134, #3f454a);
 
 	position: relative;
+    box-shadow: 6px 6px 15px #24282a, -6px -6px 15px #3d4347;
 }
 
 .neuBtn::before {
@@ -13,20 +14,7 @@
 	width: calc(100% + 3px);
 	height: calc(100% + 3px);
 	background: linear-gradient(145deg, #4f5559, #131517);
-	box-shadow: 6px 6px 15px #24282a, -6px -6px 15px #3d4347;
 	border-radius: 50%;
-	z-index: -1;
-}
-
-.neuBorder::before {
-	content: '';
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	width: calc(100% + 3px);
-	height: calc(100% + 3px);
-	background: linear-gradient(145deg, #3b3f42, #292c2e);
 	z-index: -1;
 }
 
