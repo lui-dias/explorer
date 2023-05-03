@@ -1,10 +1,10 @@
 <script lang="ts">
 	import {
-		AnimationControls,
 		Motion,
-		Target,
-		TargetAndTransition,
-		Transition,
+		type AnimationControls,
+		type Target,
+		type TargetAndTransition,
+		type Transition,
 	} from 'svelte-motion'
 
 	export let initial = {} as Target
