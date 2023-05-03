@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { events } from '../event'
 	import { explorerItems, cwd, scrollExplorerToEnd, contextMenuOpen } from '../store'
 	import { formatDate } from '../utils'
 	import Animate from './Animate.svelte'
@@ -38,34 +39,11 @@
 
 	<div class="absolute top-[calc(100%-8px)] flex flex-col gap-y-2 z-10 pt-4">
 		<Animate {animate} transition={{ ease: 'linear' }} let:motion bind:cycle={cycleBtn}>
-			<button
-				type="button"
-				use:motion
-				on:click={() => {
-					contextMenuOpen.set(false)
-
-					explorerItems.set([
-						...$explorerItems,
-						{
-							name: 'file',
-							path: $cwd + '/file',
-							isEditMode: true,
-							kind: 'file',
-							size: 0,
-							parent: $cwd,
-							modified: formatDate(new Date()),
-							type: 'Text',
-							action: 'create_file',
-						},
-					])
-
-					$scrollExplorerToEnd()
-				}}
-			>
-				<Button>
+			<div use:motion>
+				<Button on:click={() => events.emit('createNewFile')}>
 					<NewFile slot="icon" />
 				</Button>
-			</button>
+			</div>
 		</Animate>
 		<Animate
 			animate={animate2}
@@ -73,34 +51,11 @@
 			bind:cycle={cycleBtn2}
 			transition={{ delay: 0.1, ease: 'linear' }}
 		>
-			<button
-				type="button"
-				use:motion
-				on:click={() => {
-					contextMenuOpen.set(false)
-
-					explorerItems.set([
-						...$explorerItems,
-						{
-							name: 'folder',
-							path: $cwd + '/folder',
-							isEditMode: true,
-							kind: 'folder',
-							size: 0,
-							parent: $cwd,
-							modified: formatDate(new Date()),
-							type: 'Folder',
-							action: 'create_folder',
-						},
-					])
-
-					$scrollExplorerToEnd()
-				}}
-			>
-				<Button>
+			<div use:motion>
+				<Button on:click={() => events.emit('createNewFolder')}>
 					<NewFolder slot="icon" />
 				</Button>
-			</button>
+			</div>
 		</Animate>
 	</div>
 </div>

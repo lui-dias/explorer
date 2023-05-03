@@ -12,6 +12,7 @@
 	} from '../../store'
 	import { formatDate, outsideClick } from '../../utils'
 	import ContextMenuItem from './ContextMenuItem.svelte'
+	import { events } from '../../event'
 
 	let contextMenuNode: HTMLMenuElement
 	let parentHeight = 0
@@ -22,9 +23,9 @@
 		outsideClick(contextMenuNode, () => {
 			contextMenuOpen.set(false)
 
-            if ($selectedQuickAccess) {
-                selectedQuickAccess.set(null)
-            }
+			if ($selectedQuickAccess) {
+				selectedQuickAccess.set(null)
+			}
 		})
 	})
 
@@ -33,7 +34,7 @@
 			text: 'Pin to Quick Access',
 			icon: 'Pin',
 			action: () => {
-                console.log('inner')
+				console.log('inner')
 				quickAccess.set([...$quickAccess, $selected[0]])
 				localStorage.setItem(
 					'quickAccess',
@@ -69,50 +70,12 @@
 				{
 					text: 'File',
 					icon: 'NewFile',
-					action: () => {
-						contextMenuOpen.set(false)
-
-						explorerItems.set([
-							...$explorerItems,
-							{
-								name: 'file',
-								path: $cwd + '/file',
-								isEditMode: true,
-								kind: 'file',
-								size: 0,
-								parent: $cwd,
-								modified: formatDate(new Date()),
-								type: 'Text',
-								action: 'create_file',
-							},
-						])
-
-						$scrollExplorerToEnd()
-					},
+					action: () => events.emit('createNewFile'),
 				},
 				{
 					text: 'Folder',
 					icon: 'NewFolder',
-					action: () => {
-						contextMenuOpen.set(false)
-
-						explorerItems.set([
-							...$explorerItems,
-							{
-								name: 'folder',
-								path: $cwd + '/folder',
-								isEditMode: true,
-								kind: 'folder',
-								size: 0,
-								parent: $cwd,
-								modified: formatDate(new Date()),
-								type: 'Folder',
-								action: 'create_folder',
-							},
-						])
-
-						$scrollExplorerToEnd()
-					},
+					action: () => events.emit('createNewFolder'),
 				},
 			],
 		},

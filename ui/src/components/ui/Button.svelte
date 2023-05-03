@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { createEventDispatcher } from 'svelte'
+	import type { HTMLButtonAttributes } from 'svelte/elements'
 	import { tv } from 'tailwind-variants'
 
 	const button = tv({
@@ -9,13 +11,18 @@
 		},
 	})
 
+	const onClick = createEventDispatcher()
+
 	const { border, inner, icon } = button()
+
+	// prettier-ignore
+	type $$Props = HTMLButtonAttributes;
 </script>
 
-<div class={border()}>
+<button type="button" class={border()} {...$$restProps} on:click={e => onClick('click', e)}>
 	<div class={inner()}>
 		<span class={icon()}>
 			<slot name="icon" />
 		</span>
 	</div>
-</div>
+</button>

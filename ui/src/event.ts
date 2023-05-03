@@ -1,6 +1,7 @@
 import { get } from 'svelte/store'
 import { TypedEmitter } from 'tiny-typed-emitter'
 import {
+	contextMenuOpen,
 	cwd,
 	cwdSplit,
 	explorerItems,
@@ -8,10 +9,11 @@ import {
 	history,
 	historyIndex,
 	isSearching,
+	scrollExplorerToEnd,
 	selected,
 } from './store'
 import type { TFooter } from './types'
-import { __pywebview, debounce, gen_id, sleep, sortItems } from './utils'
+import { __pywebview, debounce, formatDate, gen_id, sleep, sortItems } from './utils'
 
 // prettier-ignore
 export const events = new TypedEmitter<{
@@ -40,6 +42,8 @@ export const events = new TypedEmitter<{
     itemClick            : () => Promise<void>
     itemDoubleClick      : () => Promise<void>
     stop_find_and_reload : () => Promise<void>
+    createNewFile       : () => Promise<void>
+    createNewFolder     : () => Promise<void>
 }>()
 
 // Without this, the footer will be cleared after 5 seconds
@@ -208,4 +212,55 @@ events.on('stop_find_and_reload', async () => {
 	events.once('end_of_stream_find', async () => {
 		events.emit('reload')
 	})
+})
+
+events.on('createNewFile', async () => {
+    console.log(1)
+	const $explorerItems = get(explorerItems)
+	const $cwd = get(cwd)
+	const $scrollExplorerToEnd = get(scrollExplorerToEnd)
+
+	contextMenuOpen.set(false)
+
+	explorerItems.set([
+		...$explorerItems,
+		{
+			name: 'file',
+			path: $cwd + '/file',
+			isEditMode: true,
+			kind: 'file',
+			size: 0,
+			parent: $cwd,
+			modified: formatDate(new Date()),
+			type: 'Text',
+			action: 'create_file',
+		},
+	])
+
+	$scrollExplorerToEnd()
+})
+
+events.on('createNewFolder', async () => {
+	const $explorerItems = get(explorerItems)
+	const $cwd = get(cwd)
+	const $scrollExplorerToEnd = get(scrollExplorerToEnd)
+
+	contextMenuOpen.set(false)
+
+	explorerItems.set([
+		...$explorerItems,
+		{
+			name: 'folder',
+			path: $cwd + '/folder',
+			isEditMode: true,
+			kind: 'folder',
+			size: 0,
+			parent: $cwd,
+			modified: formatDate(new Date()),
+			type: 'Folder',
+			action: 'create_folder',
+		},
+	])
+
+	$scrollExplorerToEnd()
 })
