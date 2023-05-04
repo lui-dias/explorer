@@ -19,6 +19,7 @@
 <div class="flex gap-x-2">
 	<Button
 		disabled={backDisabled}
+		class="group"
 		on:click={() => {
 			back()
 			events.emit('clickBack')
@@ -29,6 +30,7 @@
 
 	<Button
 		disabled={forwardDisabled}
+		class="group"
 		on:click={() => {
 			forward()
 			events.emit('clickForward')
