@@ -70,13 +70,13 @@
 	bind:this={itemNode}
 	on:click={() => {
 		selected.set($isMultipleSelected ? [...$selected, file] : [file])
-		events.emit('itemClick')
+		events.emit('clickExplorerItem')
 	}}
 	on:dblclick={() => {
 		if (file.kind === 'folder') {
 			setPath(file.path)
 		}
-		events.emit('itemDoubleClick')
+		events.emit('doubleClickExplorerItem')
 	}}
 >
 	<div class="w-[50%]">

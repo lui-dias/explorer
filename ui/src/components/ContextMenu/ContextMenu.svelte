@@ -70,12 +70,12 @@
 				{
 					text: 'File',
 					icon: 'OtherNewFile',
-					action: () => events.emit('createNewFile'),
+					action: () => events.emit('createNewExplorerFile'),
 				},
 				{
 					text: 'Folder',
 					icon: 'OtherNewFolder',
-					action: () => events.emit('createNewFolder'),
+					action: () => events.emit('createNewExplorerFolder'),
 				},
 			],
 		},

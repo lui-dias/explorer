@@ -21,7 +21,7 @@
 		disabled={backDisabled}
 		on:click={() => {
 			back()
-			events.emit('backClick')
+			events.emit('clickBack')
 		}}
 	>
 		<Icon icon="OtherArrowLeft" slot="icon" class="rotate-180" />
@@ -31,7 +31,7 @@
 		disabled={forwardDisabled}
 		on:click={() => {
 			forward()
-			events.emit('forwardClick')
+			events.emit('clickForward')
 		}}
 	>
 		<Icon icon="OtherArrowLeft" slot="icon" />

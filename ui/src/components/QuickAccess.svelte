@@ -38,7 +38,7 @@
 					class="flex items-center gap-x-2"
 					on:click={() => {
 						setPath(file.path)
-						events.emit('quickAccessClick')
+						events.emit('clickQuickAccess')
 					}}
 				>
 					<Icon icon={file.type} noStyle />

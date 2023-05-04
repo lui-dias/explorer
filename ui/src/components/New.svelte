@@ -36,7 +36,7 @@
 	<div class="absolute top-[calc(100%-8px)] flex flex-col gap-y-2 z-10 pt-4">
 		<Animate {animate} transition={{ ease: 'linear' }} let:motion bind:cycle={cycleBtn}>
 			<div use:motion>
-				<Button on:click={() => events.emit('createNewFile')}>
+				<Button on:click={() => events.emit('createNewExplorerFile')}>
 					<Icon icon="OtherNewFile" slot="icon" />
 				</Button>
 			</div>
@@ -48,7 +48,7 @@
 			transition={{ delay: 0.08, ease: 'linear' }}
 		>
 			<div use:motion>
-				<Button on:click={() => events.emit('createNewFolder')}>
+				<Button on:click={() => events.emit('createNewExplorerFolder')}>
 					<Icon icon="OtherNewFolder" slot="icon" />
 				</Button>
 			</div>

@@ -114,7 +114,7 @@
 									cwd.set(path)
 								}
 
-								events.emit('cwdClick', path)
+								events.emit('clickCwd', path)
 							}}
 						>
 							<span class="text-[#b9b9b9] whitespace-nowrap">{dir}</span>

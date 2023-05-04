@@ -17,33 +17,28 @@ import { __pywebview, debounce, formatDate, gen_id, sleep, sortItems } from './u
 
 // prettier-ignore
 export const events = new TypedEmitter<{
-    createFile        : (path: string) => Promise<void>
-    createFolder      : (path: string) => Promise<void>
-    rename            : (from: string, to: string) => Promise<void>
-    delete            : (path: string | string[], moveToTrash: boolean) => Promise<void>
-    reload            : () => Promise<void>
-    footerText        : ({ text, type }: TFooter) => Promise<void>
-    stopStreamDelete  : (path: string) => Promise<void>
-    stopStreamFileSize: (path: string) => Promise<void>
-    stopStreamFind    : (path: string) => Promise<void>
-    stopAllDelete     : () => Promise<void>
-    stopAllFileSize   : () => Promise<void>
-    stopAllFind       : () => Promise<void>
-    stopAllStreamsLs  : () => Promise<void>
-    endOfStreamFind   : () => Promise<void>
-    endOfStreamLs     : () => Promise<void>
-    back              : () => Promise<void>
-    forward           : () => Promise<void>
-    cwdClick          : (path: string) => Promise<void>
-    quickAccessClick  : () => Promise<void>
-    backClick         : () => Promise<void>
-    forwardClick      : () => Promise<void>
-    windowButtonsClick: () => Promise<void>
-    itemClick         : () => Promise<void>
-    itemDoubleClick   : () => Promise<void>
-    stopFindAndReload : () => Promise<void>
-    createNewFile     : () => Promise<void>
-    createNewFolder   : () => Promise<void>
+    createFile             : (path: string) => Promise<void>
+    createFolder           : (path: string) => Promise<void>
+    rename                 : (from: string, to: string) => Promise<void>
+    delete                 : (path: string | string[], moveToTrash: boolean) => Promise<void>
+    reload                 : () => Promise<void>
+    footerText             : ({ text, type }: TFooter) => Promise<void>
+    stopAllDelete          : () => Promise<void>
+    stopAllFileSize        : () => Promise<void>
+    stopAllFind            : () => Promise<void>
+    stopAllStreamsLs       : () => Promise<void>
+    back                   : () => Promise<void>
+    forward                : () => Promise<void>
+    clickCwd               : (path: string) => Promise<void>
+    clickQuickAccess       : () => Promise<void>
+    clickBack              : () => Promise<void>
+    clickForward           : () => Promise<void>
+    clickWindowButtons     : () => Promise<void>
+    clickExplorerItem      : () => Promise<void>
+    doubleClickExplorerItem: () => Promise<void>
+    stopFindAndReload      : () => Promise<void>
+    createNewExplorerFile  : () => Promise<void>
+    createNewExplorerFolder: () => Promise<void>
     end               : (e:
         | 'createFile'
         | 'createFolder'
@@ -51,27 +46,22 @@ export const events = new TypedEmitter<{
         | 'delete'
         | 'reload'
         | 'footerText'
-        | 'stopStreamDelete'
-        | 'stopStreamFileSize'
-        | 'stopStreamFind'
         | 'stopAllDelete'
         | 'stopAllFileSize'
         | 'stopAllFind'
         | 'stopAllStreamsLs'
-        | 'endOfStreamFind'
-        | 'endOfStreamLs'
         | 'back'
         | 'forward'
-        | 'cwdClick'
-        | 'quickAccessClick'
-        | 'backClick'
-        | 'forwardClick'
-        | 'windowButtonsClick'
-        | 'itemClick'
-        | 'itemDoubleClick'
+        | 'clickCwd'
+        | 'clickQuickAccess'
+        | 'clickBack'
+        | 'clickForward'
+        | 'clickWindowButtons'
+        | 'clickExplorerItem'
+        | 'doubleClickExplorerItem'
         | 'stopFindAndReload'
-        | 'createNewFile'
-        | 'createNewFolder'
+        | 'createNewExplorerFile'
+        | 'createNewExplorerFolder'
         | 'end'
     ) => Promise<void>
 }>()
@@ -134,13 +124,13 @@ const queue = {
 	waitingWorker: 0,
 }
 
-events.on('cwdClick', async () => {
+events.on('clickCwd', async () => {
 	queue.waitingWorker += 1
 })
-events.on('quickAccessClick', async () => {
+events.on('clickQuickAccess', async () => {
 	queue.waitingWorker += 1
 })
-events.on('itemDoubleClick', async () => {
+events.on('doubleClickExplorerItem', async () => {
 	queue.waitingWorker += 1
 })
 
@@ -179,13 +169,13 @@ events.on('reload', async () => {
 				}
 			}
 
-            // @ts-ignore
-			events.off('stopAllStreamsLs', _)
+			// @ts-ignore
+			events.off('end', _)
 			events.emit('end', 'reload')
 		}
 	}
-	events.emit('stopAllStreamsLs')
 	events.on('end', _)
+	events.emit('stopAllStreamsLs')
 })
 
 events.on('footerText', async ({ text, type }: TFooter) => {
@@ -196,21 +186,6 @@ events.on('footerText', async ({ text, type }: TFooter) => {
 
 	footerDebounce()
 	events.emit('end', 'footerText')
-})
-
-events.on('stopStreamDelete', async (path: string) => {
-	await __pywebview.stop_stream_delete(path)
-	events.emit('end', 'stopStreamDelete')
-})
-
-events.on('stopStreamFileSize', async (path: string) => {
-	await __pywebview.stop_stream_file_size(path)
-	events.emit('end', 'stopStreamFileSize')
-})
-
-events.on('stopStreamFind', async (path: string) => {
-	await __pywebview.stop_stream_find(path)
-	events.emit('end', 'stopStreamFind')
 })
 
 events.on('stopAllDelete', async () => {
@@ -255,16 +230,19 @@ events.on('forward', async () => {
 })
 
 events.on('stopFindAndReload', async () => {
+	async function _(ev: any) {
+		if (ev === 'stopFindAndReload') {
+			events.emit('reload')
+			events.off('end', _)
+		}
+	}
+
+	events.on('end', _)
 	events.emit('stopAllFind')
-
-	events.once('end', async ev => {
-		if (ev === 'stopFindAndReload') events.emit('reload')
-	})
-
 	events.emit('end', 'stopFindAndReload')
 })
 
-events.on('createNewFile', async () => {
+events.on('createNewExplorerFile', async () => {
 	const $explorerItems = get(explorerItems)
 	const $cwd = get(cwd)
 	const $scrollExplorerToEnd = get(scrollExplorerToEnd)
@@ -287,10 +265,10 @@ events.on('createNewFile', async () => {
 	])
 
 	$scrollExplorerToEnd()
-	events.emit('end', 'createNewFile')
+	events.emit('end', 'createNewExplorerFile')
 })
 
-events.on('createNewFolder', async () => {
+events.on('createNewExplorerFolder', async () => {
 	const $explorerItems = get(explorerItems)
 	const $cwd = get(cwd)
 	const $scrollExplorerToEnd = get(scrollExplorerToEnd)
@@ -313,5 +291,5 @@ events.on('createNewFolder', async () => {
 	])
 
 	$scrollExplorerToEnd()
-	events.emit('end', 'createNewFolder')
+	events.emit('end', 'createNewExplorerFolder')
 })

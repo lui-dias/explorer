@@ -76,8 +76,9 @@
 					bind:value={query}
 					bind:this={input}
 					on:keydown={e => {
-						if (e.key === 'Enter' && query) {
-							events.once('endOfStreamFind', async () => {
+                        // @ts-ignore
+						async function _(ev) {
+							if (ev === 'stopAllFind') {
 								if (lastCwd) {
 									await __pywebview.stream_find(lastCwd, query)
 									searchItems.set([])
@@ -117,8 +118,12 @@
 								}
 
 								isSearching.set(false)
-							})
+								events.off('end', _)
+							}
+						}
 
+						if (e.key === 'Enter' && query) {
+							events.on('end', _)
 							events.emit('stopAllFind')
 						}
 					}}
