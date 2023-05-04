@@ -5,10 +5,10 @@
 	import Icon from './ui/Icon.svelte'
 
 	const animate = {
-		y: [-55, 0],
+		y: [-50, 0],
 	}
 	const animate2 = {
-		y: [-110, 0],
+		y: [-105, 0],
 	}
 
 	let cycleBtn: () => number
