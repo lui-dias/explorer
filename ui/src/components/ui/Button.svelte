@@ -10,12 +10,11 @@
 		},
 	})
 
+	type $$Props = HTMLButtonAttributes
+
 	const onClick = createEventDispatcher()
 
 	const { inner, after } = button()
-
-	// prettier-ignore
-	type $$Props = HTMLButtonAttributes;
 </script>
 
 <button
