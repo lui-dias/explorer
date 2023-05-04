@@ -77,7 +77,7 @@
 					bind:this={input}
 					on:keydown={e => {
 						if (e.key === 'Enter' && query) {
-							events.once('end_of_stream_find', async () => {
+							events.once('endOfStreamFind', async () => {
 								if (lastCwd) {
 									await __pywebview.stream_find(lastCwd, query)
 									searchItems.set([])
@@ -94,7 +94,7 @@
 										files: NewFiles,
 									} = await __pywebview.stream_find($cwd, query)
 
-									events.emit('footer_text', {
+									events.emit('footerText', {
 										text: `Searching for '${q}', found ${total} files...`,
 										type: 'info',
 									})
@@ -107,7 +107,7 @@
 											await __pywebview.stream_find(lastCwd, query)
 										}
 
-										events.emit('footer_text', {
+										events.emit('footerText', {
 											text: `Finished search for ${q}, found ${total} files`,
 											type: 'info',
 										})
@@ -119,7 +119,7 @@
 								isSearching.set(false)
 							})
 
-							events.emit('stop_all_find')
+							events.emit('stopAllFind')
 						}
 					}}
 				/>

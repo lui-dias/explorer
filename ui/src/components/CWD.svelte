@@ -70,7 +70,8 @@
 
 <button
 	type="button"
-	class="dark:bg-zinc-700 w-full text-[#b9b9b9] flex items-center overflow-x-auto"
+	data-testid="cwd"
+	class="12341233 dark:bg-zinc-700 w-full text-[#b9b9b9] flex items-center overflow-x-auto"
 	style="border-radius: 12px;
     background: linear-gradient(145deg, #32383b, #2a2f32);
     box-shadow:  4px 4px 8px #24282a,
@@ -106,7 +107,7 @@
 								const isLastItem = i === $cwdSplit.length - 1 - hideNItems
 
 								if (isLastItem) {
-									events.emit('stop_find_and_reload')
+									events.emit('stopFindAndReload')
 								} else {
 									history.set([...$history, path])
 									historyIndex.set($history.length)
@@ -119,7 +120,7 @@
 							<span class="text-[#b9b9b9] whitespace-nowrap">{dir}</span>
 						</button>
 						{#if dir !== $cwdSplit.slice(-1)[0]}
-							<span class="transform rotate-180">
+							<span class="rotate-180">
 								<CwdChevron class="fill-[#b9b9b9] w-5" />
 							</span>
 						{/if}
@@ -129,7 +130,7 @@
 			<button
 				type="button"
 				class="absolute inset-y-0 right-2"
-				on:click={() => events.emit('stop_find_and_reload')}
+				on:click={() => events.emit('stopFindAndReload')}
 			>
 				<Reload class="stroke-primary" />
 			</button>

@@ -5,8 +5,7 @@
 	import Icon from './ui/Icon.svelte'
 
 	export let back: () => void
-	// prettier-ignore
-	export let forward: () => void;
+	export let forward: () => void
 
 	let backDisabled = $historyIndex === 0
 	let forwardDisabled = $historyIndex === $history.length - 1

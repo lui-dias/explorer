@@ -119,11 +119,11 @@ export const __pywebview = {
 	},
 	create_file: async (path: string): Promise<void> => {
 		// @ts-ignore
-		return await pywebview.api.create_file(path)
+		return await pywebview.api.createFile(path)
 	},
 	create_folder: async (path: string): Promise<void> => {
 		// @ts-ignore
-		return await pywebview.api.create_folder(path)
+		return await pywebview.api.createFolder(path)
 	},
 	exists: async (path: string, ignore?: string): Promise<boolean> => {
 		// @ts-ignore
@@ -166,17 +166,17 @@ export const __pywebview = {
 
 	stop_stream_delete: async (path: string): Promise<void> => {
 		// @ts-ignore
-		return await pywebview.api.stop_stream_delete(path)
+		return await pywebview.api.stopStreamDelete(path)
 	},
 
 	stop_stream_file_size: async (path: string): Promise<void> => {
 		// @ts-ignore
-		return await pywebview.api.stop_stream_file_size(path)
+		return await pywebview.api.stopStreamFileSize(path)
 	},
 
 	stop_stream_find: async (path: string): Promise<void> => {
 		// @ts-ignore
-		return await pywebview.api.stop_stream_find(path)
+		return await pywebview.api.stopStreamFind(path)
 	},
 
 	stop_all_streams_delete: async (): Promise<void> => {
@@ -194,10 +194,10 @@ export const __pywebview = {
 		return await pywebview.api.stop_all_streams_find()
 	},
 
-    stop_all_streams_ls: async (): Promise<void> => {
-        // @ts-ignore
-        return await pywebview.api.stop_all_streams_ls()
-    },
+	stop_all_streams_ls: async (): Promise<void> => {
+		// @ts-ignore
+		return await pywebview.api.stopAllStreamsLs()
+	},
 
 	get_path_info: async (path: string): Promise<ExplorerItem> => {
 		// @ts-ignore
@@ -214,10 +214,10 @@ export const __pywebview = {
 		return await pywebview.api.set_config(config)
 	},
 
-    read: async (path: string): Promise<string> => {
-        // @ts-ignore
-        return await pywebview.api.read(path)
-    }
+	read: async (path: string): Promise<string> => {
+		// @ts-ignore
+		return await pywebview.api.read(path)
+	},
 }
 
 export function isClient() {
@@ -282,5 +282,5 @@ export function sortItems(items: ExplorerItem[]) {
 }
 
 export const b64ToUint8Array = (b64: string) => {
-    return Uint8Array.from(atob(b64), c => c.charCodeAt(0))
+	return Uint8Array.from(atob(b64), c => c.charCodeAt(0))
 }

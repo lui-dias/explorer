@@ -1,4 +1,4 @@
-<svg width="19.775" height="20.6" xmlns="http://www.w3.org/2000/svg"
+<svg width="19.775" height="20.6" xmlns="http://www.w3.org/2000/svg" class={$$props.class}
 	><path
         fill="var(--primary)"
 		d="M17.425 14 13.6 10.175V2h-6v2.175l-2-2V2q0-.825.588-1.413Q6.775 0 7.6 0h6q.825 0 1.413.587.587.588.587 1.413v7.25L17.425 12Zm.95 6.6-6.6-6.6H11.6v5l-1 1-1-1v-5h-6v-2l2-3V7.825L0 2.225 1.4.8l18.375 18.4ZM6.1 12h3.675l-2.2-2.225Zm4.5-4.825ZM8.675 10.9Z"

@@ -17,7 +17,7 @@
 	import type { TSortTypes } from '../types'
 	import { __pywebview, sortItems } from '../utils'
 	import Arrows from './Arrows.svelte'
-	import Cwd from './CWD.svelte'
+	import Cwd from './Cwd.svelte'
 	import ContextMenu from './ContextMenu/ContextMenu.svelte'
 	import Footer from './Footer.svelte'
 	import Loading from './Loading.svelte'
@@ -81,7 +81,7 @@
 		cwd.subscribe(v => {
 			if (v) {
 				localStorage.setItem('cwd', $cwd)
-				events.emit('stop_find_and_reload')
+				events.emit('stopFindAndReload')
 			}
 		})
 
@@ -119,7 +119,7 @@
 
 		if (e.key === 'F2') {
 			if ($selected.length > 1) {
-				events.emit('footer_text', {
+				events.emit('footerText', {
 					text: 'Cannot rename multiple items',
 					type: 'warning',
 				})

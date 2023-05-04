@@ -702,10 +702,10 @@ class API:
     def rename(self, path: str, name: str):
         Path(path).rename(Path(path).parent / name)
 
-    def create_file(self, path: str):
+    def createFile(self, path: str):
         Path(path).touch()
 
-    def create_folder(self, path: str):
+    def createFolder(self, path: str):
         Path(path).mkdir()
 
     def exists(self, path: str, ignore: str = None):
@@ -765,15 +765,15 @@ class API:
 
         return r
 
-    def stop_stream_delete(self, id: str):
+    def stopStreamDelete(self, id: str):
         if id in streams_deletes:
             streams_deletes[id].end = True
 
-    def stop_stream_file_size(self, path: str):
+    def stopStreamFileSize(self, path: str):
         if path in streams_files:
             streams_files[path].end = True
 
-    def stop_stream_find(self, path: str):
+    def stopStreamFind(self, path: str):
         if path in streams_finds:
             streams_finds[path].end = True
 
@@ -789,7 +789,7 @@ class API:
         for i in streams_finds.values():
             i.end = True
 
-    def stop_all_streams_ls(self):
+    def stopAllStreamsLs(self):
         for i in streams_ls.values():
             i.end = True
 

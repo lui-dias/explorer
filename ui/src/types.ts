@@ -8,7 +8,7 @@ export type ExplorerItem = {
 	parent: string
 
 	isEditMode: boolean
-	action?: 'create_file' | 'create_folder' | 'rename'
+	action?: 'createFile' | 'createFolder' | 'rename'
 }
 
 export type TSortTypes = 'name' | 'modified' | 'type' | 'size'

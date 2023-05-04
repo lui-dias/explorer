@@ -17,33 +17,63 @@ import { __pywebview, debounce, formatDate, gen_id, sleep, sortItems } from './u
 
 // prettier-ignore
 export const events = new TypedEmitter<{
-    create_file          : (path: string) => Promise<void>
-    create_folder        : (path: string) => Promise<void>
-    rename               : (from: string, to: string) => Promise<void>
-    delete               : (path: string | string[], moveToTrash: boolean) => Promise<void>
-    reload               : () => Promise<void>
-    footer_text          : ({ text, type }: TFooter) => Promise<void>
-    stop_stream_delete   : (path: string) => Promise<void>
-    stop_stream_file_size: (path: string) => Promise<void>
-    stop_stream_find     : (path: string) => Promise<void>
-    stop_all_delete      : () => Promise<void>
-    stop_all_file_size   : () => Promise<void>
-    stop_all_find        : () => Promise<void>
-    stop_all_streams_ls  : () => Promise<void>
-    end_of_stream_find   : () => Promise<void>
-    end_of_stream_ls     : () => Promise<void>
-    back                 : () => Promise<void>
-    forward              : () => Promise<void>
-    cwdClick             : (path: string) => Promise<void>
-    quickAccessClick     : () => Promise<void>
-    backClick            : () => Promise<void>
-    forwardClick         : () => Promise<void>
-    windowButtonsClick   : () => Promise<void>
-    itemClick            : () => Promise<void>
-    itemDoubleClick      : () => Promise<void>
-    stop_find_and_reload : () => Promise<void>
-    createNewFile       : () => Promise<void>
-    createNewFolder     : () => Promise<void>
+    createFile        : (path: string) => Promise<void>
+    createFolder      : (path: string) => Promise<void>
+    rename            : (from: string, to: string) => Promise<void>
+    delete            : (path: string | string[], moveToTrash: boolean) => Promise<void>
+    reload            : () => Promise<void>
+    footerText        : ({ text, type }: TFooter) => Promise<void>
+    stopStreamDelete  : (path: string) => Promise<void>
+    stopStreamFileSize: (path: string) => Promise<void>
+    stopStreamFind    : (path: string) => Promise<void>
+    stopAllDelete     : () => Promise<void>
+    stopAllFileSize   : () => Promise<void>
+    stopAllFind       : () => Promise<void>
+    stopAllStreamsLs  : () => Promise<void>
+    endOfStreamFind   : () => Promise<void>
+    endOfStreamLs     : () => Promise<void>
+    back              : () => Promise<void>
+    forward           : () => Promise<void>
+    cwdClick          : (path: string) => Promise<void>
+    quickAccessClick  : () => Promise<void>
+    backClick         : () => Promise<void>
+    forwardClick      : () => Promise<void>
+    windowButtonsClick: () => Promise<void>
+    itemClick         : () => Promise<void>
+    itemDoubleClick   : () => Promise<void>
+    stopFindAndReload : () => Promise<void>
+    createNewFile     : () => Promise<void>
+    createNewFolder   : () => Promise<void>
+    end               : (e:
+        | 'createFile'
+        | 'createFolder'
+        | 'rename'
+        | 'delete'
+        | 'reload'
+        | 'footerText'
+        | 'stopStreamDelete'
+        | 'stopStreamFileSize'
+        | 'stopStreamFind'
+        | 'stopAllDelete'
+        | 'stopAllFileSize'
+        | 'stopAllFind'
+        | 'stopAllStreamsLs'
+        | 'endOfStreamFind'
+        | 'endOfStreamLs'
+        | 'back'
+        | 'forward'
+        | 'cwdClick'
+        | 'quickAccessClick'
+        | 'backClick'
+        | 'forwardClick'
+        | 'windowButtonsClick'
+        | 'itemClick'
+        | 'itemDoubleClick'
+        | 'stopFindAndReload'
+        | 'createNewFile'
+        | 'createNewFolder'
+        | 'end'
+    ) => Promise<void>
 }>()
 
 // Without this, the footer will be cleared after 5 seconds
@@ -57,19 +87,22 @@ let footerDebounce = debounce(
 	5000,
 )
 
-events.on('create_file', async (file: string) => {
+events.on('createFile', async (file: string) => {
 	await __pywebview.create_file(file)
 	events.emit('reload')
+	events.emit('end', 'createFile')
 })
 
-events.on('create_folder', async (folder: string) => {
+events.on('createFolder', async (folder: string) => {
 	await __pywebview.create_folder(folder)
 	events.emit('reload')
+	events.emit('end', 'createFolder')
 })
 
 events.on('rename', async (from: string, to: string) => {
 	await __pywebview.rename(from, to)
 	events.emit('reload')
+	events.emit('end', 'rename')
 })
 
 events.on('delete', async (path: string | string[], moveToTrash: boolean) => {
@@ -81,7 +114,7 @@ events.on('delete', async (path: string | string[], moveToTrash: boolean) => {
 			path,
 			moveToTrash,
 		)
-		events.emit('footer_text', {
+		events.emit('footerText', {
 			text: `Deleted ${deleted}/${total} ${!!last_deleted ? `- ${last_deleted}` : ''}`,
 			type: 'info',
 		})
@@ -93,6 +126,7 @@ events.on('delete', async (path: string | string[], moveToTrash: boolean) => {
 
 	events.emit('reload')
 	selected.set([])
+	events.emit('end', 'delete')
 })
 
 const queue = {
@@ -120,73 +154,83 @@ events.on('reload', async () => {
 	// Doing this causes a small flash in explorer, but it solves the problem :/
 	explorerItems.set([])
 
-	events.once('end_of_stream_ls', async () => {
-		while (queue.actualWorker) await sleep(0)
+	async function _(ev: any) {
+		if (ev === 'stopAllStreamsLs') {
+			while (queue.actualWorker) await sleep(0)
 
-		queue.actualWorker = 1
-		queue.waitingWorker = Math.max(0, queue.waitingWorker - 1)
+			queue.actualWorker = 1
+			queue.waitingWorker = Math.max(0, queue.waitingWorker - 1)
 
-		while (true) {
-			const { end, items: newItems } = await __pywebview.ls($cwd)
+			while (true) {
+				const { end, items: newItems } = await __pywebview.ls($cwd)
 
-			explorerItems.update(items => sortItems([...items, ...newItems]))
+				explorerItems.update(items => sortItems([...items, ...newItems]))
 
-			if (end || queue.waitingWorker) {
-				if (queue.waitingWorker) {
-					explorerItems.set([])
-				} else {
-					isSearching.set(false)
+				if (end || queue.waitingWorker) {
+					if (queue.waitingWorker) {
+						explorerItems.set([])
+					} else {
+						isSearching.set(false)
+					}
+
+					queue.actualWorker = 0
+
+					break
 				}
-
-				queue.actualWorker = 0
-
-				break
 			}
-		}
-	})
 
-	events.emit('stop_all_streams_ls')
+            // @ts-ignore
+			events.off('stopAllStreamsLs', _)
+			events.emit('end', 'reload')
+		}
+	}
+	events.emit('stopAllStreamsLs')
+	events.on('end', _)
 })
 
-events.on('footer_text', async ({ text, type }: TFooter) => {
+events.on('footerText', async ({ text, type }: TFooter) => {
 	footer.set({
 		text,
 		type,
 	})
 
 	footerDebounce()
+	events.emit('end', 'footerText')
 })
 
-events.on('stop_stream_delete', async (path: string) => {
+events.on('stopStreamDelete', async (path: string) => {
 	await __pywebview.stop_stream_delete(path)
+	events.emit('end', 'stopStreamDelete')
 })
 
-events.on('stop_stream_file_size', async (path: string) => {
+events.on('stopStreamFileSize', async (path: string) => {
 	await __pywebview.stop_stream_file_size(path)
+	events.emit('end', 'stopStreamFileSize')
 })
 
-events.on('stop_stream_find', async (path: string) => {
+events.on('stopStreamFind', async (path: string) => {
 	await __pywebview.stop_stream_find(path)
+	events.emit('end', 'stopStreamFind')
 })
 
-events.on('stop_all_delete', async () => {
+events.on('stopAllDelete', async () => {
 	await __pywebview.stop_all_streams_delete()
+	events.emit('end', 'stopAllDelete')
 })
 
-events.on('stop_all_file_size', async () => {
+events.on('stopAllFileSize', async () => {
 	await __pywebview.stop_all_streams_file_size()
+	events.emit('end', 'stopAllFileSize')
 })
 
-events.on('stop_all_find', async () => {
+events.on('stopAllFind', async () => {
 	await __pywebview.stop_all_streams_find()
-
-	events.emit('end_of_stream_find')
+	events.emit('end', 'stopAllFind')
 })
 
-events.on('stop_all_streams_ls', async () => {
+events.on('stopAllStreamsLs', async () => {
 	await __pywebview.stop_all_streams_ls()
-
-	events.emit('end_of_stream_ls')
+	events.emit('end', 'stopAllStreamsLs')
 })
 
 events.on('back', async () => {
@@ -195,6 +239,8 @@ events.on('back', async () => {
 	if ($historyIndex > 0) {
 		historyIndex.set($historyIndex - 1)
 	}
+
+	events.emit('end', 'back')
 })
 
 events.on('forward', async () => {
@@ -204,18 +250,21 @@ events.on('forward', async () => {
 	if ($historyIndex < $history.length - 1) {
 		historyIndex.set($historyIndex + 1)
 	}
+
+	events.emit('end', 'forward')
 })
 
-events.on('stop_find_and_reload', async () => {
-	events.emit('stop_all_find')
+events.on('stopFindAndReload', async () => {
+	events.emit('stopAllFind')
 
-	events.once('end_of_stream_find', async () => {
-		events.emit('reload')
+	events.once('end', async ev => {
+		if (ev === 'stopFindAndReload') events.emit('reload')
 	})
+
+	events.emit('end', 'stopFindAndReload')
 })
 
 events.on('createNewFile', async () => {
-    console.log(1)
 	const $explorerItems = get(explorerItems)
 	const $cwd = get(cwd)
 	const $scrollExplorerToEnd = get(scrollExplorerToEnd)
@@ -233,11 +282,12 @@ events.on('createNewFile', async () => {
 			parent: $cwd,
 			modified: formatDate(new Date()),
 			type: 'Text',
-			action: 'create_file',
+			action: 'createFile',
 		},
 	])
 
 	$scrollExplorerToEnd()
+	events.emit('end', 'createNewFile')
 })
 
 events.on('createNewFolder', async () => {
@@ -258,9 +308,10 @@ events.on('createNewFolder', async () => {
 			parent: $cwd,
 			modified: formatDate(new Date()),
 			type: 'Folder',
-			action: 'create_folder',
+			action: 'createFolder',
 		},
 	])
 
 	$scrollExplorerToEnd()
+	events.emit('end', 'createNewFolder')
 })

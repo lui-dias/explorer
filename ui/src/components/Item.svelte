@@ -22,20 +22,20 @@
 		const exists = await __pywebview.exists(path)
 
 		if (file.name === '') {
-			events.emit('footer_text', {
+			events.emit('footerText', {
 				text: 'The name cannot be empty',
 				type: 'error',
 			})
 		} else if (exists) {
-			events.emit('footer_text', {
+			events.emit('footerText', {
 				text: `'${file.name}' already exists`,
 				type: 'error',
 			})
 		} else {
-			if (file.action === 'create_file') {
-				events.emit('create_file', path)
-			} else if (file.action === 'create_folder') {
-				events.emit('create_folder', path)
+			if (file.action === 'createFile') {
+				events.emit('createFile', path)
+			} else if (file.action === 'createFolder') {
+				events.emit('createFolder', path)
 			} else if (file.action === 'rename') {
 				events.emit('rename', file.path, path)
 			}
@@ -70,13 +70,13 @@
 	bind:this={itemNode}
 	on:click={() => {
 		selected.set($isMultipleSelected ? [...$selected, file] : [file])
-        events.emit('itemClick')
+		events.emit('itemClick')
 	}}
 	on:dblclick={() => {
-        if (file.kind === 'folder') {
-            setPath(file.path)
+		if (file.kind === 'folder') {
+			setPath(file.path)
 		}
-        events.emit('itemDoubleClick')
+		events.emit('itemDoubleClick')
 	}}
 >
 	<div class="w-[50%]">
@@ -100,7 +100,7 @@
 			/>
 		{:else}
 			<div class="text-[#b9b9b9] flex items-center gap-x-1.5 w-64 text-sm" title={file.path}>
-				<Icon icon={file.type} glow={false}/>
+				<Icon icon={file.type} noStyle />
 				<span class="w-full overflow-hidden text-ellipsis whitespace-nowrap text-start">
 					{file.name}
 				</span>

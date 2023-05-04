@@ -76,6 +76,7 @@
 	export let glow = true
 
 	export let icon: string
+    export let noStyle = false
 
 	// prettier-ignore
 	const icons = {
@@ -143,4 +144,8 @@
 	} as Record<string, any>
 </script>
 
-<svelte:component this={icons[icon]} class={`${_icon({ glow })} ${$$props.class}`} />
+{#if noStyle}
+    <svelte:component this={icons[icon]} />
+{:else}
+    <svelte:component this={icons[icon]} class={`${_icon({ glow })} ${$$props.class}`} />
+{/if}
