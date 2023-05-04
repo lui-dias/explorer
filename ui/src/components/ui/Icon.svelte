@@ -64,7 +64,7 @@
 	import { tv } from 'tailwind-variants'
 
 	const _icon = tv({
-		base: 'fill-primary group-disabled:fill-gray-400',
+		base: 'fill-primary group-disabled:fill-gray-400 group-disabled:drop-shadow-none',
 		variants: {
 			glow: {
 				true: 'drop-shadow-[0_0_5px_var(--primary)]',
