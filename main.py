@@ -690,6 +690,7 @@ class API:
             streams_ls[folder] = s
 
         r = {'items': streams_ls[folder].items, 'end': streams_ls[folder].end}
+        streams_ls[folder].items = []
 
         if streams_ls[folder].end:
             del streams_ls[folder]
@@ -764,22 +765,6 @@ class API:
             del streams_finds[path]
 
         return r
-
-    def stopStreamDelete(self, id: str):
-        if id in streams_deletes:
-            streams_deletes[id].end = True
-
-    def stopStreamFileSize(self, path: str):
-        if path in streams_files:
-            streams_files[path].end = True
-
-    def stopStreamFind(self, path: str):
-        if path in streams_finds:
-            streams_finds[path].end = True
-
-    def stop_all_streams_delete(self):
-        for i in streams_deletes.values():
-            i.end = True
 
     def stop_all_streams_file_size(self):
         for i in streams_files.values():
