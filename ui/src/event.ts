@@ -135,21 +135,21 @@ events.on('doubleClickExplorerItem', async () => {
 })
 
 events.on('reload', async () => {
-	const $cwd = get(cwd)
-	cwdSplit.set($cwd.split('/'))
-	isSearching.set(true)
-
-	// When creating a file/folder, even using ls, the size of the files was buggy,
-	// a file had the size of another file
-	// Doing this causes a small flash in explorer, but it solves the problem :/
-	explorerItems.set([])
-
 	async function _(ev: any) {
 		if (ev === 'stopAllStreamsLs') {
 			while (queue.actualWorker) await sleep(0)
+			isSearching.set(true)
+
+			// When creating a file/folder, even using ls, the size of the files was buggy,
+			// a file had the size of another file
+			// Doing this causes a small flash in explorer, but it solves the problem :/
+			explorerItems.set([])
 
 			queue.actualWorker = 1
 			queue.waitingWorker = Math.max(0, queue.waitingWorker - 1)
+
+			const $cwd = get(cwd)
+			cwdSplit.set($cwd.split('/'))
 
 			while (true) {
 				const { end, items: newItems } = await __pywebview.ls($cwd)
@@ -159,10 +159,9 @@ events.on('reload', async () => {
 				if (end || queue.waitingWorker) {
 					if (queue.waitingWorker) {
 						explorerItems.set([])
-					} else {
-						isSearching.set(false)
 					}
 
+					isSearching.set(false)
 					queue.actualWorker = 0
 
 					break

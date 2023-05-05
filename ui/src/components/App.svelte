@@ -81,6 +81,7 @@
 		cwd.subscribe(v => {
 			if (v) {
 				localStorage.setItem('cwd', $cwd)
+				cwdSplit.set($cwd.split('/'))
 				events.emit('stopFindAndReload')
 			}
 		})

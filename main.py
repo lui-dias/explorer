@@ -1,3 +1,4 @@
+from time import sleep
 import regex as re
 import sys
 from concurrent.futures import ALL_COMPLETED, ThreadPoolExecutor, wait
@@ -770,13 +771,24 @@ class API:
         for i in streams_files.values():
             i.end = True
 
+        while streams_files:
+            sleep(0.001)
+
     def stop_all_streams_find(self):
         for i in streams_finds.values():
             i.end = True
 
+        while streams_finds:
+            sleep(0.001)
+
     def stopAllStreamsLs(self):
         for i in streams_ls.values():
             i.end = True
+
+        while streams_ls:
+            sleep(0.001)
+
+        print('end')
 
     def get_config(self):
         return load_toml(CONFIG_FILE)
