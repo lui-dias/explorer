@@ -1,5 +1,4 @@
 <script lang="ts">
-	import {} from 'highlight.js'
 	import isSvg from 'is-svg'
 	import Highlight from 'svelte-highlight'
 	import {
@@ -13,6 +12,7 @@
         typescript,
         vbscriptHtml,
         css,
+        powershell
 	} from 'svelte-highlight/languages'
 	import githubDark from 'svelte-highlight/styles/github-dark'
 	import { selected } from '../store'
@@ -47,6 +47,7 @@
         [typescript, ['.ts', '.tsx']],
         [vbscriptHtml, ['.html']],
         [css, ['.css']],
+        [powershell, ['.ps1']],
 	])
 
 	async function getData() {
