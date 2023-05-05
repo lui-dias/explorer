@@ -59,13 +59,7 @@
 			}
 		}
 
-		if (language) {
-			type = {
-				type: 'text',
-				text: getText(),
-				language,
-			}
-		} else if (mime?.startsWith('image')) {
+		if (mime?.startsWith('image')) {
 			type = {
 				type: 'image',
 				mime,
@@ -80,8 +74,12 @@
 			}
 		} else {
 			type = {
-				type: 'unknown',
+				type: 'text',
+				text: getText(),
+				language: language || plaintext,
 			}
+
+            console.log(type)
 		}
 
 		type = { ...type }
