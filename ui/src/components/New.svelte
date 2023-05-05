@@ -13,8 +13,9 @@
 	}
 
 	let n = 0
-	let cycleBtn: () => number
-	let cycleBtn2: () => number
+
+	let indexBtn: (i: number) => number
+	let indexBtn2: (i: number) => number
 
 	let isHover: boolean | undefined = undefined
 
@@ -23,11 +24,13 @@
 		n = (n + 1) % 2
 	}
 
-	$: if (isHover !== undefined && cycleBtn && cycleBtn2) {
-		cycleBtn()
-		cycleBtn2()
+	$: if (isHover !== undefined) {
+		indexBtn(isHover ? 1 : 0)
+		indexBtn2(isHover ? 1 : 0)
 		_()
 	}
+
+	$: console.log({ isHover })
 </script>
 
 <div class="relative flex flex-col" on:mouseleave={() => (isHover = false)}>
@@ -38,7 +41,7 @@
 	</div>
 
 	<div class="absolute top-[calc(100%-8px)] flex flex-col gap-y-2 z-10 pt-4">
-		<Animate {animate} transition={{ ease: 'linear' }} let:motion bind:cycle={cycleBtn}>
+		<Animate {animate} transition={{ ease: 'linear' }} let:motion bind:setIndex={indexBtn}>
 			<div use:motion>
 				<Button on:click={E.createNewExplorerFile} shadow={n === 1}>
 					<Icon icon="OtherNewFile" slot="icon" />
@@ -48,8 +51,8 @@
 		<Animate
 			animate={animate2}
 			let:motion
-			bind:cycle={cycleBtn2}
 			transition={{ delay: 0.08, ease: 'linear' }}
+			bind:setIndex={indexBtn2}
 		>
 			<div use:motion>
 				<Button on:click={E.createNewExplorerFolder} shadow={n === 1}>
