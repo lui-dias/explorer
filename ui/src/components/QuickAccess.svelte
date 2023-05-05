@@ -3,7 +3,6 @@
 	import { contextMenuOpen, quickAccess, selectedQuickAccess } from '../store'
 	import { __pywebview, setPath } from '../utils'
 	import Icon from './ui/Icon.svelte'
-	import { events } from '../event'
 
 	onMount(async () => {
 		const items = JSON.parse(localStorage.getItem('quickAccess') ?? '[]') as string[]
@@ -38,7 +37,6 @@
 					class="flex items-center gap-x-2"
 					on:click={() => {
 						setPath(file.path)
-						events.emit('clickQuickAccess')
 					}}
 				>
 					<Icon icon={file.type} noStyle />

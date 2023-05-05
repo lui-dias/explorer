@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
-	import { events } from '../event'
+	import { E } from '../event'
 	import { cwd, cwdSplit, history, historyIndex, selected } from '../store'
 	import { outsideClick, sleep } from '../utils'
 	import CwdChevron from './icons/CWDChevron.svelte'
@@ -89,7 +89,7 @@
 			on:keyup={async e => {
 				if (e.key === 'Enter') {
 					cwd.set(inputSearchNode.value)
-					events.emit('reload')
+					await E.reload()
 				}
 			}}
 			bind:this={inputSearchNode}
@@ -102,19 +102,18 @@
 						<button
 							type="button"
 							class="dark:hover:bg-[#7f8388]/20 p-2"
-							on:click={() => {
+							on:click={async () => {
 								const path = $cwdSplit.slice(0, hideNItems + i + 1).join('/')
 								const isLastItem = i === $cwdSplit.length - 1 - hideNItems
 
 								if (isLastItem) {
-									events.emit('stopFindAndReload')
+									await E.stopAllFind()
+									await E.reload()
 								} else {
 									history.set([...$history, path])
 									historyIndex.set($history.length)
 									cwd.set(path)
 								}
-
-								events.emit('clickCwd', path)
 							}}
 						>
 							<span class="text-[#b9b9b9] whitespace-nowrap">{dir}</span>
@@ -130,7 +129,10 @@
 			<button
 				type="button"
 				class="absolute inset-y-0 right-2"
-				on:click={() => events.emit('stopFindAndReload')}
+				on:click={async () => {
+					await E.stopAllFind()
+					await E.reload()
+				}}
 			>
 				<Reload class="stroke-primary" />
 			</button>

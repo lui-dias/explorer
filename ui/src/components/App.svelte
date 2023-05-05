@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
-	import { events } from '../event'
+	import { E } from '../event'
 	import {
 		cwd,
 		cwdSplit,
@@ -17,8 +17,8 @@
 	import type { TSortTypes } from '../types'
 	import { __pywebview, sortItems } from '../utils'
 	import Arrows from './Arrows.svelte'
-	import Cwd from './Cwd.svelte'
 	import ContextMenu from './ContextMenu/ContextMenu.svelte'
+	import Cwd from './Cwd.svelte'
 	import Footer from './Footer.svelte'
 	import Loading from './Loading.svelte'
 	import New from './New.svelte'
@@ -33,8 +33,8 @@
 
 	let isLoading = true
 
-	const back = () => events.emit('back')
-	const forward = () => events.emit('forward')
+	const back = E.back
+	const forward = E.forward
 
 	onMount(async () => {
 		// Wait pywebview to be ready
@@ -78,11 +78,12 @@
 			localStorage.setItem('sortType', $sortType)
 		})
 
-		cwd.subscribe(v => {
+		cwd.subscribe(async v => {
 			if (v) {
 				localStorage.setItem('cwd', $cwd)
 				cwdSplit.set($cwd.split('/'))
-				events.emit('stopFindAndReload')
+				await E.stopAllFind()
+				await E.reload()
 			}
 		})
 
@@ -120,10 +121,11 @@
 
 		if (e.key === 'F2') {
 			if ($selected.length > 1) {
-				events.emit('footerText', {
+				E.footerText({
 					text: 'Cannot rename multiple items',
 					type: 'warning',
 				})
+
 				return
 			}
 
@@ -147,8 +149,7 @@
 		}
 
 		if (e.key === 'Delete') {
-			events.emit(
-				'delete',
+			E.delete(
 				$selected.map(i => i.path),
 				!e.shiftKey,
 			)

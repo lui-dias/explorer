@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { events } from '../event'
+	import { E } from '../event'
 	import { history, historyIndex } from '../store'
 	import Button from './ui/Button.svelte'
 	import Icon from './ui/Icon.svelte'
@@ -14,25 +14,11 @@
 </script>
 
 <div class="flex gap-x-2">
-	<Button
-		disabled={backDisabled}
-		class="group"
-		on:click={() => {
-			events.emit('back')
-			events.emit('clickBack')
-		}}
-	>
+	<Button disabled={backDisabled} class="group" on:click={E.back}>
 		<Icon icon="OtherArrowLeft" slot="icon" class="rotate-180" />
 	</Button>
 
-	<Button
-		disabled={forwardDisabled}
-		class="group"
-		on:click={() => {
-			events.emit('forward')
-			events.emit('clickForward')
-		}}
-	>
+	<Button disabled={forwardDisabled} class="group" on:click={E.forward}>
 		<Icon icon="OtherArrowLeft" slot="icon" />
 	</Button>
 </div>

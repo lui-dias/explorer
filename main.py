@@ -762,6 +762,8 @@ class API:
             'files': streams_finds[path].items,
         }
 
+        streams_finds[path].items = []
+
         if streams_finds[path].end:
             del streams_finds[path]
 

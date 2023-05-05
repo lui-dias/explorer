@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
 	import { Motion } from 'svelte-motion'
-	import { events } from '../event'
+	import { E } from '../event'
 	import { cwd, isSearching, searchItems } from '../store'
 	import { __pywebview, outsideClick, sleep } from '../utils'
 	import Button from './ui/Button.svelte'
@@ -75,56 +75,47 @@
 					autocomplete="false"
 					bind:value={query}
 					bind:this={input}
-					on:keydown={e => {
-                        // @ts-ignore
-						async function _(ev) {
-							if (ev === 'stopAllFind') {
-								if (lastCwd) {
-									await __pywebview.stream_find(lastCwd, query)
-									searchItems.set([])
-								}
+					on:keydown={async e => {
+						if (e.key === 'Enter' && query) {
+							if (lastCwd) {
+								await __pywebview.stream_find(lastCwd, query)
+								searchItems.set([])
+							}
 
-								lastCwd = $cwd
-								const q = query
-								isSearching.set(true)
+							lastCwd = $cwd
+							const q = query
+							isSearching.set(true)
 
-								while (true) {
-									const {
-										end,
-										total,
-										files: NewFiles,
-									} = await __pywebview.stream_find($cwd, query)
+							while (true) {
+								const {
+									end,
+									total,
+									files: NewFiles,
+								} = await __pywebview.stream_find($cwd, query)
 
-									events.emit('footerText', {
-										text: `Searching for '${q}', found ${total} files...`,
+								E.footerText({
+									text: `Searching for '${q}', found ${total} files...`,
+									type: 'info',
+								})
+
+								searchItems.set(NewFiles)
+
+								if (end || lastCwd !== $cwd) {
+									if (!end) {
+										// Call last time to set end as true and delete the stream
+										await __pywebview.stream_find(lastCwd, query)
+									}
+
+									await E.footerText({
+										text: `Finished search for ${q}, found ${total} files`,
 										type: 'info',
 									})
 
-									searchItems.set(NewFiles)
-
-									if (end || lastCwd !== $cwd) {
-										if (!end) {
-											// Call last time to set end as true and delete the stream
-											await __pywebview.stream_find(lastCwd, query)
-										}
-
-										events.emit('footerText', {
-											text: `Finished search for ${q}, found ${total} files`,
-											type: 'info',
-										})
-
-										break
-									}
+									break
 								}
-
-								isSearching.set(false)
-								events.off('end', _)
 							}
-						}
 
-						if (e.key === 'Enter' && query) {
-							events.on('end', _)
-							events.emit('stopAllFind')
+							isSearching.set(false)
 						}
 					}}
 				/>

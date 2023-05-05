@@ -4,7 +4,7 @@
 	import { isMultipleSelected, selected } from '../store'
 	import type { ExplorerItem } from '../types'
 
-	import { events } from '../event'
+	import { E } from '../event'
 	import { __pywebview, formatBytes, outsideClick, setPath } from '../utils'
 	import Icon from './ui/Icon.svelte'
 
@@ -22,22 +22,22 @@
 		const exists = await __pywebview.exists(path)
 
 		if (file.name === '') {
-			events.emit('footerText', {
+			await E.footerText({
 				text: 'The name cannot be empty',
 				type: 'error',
 			})
 		} else if (exists) {
-			events.emit('footerText', {
+			await E.footerText({
 				text: `'${file.name}' already exists`,
 				type: 'error',
 			})
 		} else {
 			if (file.action === 'createFile') {
-				events.emit('createFile', path)
+				await E.createFile(path)
 			} else if (file.action === 'createFolder') {
-				events.emit('createFolder', path)
+				await E.createFolder(path)
 			} else if (file.action === 'rename') {
-				events.emit('rename', file.path, path)
+				await E.rename(file.path, path)
 			}
 		}
 	}
@@ -70,13 +70,11 @@
 	bind:this={itemNode}
 	on:click={() => {
 		selected.set($isMultipleSelected ? [...$selected, file] : [file])
-		events.emit('clickExplorerItem')
 	}}
 	on:dblclick={() => {
 		if (file.kind === 'folder') {
 			setPath(file.path)
 		}
-		events.emit('doubleClickExplorerItem')
 	}}
 >
 	<div class="w-[50%]">

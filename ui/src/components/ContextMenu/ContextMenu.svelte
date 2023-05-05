@@ -1,18 +1,15 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
+	import { E } from '../../event'
 	import {
 		contextMenuOpen,
-		cwd,
-		explorerItems,
 		quickAccess,
-		scrollExplorerToEnd,
 		selected,
 		selectedQuickAccess,
 		sortType,
 	} from '../../store'
-	import { formatDate, outsideClick } from '../../utils'
+	import { outsideClick } from '../../utils'
 	import ContextMenuItem from './ContextMenuItem.svelte'
-	import { events } from '../../event'
 
 	let contextMenuNode: HTMLMenuElement
 	let parentHeight = 0
@@ -70,12 +67,12 @@
 				{
 					text: 'File',
 					icon: 'OtherNewFile',
-					action: () => events.emit('createNewExplorerFile'),
+					action: E.createNewExplorerFile,
 				},
 				{
 					text: 'Folder',
 					icon: 'OtherNewFolder',
-					action: () => events.emit('createNewExplorerFolder'),
+					action: E.createNewExplorerFolder,
 				},
 			],
 		},
