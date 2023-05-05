@@ -2,7 +2,7 @@
 	import {} from 'highlight.js'
 	import isSvg from 'is-svg'
 	import Highlight from 'svelte-highlight'
-	import { markdown, ini as tomlAndIni, python, plaintext } from 'svelte-highlight/languages'
+	import { markdown, ini as tomlAndIni, python, plaintext, json } from 'svelte-highlight/languages'
 	import githubDark from 'svelte-highlight/styles/github-dark'
 	import { selected } from '../store'
 	import type { ExplorerItem } from '../types'
@@ -30,6 +30,7 @@
 		[tomlAndIni, ['.toml', '.ini']],
 		[plaintext, ['.txt']],
 		[markdown, ['.md']],
+        [json, ['.json', '.prettierrc']],
 	])
 
 	async function getData() {
@@ -78,8 +79,6 @@
 				text: getText(),
 				language: language || plaintext,
 			}
-
-            console.log(type)
 		}
 
 		type = { ...type }
