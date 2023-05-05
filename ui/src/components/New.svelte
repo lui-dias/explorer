@@ -19,23 +19,19 @@
 	let isHover: boolean | undefined = undefined
 
 	async function _() {
-        await sleep(0.24)
+		await sleep(0.24)
 		n = (n + 1) % 2
 	}
-    
+
 	$: if (isHover !== undefined && cycleBtn && cycleBtn2) {
-        cycleBtn()
-        cycleBtn2()
+		cycleBtn()
+		cycleBtn2()
 		_()
 	}
 </script>
 
-<div
-	class="relative flex flex-col"
-	on:mouseenter={() => (isHover = true)}
-	on:mouseleave={() => (isHover = false)}
->
-	<div class="z-20">
+<div class="relative flex flex-col" on:mouseleave={() => (isHover = false)}>
+	<div class="z-20" on:mouseenter={() => (isHover = true)}>
 		<Button>
 			<Icon icon="OtherPlus" slot="icon" />
 		</Button>
