@@ -9,11 +9,12 @@ from subprocess import Popen, run
 from threading import Thread
 from collections import deque
 from typing import Literal, TypedDict
-from pybase64 import b64encode
+from getpass import getuser
 
 import webview
 from send2trash import send2trash
 from toml import load as load_toml, dumps as dumps_toml
+from pybase64 import b64encode
 
 try:
     from rich import print
@@ -798,6 +799,12 @@ class API:
 
     def read(self, path: str):
         return b64encode(Path(path).read_bytes()).decode()
+    
+    def user(self):
+        return getuser()
+    
+    def pwd(self):
+        return Path('.').absolute().as_posix()
 
 
 streams_files = {}

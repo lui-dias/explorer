@@ -218,6 +218,14 @@ export const __pywebview = {
 		// @ts-ignore
 		return await pywebview.api.read(path)
 	},
+    user: async () => {
+        // @ts-ignore
+        return await pywebview.api.user()
+    },
+    pwd: async () => {
+        // @ts-ignore
+        return await pywebview.api.pwd()
+    }
 }
 
 export function isClient() {
