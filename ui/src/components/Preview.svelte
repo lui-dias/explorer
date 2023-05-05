@@ -1,12 +1,12 @@
 <script lang="ts">
+	import {} from 'highlight.js'
+	import isSvg from 'is-svg'
+	import Highlight from 'svelte-highlight'
+	import { markdown, ini as tomlAndIni, python, plaintext } from 'svelte-highlight/languages'
+	import githubDark from 'svelte-highlight/styles/github-dark'
 	import { selected } from '../store'
 	import type { ExplorerItem } from '../types'
 	import { __pywebview, b64ToUint8Array } from '../utils'
-	import Highlight from 'svelte-highlight'
-	import python from 'svelte-highlight/languages/python'
-	import githubDark from 'svelte-highlight/styles/github-dark'
-	import isSvg from 'is-svg'
-	import {} from 'highlight.js'
 
 	let selectedItem: ExplorerItem
 	let lastSelected: ExplorerItem
@@ -25,6 +25,13 @@
 		[key: string]: any
 	}
 
+	let languages = new Map<any, string[]>([
+		[python, ['.py']],
+		[tomlAndIni, ['.toml', '.ini']],
+		[plaintext, ['.txt']],
+		[markdown, ['.md']],
+	])
+
 	async function getData() {
 		isLoading = true
 		data = await __pywebview.read(selectedItem.path)
@@ -32,6 +39,7 @@
 		const chunk = b64ToUint8Array(data)
 		let mime = ''
 		let text = ''
+		let language = ''
 
 		function getText() {
 			return (text = atob(data))
@@ -45,7 +53,19 @@
 			}
 		})
 
-		if (mime?.startsWith('image')) {
+		for (const [key, value] of languages) {
+			if (value.some(v => selectedItem.name.endsWith(v))) {
+				language = key
+			}
+		}
+
+		if (language) {
+			type = {
+				type: 'text',
+				text: getText(),
+				language,
+			}
+		} else if (mime?.startsWith('image')) {
 			type = {
 				type: 'image',
 				mime,
@@ -57,12 +77,6 @@
 		} else if (isSvg(getText())) {
 			type = {
 				type: 'svg',
-			}
-		} else if (['py'].some(v => selectedItem.path.endsWith(v))) {
-			type = {
-				type: 'text',
-				text: getText(),
-				language: 'python',
 			}
 		} else {
 			type = {
@@ -105,13 +119,11 @@
 				<img src={`data:image/svg+xml;base64,${data}`} alt="Preview" />
 			</div>
 		{:else if type.type === 'text'}
-			{#if type.language === 'python'}
-				<Highlight
-					language={python}
-					code={type.text}
-					class="pr-2 overflow-y-auto h-[398px] scrollbar-thin scrollbar-thumb-zinc-700"
-				/>
-			{/if}
+			<Highlight
+				language={type.language}
+				code={type.text}
+				class="pr-2 overflow-auto h-[398px] scrollbar-thin scrollbar-thumb-zinc-700 [&>*]:scrollbar-thin [&>*]:scrollbar-thumb-zinc-700 [&>*]:h-full"
+			/>
 		{/if}
 	{/if}
 </div>
