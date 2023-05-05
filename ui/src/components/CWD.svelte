@@ -70,8 +70,8 @@
 
 <button
 	type="button"
-	data-testid="cwd"
-	class="12341233 dark:bg-zinc-700 w-full text-[#b9b9b9] flex items-center overflow-x-auto"
+	data-test-id="cwd"
+	class="dark:bg-zinc-700 w-full text-[#b9b9b9] flex items-center overflow-x-auto"
 	style="border-radius: 12px;
     background: linear-gradient(145deg, #32383b, #2a2f32);
     box-shadow:  4px 4px 8px #24282a,
@@ -86,6 +86,7 @@
 			type="text"
 			class="w-full h-10 px-2 tracking-wide bg-transparent outline-none focus:outline-purple-300"
 			value={$cwd}
+            data-test-id="cwd-input"
 			on:keyup={async e => {
 				if (e.key === 'Enter') {
 					cwd.set(inputSearchNode.value)
@@ -98,7 +99,7 @@
 		<div class="relative w-full">
 			<ul class="flex overflow-x-hidden" bind:this={cwdList}>
 				{#each $cwdSplit.slice(hideNItems, $cwdSplit.length) as dir, i}
-					<li class="flex items-center">
+					<li class="flex items-center" data-test-id="cwd-item">
 						<button
 							type="button"
 							class="dark:hover:bg-[#7f8388]/20 p-2"
@@ -129,6 +130,7 @@
 			<button
 				type="button"
 				class="absolute inset-y-0 right-2"
+                data-test-id="cwd-reload"
 				on:click={async () => {
 					await E.stopAllFind()
 					await E.reload()

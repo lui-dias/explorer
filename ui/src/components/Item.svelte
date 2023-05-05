@@ -67,6 +67,7 @@
 	class={`_item flex items-center w-full hover:bg-[#7f8388]/20 hover:font-bold cursor-pointer outline-none ${
 		$selected.find(item => item.path === file.path) ? 'bg-purple-300/20' : ''
 	}`}
+    data-test-id="explorer-item"
 	bind:this={itemNode}
 	on:click={() => {
 		selected.set($isMultipleSelected ? [...$selected, file] : [file])
@@ -99,7 +100,7 @@
 		{:else}
 			<div class="text-[#b9b9b9] flex items-center gap-x-1.5 w-64 text-sm" title={file.path}>
 				<Icon icon={file.type} noStyle />
-				<span class="w-full overflow-hidden text-ellipsis whitespace-nowrap text-start">
+				<span class="w-full overflow-hidden text-ellipsis whitespace-nowrap text-start" data-test-id="file-name">
 					{file.name}
 				</span>
 			</div>

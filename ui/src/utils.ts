@@ -284,3 +284,9 @@ export function sortItems(items: ExplorerItem[]) {
 export const b64ToUint8Array = (b64: string) => {
 	return Uint8Array.from(atob(b64), c => c.charCodeAt(0))
 }
+
+export function assert(condition: boolean, message: string) {
+    if (!condition) {
+        throw new Error(message)
+    }
+}
