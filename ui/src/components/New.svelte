@@ -29,8 +29,6 @@
 		indexBtn2(isHover ? 1 : 0)
 		_()
 	}
-
-	$: console.log({ isHover })
 </script>
 
 <div class="relative flex flex-col" on:mouseleave={() => (isHover = false)}>
