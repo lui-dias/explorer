@@ -4,9 +4,6 @@
 	import Button from './ui/Button.svelte'
 	import Icon from './ui/Icon.svelte'
 
-	export let back: () => void
-	export let forward: () => void
-
 	let backDisabled = $historyIndex === 0
 	let forwardDisabled = $historyIndex === $history.length - 1
 
@@ -21,7 +18,7 @@
 		disabled={backDisabled}
 		class="group"
 		on:click={() => {
-			back()
+			events.emit('back')
 			events.emit('clickBack')
 		}}
 	>
@@ -32,7 +29,7 @@
 		disabled={forwardDisabled}
 		class="group"
 		on:click={() => {
-			forward()
+			events.emit('forward')
 			events.emit('clickForward')
 		}}
 	>

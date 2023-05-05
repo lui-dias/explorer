@@ -271,7 +271,7 @@
 				<div class="flex w-full h-full">
 					<div class="flex flex-col w-full h-full">
 						<div class="flex items-center h-20 gap-x-4">
-							<Arrows {back} {forward} />
+							<Arrows />
 							<Search />
 							<New />
 						</div>
