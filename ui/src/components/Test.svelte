@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { assert, sleep } from '../utils'
+	import { __pywebview, assert, setPath, sleep } from '../utils'
 
 	setTimeout(async () => {
 		async function TestCwd() {
@@ -7,23 +7,12 @@
 
 			const all = [...document.querySelectorAll('[data-test-id="cwd-item"]')]
 
-			assert(!!all.find(e => e.textContent!.toLowerCase().trim() === 'c:'), 'CWD not found')
-			assert(
-				!!all.find(e => e.textContent!.toLowerCase().trim() === 'users'),
-				'CWD not found',
-			)
-			assert(
-				!!all.find(e => e.textContent!.toLowerCase().trim() === 'hiber'),
-				'CWD not found',
-			)
-			assert(
-				!!all.find(e => e.textContent!.toLowerCase().trim() === 'content'),
-				'CWD not found',
-			)
-			assert(
-				!!all.find(e => e.textContent!.toLowerCase().trim() === 'explorer'),
-				'CWD not found',
-			)
+			for (const path of pwd.split('/')) {
+				assert(
+					!!all.find(e => e.textContent!.trim() === path),
+					`CWD ${path} not found`,
+				)
+			}
 
 			const cwd = document.querySelector('[data-test-id="cwd"]') as HTMLDivElement
 			let cwdInput = document.querySelector('[data-test-id="cwd-input"]') as HTMLInputElement
@@ -74,6 +63,11 @@
 		}
 
 		console.log('Initializing tests...')
+
+		const user = await __pywebview.user()
+		const pwd = await __pywebview.pwd()
+
+		setPath(pwd)
 
 		const click = new MouseEvent('click', {
 			bubbles: true,
