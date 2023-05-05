@@ -35,7 +35,7 @@
 - [x] Better font (like Segoe UI)
 
 ### QOL
-- [ ] Add tests
+- [x] Add tests
 - [ ] Add documentation
 - [ ] Comment code
 - [ ] Refactor code
