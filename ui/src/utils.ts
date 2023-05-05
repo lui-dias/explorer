@@ -258,7 +258,7 @@ export function setPath(path: string) {
 		history.set(h.slice(0, hi + 1).concat(path))
 	}
 
-	historyIndex.set(h.length)
+	historyIndex.set(hi + 1)
 	cwd.set(path)
 }
 
