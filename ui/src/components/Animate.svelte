@@ -14,6 +14,7 @@
 	let motionAnimate = {}
 	let index = 0
 	export const cycle = () => (index = (index + 1) % (Object.keys(animate).length + 1))
+    export const setIndex = (i: number) => (index = i)
 
 	$: motionAnimate = Object.fromEntries(Object.entries(animate).map(([k, v]) => [k, v[index]]))
 </script>
