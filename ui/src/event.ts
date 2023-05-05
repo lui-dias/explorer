@@ -157,10 +157,6 @@ events.on('reload', async () => {
 				explorerItems.update(items => sortItems([...items, ...newItems]))
 
 				if (end || queue.waitingWorker) {
-					if (queue.waitingWorker) {
-						explorerItems.set([])
-					}
-
 					isSearching.set(false)
 					queue.actualWorker = 0
 

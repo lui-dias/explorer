@@ -788,8 +788,6 @@ class API:
         while streams_ls:
             sleep(0.001)
 
-        print('end')
-
     def get_config(self):
         return load_toml(CONFIG_FILE)
 
