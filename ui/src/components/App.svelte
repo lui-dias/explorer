@@ -57,7 +57,7 @@
 
 		// Load data from localStorage
 		sortType.set((localStorage.getItem('sortType') || $sortType) as TSortTypes)
-		cwd.set(localStorage.getItem('cwd') || (await __pywebview.home()))
+		cwd.set(localStorage.getItem('cwd') || (await __pywebview.pwd()))
 
 		cwdSplit.set($cwd.split('/'))
 
