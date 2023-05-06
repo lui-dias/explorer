@@ -27,7 +27,7 @@ let footerDebounce = debounce(
 
 export const E = {
 	reload: async () => {
-		await E.stopAllStreamsLs()
+		await E.deleteAllStreamsLs()
 
 		isSearching.set(true)
 
@@ -38,6 +38,8 @@ export const E = {
 
 		const $cwd = get(cwd)
 		cwdSplit.set($cwd.split('/'))
+
+		await E.startLs($cwd)
 
 		while (true) {
 			const { end, items: newItems } = await __pywebview.ls($cwd)
@@ -50,6 +52,10 @@ export const E = {
 				break
 			}
 		}
+	},
+
+	startLs: async (folder: string) => {
+		await __pywebview.start_ls(folder)
 	},
 
 	stopAllDelete: async () => {
@@ -66,6 +72,10 @@ export const E = {
 
 	stopAllStreamsLs: async () => {
 		await __pywebview.stop_all_streams_ls()
+	},
+
+	deleteAllStreamsLs: async () => {
+		await __pywebview.delete_all_streams_ls()
 	},
 
 	createFile: async (path: string) => {

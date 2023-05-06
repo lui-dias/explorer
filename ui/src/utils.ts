@@ -100,6 +100,10 @@ export const __pywebview = {
 		// @ts-ignore
 		return await pywebview.api.maximize()
 	},
+	start_ls: async (folder: string): Promise<void> => {
+		// @ts-ignore
+		return await pywebview.api.start_ls(folder)
+	},
 	ls: async (
 		folder: string,
 	): Promise<{
@@ -199,6 +203,11 @@ export const __pywebview = {
 		return await pywebview.api.stopAllStreamsLs()
 	},
 
+	delete_all_streams_ls: async () => {
+		// @ts-ignore
+		return await pywebview.api.deleteAllStreamsLs()
+	},
+
 	get_path_info: async (path: string): Promise<ExplorerItem> => {
 		// @ts-ignore
 		return await pywebview.api.get_path_info(path)
@@ -218,14 +227,14 @@ export const __pywebview = {
 		// @ts-ignore
 		return await pywebview.api.read(path)
 	},
-    user: async () => {
-        // @ts-ignore
-        return await pywebview.api.user()
-    },
-    pwd: async () => {
-        // @ts-ignore
-        return await pywebview.api.pwd()
-    }
+	user: async () => {
+		// @ts-ignore
+		return await pywebview.api.user()
+	},
+	pwd: async () => {
+		// @ts-ignore
+		return await pywebview.api.pwd()
+	},
 }
 
 export function isClient() {
@@ -294,7 +303,7 @@ export const b64ToUint8Array = (b64: string) => {
 }
 
 export function assert(condition: boolean, message: string) {
-    if (!condition) {
-        throw new Error(message)
-    }
+	if (!condition) {
+		throw new Error(message)
+	}
 }

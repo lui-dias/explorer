@@ -652,16 +652,26 @@ class StreamLs:
         self.end = False
         self.items = []
         self.total = 0
+        self.paused = False
 
     def start(self):
         self.thread = Thread(target=self.ls)
         self.thread.start()
+
+    def pause(self):
+        self.paused = True
+
+    def resume(self):
+        self.paused = False
 
     def ls(self):
         for i in self.path.iterdir():
             if i.exists():
                 self.items.append(get_path_info(i.as_posix()))
                 self.total += 1
+
+            while self.paused:
+                sleep(0.001)
 
         self.end = True
 
@@ -684,15 +694,19 @@ class API:
     def get_path_info(self, path: str):
         return get_path_info(path)
 
-    def ls(self, folder: str):
+    def start_ls(self, folder: str):
         s = StreamLs(folder)
+        s.start()
+        streams_ls[folder] = s
 
-        if folder not in streams_ls:
-            s.start()
-            streams_ls[folder] = s
+    def ls(self, folder: str):
+        streams_ls[folder].pause()
 
-        r = {'items': streams_ls[folder].items, 'end': streams_ls[folder].end}
-        streams_ls[folder].items = []
+        # Need copy items, else items is passed by reference and will be empty after clear
+        r = {'items': [*streams_ls[folder].items], 'end': streams_ls[folder].end}
+        streams_ls[folder].items.clear()
+
+        streams_ls[folder].resume()
 
         if streams_ls[folder].end:
             del streams_ls[folder]
@@ -791,6 +805,9 @@ class API:
         while streams_ls:
             sleep(0.001)
 
+    def deleteAllStreamsLs(self):
+        streams_ls.clear()
+
     def get_config(self):
         return load_toml(CONFIG_FILE)
 
@@ -799,10 +816,10 @@ class API:
 
     def read(self, path: str):
         return b64encode(Path(path).read_bytes()).decode()
-    
+
     def user(self):
         return getuser()
-    
+
     def pwd(self):
         return Path('.').absolute().as_posix()
 
