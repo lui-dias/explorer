@@ -1,39 +1,32 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
-	import { explorerItems, isSearching, scrollExplorerToEnd, searchItems } from '../store'
-	import { isClient } from '../utils'
-	import Item from './Item.svelte'
+	import { explorerItems, isSearching, searchItems } from '../store'
 	import type { ExplorerItem } from '../types'
+	import Item from './Item.svelte'
 	import Loading from './Loading.svelte'
+	import VirtualList from 'svelte-tiny-virtual-list'
 
-	export let itemHeight: number = 0
-
-	let list: HTMLDivElement
-	let scrollTop = 0
-	let endIndex = 0
-	let renderIndex = [] as number[]
+	let height = 0
 	let items = [] as ExplorerItem[]
 
-	let startIndex = Math.floor(scrollTop / itemHeight)
+	onMount(() => {
+		const wh = window.innerHeight
 
-	scrollExplorerToEnd.set(() => {
-		scrollTop = items.length * itemHeight
+		const windowButtons = document.getElementById('window-buttons')!
+		const cwd = document.getElementById('cwd')!
+		const actions = document.getElementById('actions')!
+		const footer = document.getElementById('footer')!
+
+		const wbH = windowButtons.getBoundingClientRect().height
+		const cwdH = cwd.getBoundingClientRect().height
+		const actionsH = actions.getBoundingClientRect().height
+		const footerH = footer.getBoundingClientRect().height
+
+		const cwdMargin = 12 * 2
+		const headersH = 24
+
+		height = wh - wbH - cwdH - actionsH - footerH - cwdMargin - headersH
 	})
-
-	$: {
-		if (isClient()) {
-			const endIndex = Math.min(
-				items.length - 1,
-				Math.floor((scrollTop + window.innerHeight) / itemHeight),
-			)
-
-			renderIndex = []
-			for (let i = startIndex; i <= endIndex; i++) {
-				renderIndex.push(i)
-			}
-			renderIndex = [...renderIndex]
-		}
-	}
 
 	$: if ($explorerItems) {
 		items = $explorerItems
@@ -42,46 +35,28 @@
 	$: if ($searchItems) {
 		items = $searchItems
 	}
-
-	onMount(() => {
-		endIndex = Math.min(
-			items.length - 1,
-			Math.floor((scrollTop + window.innerHeight) / itemHeight),
-		)
-
-		for (let i = startIndex; i <= endIndex; i++) {
-			renderIndex.push(i)
-		}
-		renderIndex = [...renderIndex]
-	})
 </script>
 
-<div
-	class={`${$$props.class} relative overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-700 pr-2`}
-	bind:this={list}
-	on:scroll={() => (scrollTop = list.scrollTop)}
->
-	{#if items.length === 0}
-		{#if $isSearching && $explorerItems.length === 0}
-			<Loading />
-		{:else}
-			<div
-				class="absolute flex flex-col transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
-			>
-				<p class="text-3xl font-medium text-center text-zinc-200">Nothing found...</p>
-				<p class="text-lg text-center text-zinc-500 whitespace-nowrap">
-					Come back later, maybe something will show up
-				</p>
-				<p class="mt-2 text-3xl text-center text-zinc-500">😭</p>
-			</div>
-		{/if}
+{#if items.length === 0}
+	{#if $isSearching && $explorerItems.length === 0}
+		<Loading />
 	{:else}
-		<div class="relative">
-			{#each renderIndex as index}
-				<li class="absolute w-full" style={`top: ${index * itemHeight}px`}>
-					<Item file={items[index]} />
-				</li>
-			{/each}
+		<div
+			class="absolute flex flex-col transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+		>
+			<p class="text-3xl font-medium text-center text-zinc-200">Nothing found...</p>
+			<p class="text-lg text-center text-zinc-500 whitespace-nowrap">
+				Come back later, maybe something will show up
+			</p>
+			<p class="mt-2 text-3xl text-center text-zinc-500">😭</p>
 		</div>
 	{/if}
-</div>
+{:else}
+	<div data-test-id="vl" class="[&>*]:pr-2 [&>*]:scrollbar-thin [&>*]:scrollbar-thumb-zinc-700">
+		<VirtualList width="100%" {height} itemCount={items.length} itemSize={24}>
+			<li slot="item" class="absolute w-full" let:index let:style {style}>
+				<Item file={items[index]} />
+			</li>
+		</VirtualList>
+	</div>
+{/if}

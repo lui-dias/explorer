@@ -271,7 +271,7 @@
 
 				<div class="flex w-full h-full">
 					<div class="flex flex-col w-full h-full">
-						<div class="flex items-center h-20 gap-x-4">
+						<div class="flex items-center h-20 gap-x-4" id="actions">
 							<Arrows />
 							<Search />
 							<New />
@@ -297,10 +297,7 @@
 									>
 								</div>
 								<ul bind:this={explorerItemsNode} class="h-full">
-									<Virtualist
-										itemHeight={24}
-										class="flex flex-col w-full h-[calc(100%-28px)] mt-2"
-									/>
+									<Virtualist />
 								</ul>
 							</div>
 							<Preview />
