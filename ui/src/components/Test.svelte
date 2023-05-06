@@ -23,7 +23,7 @@
 
 			assert(!!cwdInput, 'CWD input not found')
 			assert(
-				cwdInput.value === 'C:/Users/hiber/Content/explorer',
+				cwdInput.value === pwd + '/seed',
 				'CWD input value not empty',
 			)
 
@@ -81,7 +81,7 @@
 		const user = await __pywebview.user()
 		const pwd = await __pywebview.pwd()
 
-		setPath(pwd)
+		setPath(pwd + '/seed')
 		await sleep(1)
 
 		const click = new MouseEvent('click', {
@@ -93,14 +93,9 @@
 		try {
 			console.log('Testing CWD')
 			await TestCwd()
-			console.log('CWD passed')
-
-			setPath(pwd + '/seed')
-			await sleep(1)
 
 			console.log('Testing Virtualist')
 			await TestVirtualist()
-			console.log('Virtualist passed')
 
 			console.log(
 				'✅ %cAll tests passed',
