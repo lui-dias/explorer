@@ -14,11 +14,15 @@
 </script>
 
 <div class="flex gap-x-2">
-	<Button disabled={backDisabled} class="group" on:click={E.back}>
-		<Icon icon="OtherArrowLeft" slot="icon" class="rotate-180" />
-	</Button>
+	<div data-test-id="back">
+		<Button disabled={backDisabled} class="group" on:click={E.back}>
+			<Icon icon="OtherArrowLeft" slot="icon" class="rotate-180" />
+		</Button>
+	</div>
 
-	<Button disabled={forwardDisabled} class="group" on:click={E.forward}>
-		<Icon icon="OtherArrowLeft" slot="icon" />
-	</Button>
+	<div data-test-id="forward">
+		<Button disabled={forwardDisabled} class="group" on:click={E.forward}>
+			<Icon icon="OtherArrowLeft" slot="icon" />
+		</Button>
+	</div>
 </div>

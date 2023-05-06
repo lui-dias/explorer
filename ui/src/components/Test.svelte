@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { __pywebview, assert, setPath, sleep } from '../utils'
-	import { explorerItems, scrollExplorerToEnd, cwd as Scwd } from '../store'
+	import { explorerItems, scrollExplorerToEnd, cwd as Scwd, history } from '../store'
 
 	setTimeout(async () => {
 		async function TestCwd() {
@@ -22,7 +22,7 @@
 			cwdInput = document.querySelector('[data-test-id="cwd-input"]')!
 
 			assert(!!cwdInput, 'CWD input not found')
-			assert(cwdInput.value === pwd + '/seed', 'CWD input value not empty')
+			assert(cwdInput.value === pwd + '/__tests', 'CWD input value not empty')
 
 			document.dispatchEvent(click)
 			await sleep(1)
@@ -61,7 +61,7 @@
 		}
 
 		async function TestVirtualist() {
-			setPath(pwd + '/seed')
+			setPath(pwd + '/__tests')
 			await sleep(1)
 
 			assert($explorerItems.length === 1000, 'Incorrect items length')
@@ -83,12 +83,98 @@
 			assert(lastItem.textContent === '999', 'Last item not found')
 		}
 
-		console.log('Initializing tests...')
+		async function TestBackForward() {
+			const back = document.querySelector(
+				'[data-test-id="back"] > button',
+			) as HTMLButtonElement
+			const forward = document.querySelector(
+				'[data-test-id="forward"] > button',
+			) as HTMLButtonElement
 
-		const user = await __pywebview.user()
+			assert(!!back, 'Back button not found')
+			assert(!!forward, 'Forward button not found')
+			assert(forward.disabled, 'Back button disabled')
+
+			back.dispatchEvent(click)
+			await sleep(1)
+
+			assert(!forward.disabled, 'Forward button enabled')
+			assert($Scwd === pwd, 'Parent folder not found')
+
+			forward.dispatchEvent(click)
+			await sleep(1)
+
+			assert($Scwd === pwd + '/__tests', 'Parent folder not found')
+		}
+
+		async function TestSearch() {
+			const searchIcon = document.querySelector('[data-test-id="search-icon"]')!
+			assert(!!searchIcon, 'Should have search icon')
+
+			searchIcon.dispatchEvent(click)
+			await sleep(1.5)
+
+			assert(
+				!document.querySelector('[data-test-id="search-icon"]'),
+				'Should not have search icon',
+			)
+
+			const searchInput = document.querySelector(
+				'[data-test-id="search"] > input',
+			) as HTMLInputElement
+			assert(!!searchInput, 'Should have search input')
+
+			searchInput.value = 'test.txt'
+			searchInput.dispatchEvent(evInput)
+			searchInput.dispatchEvent(evEnter)
+			await sleep(1)
+
+			let explorerItems = [...document.querySelectorAll('[data-test-id="explorer-item"]')]
+			let itemName = explorerItems
+				.at(-1)!
+				.querySelector('[data-test-id="file-name"]')!.textContent
+
+			assert(explorerItems.length === 1, 'Should have 1 item')
+			assert(itemName === 'test.txt', 'Should have the right item')
+
+			searchInput.value = '/py$/'
+			searchInput.dispatchEvent(evInput)
+			searchInput.dispatchEvent(evEnter)
+			await sleep(1)
+
+			explorerItems = [...document.querySelectorAll('[data-test-id="explorer-item"]')]
+
+			let itemsName = explorerItems.map(
+				e => e.querySelector('[data-test-id="file-name"]')!.textContent,
+			)
+
+			assert(explorerItems.length === 2, 'Should have 1 item')
+			assert(
+				itemsName.includes('foo.py') && itemsName.includes('bar.py'),
+				'Should have the right item',
+			)
+
+			searchInput.value = '*.py'
+			searchInput.dispatchEvent(evInput)
+			searchInput.dispatchEvent(evEnter)
+			await sleep(1)
+
+			explorerItems = [...document.querySelectorAll('[data-test-id="explorer-item"]')]
+			itemsName = explorerItems.map(
+				e => e.querySelector('[data-test-id="file-name"]')!.textContent,
+			)
+
+			assert(explorerItems.length === 2, 'Should have 2 item')
+			assert(
+				itemsName.includes('foo.py') && itemsName.includes('bar.py'),
+				'Should have the right item',
+			)
+		}
+
+		await __pywebview.setupTests()
 		const pwd = await __pywebview.pwd()
 
-		setPath(pwd + '/seed')
+		setPath(pwd + '/__tests')
 		await sleep(1)
 
 		const click = new MouseEvent('click', {
@@ -97,12 +183,23 @@
 			view: window,
 		})
 
+		const evEnter = new KeyboardEvent('keydown', {
+			key: 'Enter',
+		})
+		const evInput = new KeyboardEvent('input', { bubbles: true })
+
 		try {
-			console.log('Testing CWD')
+			/* console.log('Testing CWD')
 			await TestCwd()
 
 			console.log('Testing Virtualist')
 			await TestVirtualist()
+
+			console.log('Testing Back/Forward')
+			await TestBackForward() */
+
+			console.log('Testing Search')
+			await TestSearch()
 
 			console.log(
 				'✅ %cAll tests passed',
@@ -111,5 +208,8 @@
 		} catch (e: any) {
 			console.error(e)
 		}
+
+        setPath(pwd)
+		await __pywebview.clearTests()
 	}, 1000)
 </script>

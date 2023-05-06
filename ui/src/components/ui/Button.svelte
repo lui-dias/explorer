@@ -23,6 +23,7 @@
 
 	type $$Props = HTMLButtonAttributes & {
 		shadow?: boolean
+		'data-test-id'?: string
 	}
 
 	const onClick = createEventDispatcher()

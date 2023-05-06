@@ -65,6 +65,7 @@
 			<div
 				class="w-full h-10 ml-2 dark:bg-[#32373a] rounded relative neuBorder"
 				style:transform-origin="top left"
+				data-test-id="search"
 				use:motion
 			>
 				<input
@@ -125,6 +126,7 @@
 		<Motion animate={{ scale: s }} transition={{ duration: 0.4, ease: 'easeInOut' }} let:motion>
 			<div use:motion>
 				<Button
+					data-test-id="search-icon"
 					on:click={async () => {
 						si = (si + 1) % 2
 

@@ -10,6 +10,7 @@ from threading import Thread
 from collections import deque
 from typing import Literal, TypedDict
 from getpass import getuser
+from shutil import rmtree
 
 import webview
 from send2trash import send2trash
@@ -822,8 +823,26 @@ class API:
 
     def pwd(self):
         return Path('.').absolute().as_posix()
+    
+    def setup_tests(self):
+        tests = Path('__tests')
 
+        if tests.exists():
+            rmtree(tests)
 
+        tests.mkdir()
+
+        for i in range(1000):
+            tests.joinpath(f'{i}.txt').touch()
+
+        tests.joinpath('test.txt').touch()
+        tests.joinpath('foo.py').touch()
+        tests.joinpath('bar.py').touch()
+
+    def clear_tests(self):
+        rmtree('__tests')
+
+        
 streams_files = {}
 streams_deletes = {}
 streams_finds = {}

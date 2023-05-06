@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
 	import { contextMenuOpen, quickAccess, selectedQuickAccess } from '../store'
-	import { __pywebview, setPath } from '../utils'
+	import { __pywebview, appendPath } from '../utils'
 	import Icon from './ui/Icon.svelte'
 
 	onMount(async () => {
@@ -36,7 +36,7 @@
 					type="button"
 					class="flex items-center gap-x-2"
 					on:click={() => {
-						setPath(file.path)
+						appendPath(file.path)
 					}}
 				>
 					<Icon icon={file.type} noStyle />

@@ -1,5 +1,5 @@
 import { get } from 'svelte/store'
-import { cwd, history, historyIndex, sortType } from './store'
+import { cwd, cwdSplit, history, historyIndex, sortType } from './store'
 import type { ExplorerItem, TConfig } from './types'
 
 const isVisible = (elem: any) =>
@@ -235,6 +235,14 @@ export const __pywebview = {
 		// @ts-ignore
 		return await pywebview.api.pwd()
 	},
+	setupTests: async () => {
+		// @ts-ignore
+		return await pywebview.api.setup_tests()
+	},
+	clearTests: async () => {
+		// @ts-ignore
+		return await pywebview.api.clear_tests()
+	},
 }
 
 export function isClient() {
@@ -265,7 +273,7 @@ export function sleep(s: number) {
 	return new Promise(resolve => setTimeout(resolve, s * 1000))
 }
 
-export function setPath(path: string) {
+export function appendPath(path: string) {
 	const hi = get(historyIndex)
 	const h = get(history)
 
@@ -277,6 +285,23 @@ export function setPath(path: string) {
 
 	historyIndex.set(hi + 1)
 	cwd.set(path)
+}
+
+// Add each parent path to history
+// Example: /home/user/Downloads
+// history: ['/home', '/home/user', '/home/user/Downloads']
+export function setPath(path: string) {
+	const $cwdSplit = path.split('/')
+
+	const h = [] as string[]
+	for (let i = 0; i < $cwdSplit.length; i++) {
+		h.push($cwdSplit.slice(0, i + 1).join('/'))
+	}
+	history.set(h)
+	historyIndex.set($cwdSplit.length - 1)
+
+	cwd.set(path)
+	cwdSplit.set($cwdSplit)
 }
 
 export function sortItems(items: ExplorerItem[]) {

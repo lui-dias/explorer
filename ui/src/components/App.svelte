@@ -15,7 +15,7 @@
 		sortType,
 	} from '../store'
 	import type { TSortTypes } from '../types'
-	import { __pywebview, sortItems } from '../utils'
+	import { __pywebview, setPath, sortItems } from '../utils'
 	import Arrows from './Arrows.svelte'
 	import ContextMenu from './ContextMenu/ContextMenu.svelte'
 	import Cwd from './Cwd.svelte'
@@ -57,19 +57,7 @@
 
 		// Load data from localStorage
 		sortType.set((localStorage.getItem('sortType') || $sortType) as TSortTypes)
-		cwd.set(localStorage.getItem('cwd') || (await __pywebview.pwd()))
-
-		cwdSplit.set($cwd.split('/'))
-
-		// Add each parent path to history
-		// Example: /home/user/Downloads
-		// history: ['/home', '/home/user', '/home/user/Downloads']
-		const h = [] as string[]
-		for (let i = 0; i < $cwdSplit.length; i++) {
-			h.push($cwdSplit.slice(0, i + 1).join('/'))
-		}
-		history.set(h)
-		historyIndex.set(h.length - 1)
+		setPath(localStorage.getItem('cwd') || (await __pywebview.pwd()))
 
 		sortType.subscribe(() => {
 			explorerItems.set(sortItems($explorerItems))
