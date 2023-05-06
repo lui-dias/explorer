@@ -64,10 +64,17 @@
 			setPath(pwd + '/__tests')
 			await sleep(1)
 
-			assert($explorerItems.length === 1000, 'Incorrect items length')
+			assert($explorerItems.length === 1003, 'Incorrect items length')
 
-			for (let i = 0; i < $explorerItems.length; i++) {
-				assert(parseInt($explorerItems[i].name) === i, `Missing item in explorer: ${i}`)
+			const extraFiles = 3
+			for (let i = 0; i < $explorerItems.length - extraFiles; i++) {
+				// Exclude .txt and .py files
+				if ($explorerItems[i].name.match(/^\d+$/)) {
+					assert(
+						$explorerItems.some(ii => parseInt(ii.name) === i),
+						`Missing item in explorer: ${i}`,
+					)
+				}
 			}
 
 			const vl = document.querySelector('[data-test-id="vl"]')!
@@ -189,14 +196,14 @@
 		const evInput = new KeyboardEvent('input', { bubbles: true })
 
 		try {
-			/* console.log('Testing CWD')
+			console.log('Testing CWD')
 			await TestCwd()
 
 			console.log('Testing Virtualist')
 			await TestVirtualist()
 
 			console.log('Testing Back/Forward')
-			await TestBackForward() */
+			await TestBackForward()
 
 			console.log('Testing Search')
 			await TestSearch()
@@ -209,7 +216,7 @@
 			console.error(e)
 		}
 
-        setPath(pwd)
+		setPath(pwd)
 		await __pywebview.clearTests()
 	}, 1000)
 </script>
