@@ -25,8 +25,6 @@
 ### Fix
 - [ ] Ctrl + A on input, selects all files
 - [ ] Sort by size
-- [x] Creating a file/folder makes the footer show a warning saying the last item in the list already exists, instead of checking just the created item
-- [x] Memory leak that happens at any time and makes the server crash
 
 ### UI
 - [x] Better context appearance
