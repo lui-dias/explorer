@@ -833,7 +833,7 @@ class API:
         tests.mkdir()
 
         for i in range(1000):
-            tests.joinpath(f'{i}.txt').touch()
+            tests.joinpath(f'{i}').touch()
 
         tests.joinpath('test.txt').touch()
         tests.joinpath('foo.py').touch()
