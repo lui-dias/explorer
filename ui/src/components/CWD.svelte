@@ -104,6 +104,7 @@
 						<button
 							type="button"
 							class="dark:hover:bg-[#7f8388]/20 p-2"
+                            data-test-id="cwd-item-button"
 							on:click={async () => {
 								const path = $cwdSplit.slice(0, hideNItems + i + 1).join('/')
 								const isLastItem = i === $cwdSplit.length - 1 - hideNItems

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { __pywebview, assert, setPath, sleep } from '../utils'
-	import { explorerItems, scrollExplorerToEnd } from '../store'
+	import { explorerItems, scrollExplorerToEnd, cwd as Scwd } from '../store'
 
 	setTimeout(async () => {
 		async function TestCwd() {
@@ -22,10 +22,7 @@
 			cwdInput = document.querySelector('[data-test-id="cwd-input"]')!
 
 			assert(!!cwdInput, 'CWD input not found')
-			assert(
-				cwdInput.value === pwd + '/seed',
-				'CWD input value not empty',
-			)
+			assert(cwdInput.value === pwd + '/seed', 'CWD input value not empty')
 
 			document.dispatchEvent(click)
 			await sleep(1)
@@ -54,9 +51,19 @@
 				allFiles.every(f => actualFiles.includes(f)),
 				'Files are different',
 			)
+
+			const itemsButtons = [...document.querySelectorAll('[data-test-id="cwd-item-button"]')]
+
+			itemsButtons.at(-2)!.dispatchEvent(click)
+			await sleep(1)
+
+			assert($Scwd === pwd, 'Parent folder not found')
 		}
 
 		async function TestVirtualist() {
+			setPath(pwd + '/seed')
+			await sleep(1)
+
 			assert($explorerItems.length === 1000, 'Incorrect items length')
 
 			for (let i = 0; i < $explorerItems.length; i++) {
