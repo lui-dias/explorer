@@ -5,7 +5,7 @@
 	import Minimize from './icons/Minimize.svelte'
 </script>
 
-<div class="flex justify-end">
+<div class="flex justify-end" id="window-buttons">
 	<button type="button" class="px-4 py-2 hover:bg-zinc-700" on:click={__pywebview.minimize}>
 		<Minimize class="fill-primary" />
 	</button>

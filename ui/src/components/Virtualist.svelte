@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
-	import { explorerItems, isSearching, searchItems } from '../store'
+	import { explorerItems, isSearching, searchItems, scrollExplorerToEnd } from '../store'
 	import type { ExplorerItem } from '../types'
 	import Item from './Item.svelte'
 	import Loading from './Loading.svelte'
@@ -8,6 +8,11 @@
 
 	let height = 0
 	let items = [] as ExplorerItem[]
+	let itemPos = 0
+
+	scrollExplorerToEnd.set(() => {
+		itemPos = items.length - 1
+	})
 
 	onMount(() => {
 		const wh = window.innerHeight
@@ -38,7 +43,7 @@
 </script>
 
 {#if items.length === 0}
-	{#if $isSearching && $explorerItems.length === 0}
+	{#if $isSearching && items.length === 0}
 		<Loading />
 	{:else}
 		<div
@@ -53,7 +58,13 @@
 	{/if}
 {:else}
 	<div data-test-id="vl" class="[&>*]:pr-2 [&>*]:scrollbar-thin [&>*]:scrollbar-thumb-zinc-700">
-		<VirtualList width="100%" {height} itemCount={items.length} itemSize={24}>
+		<VirtualList
+			width="100%"
+			{height}
+			itemCount={items.length}
+			itemSize={24}
+			scrollToIndex={itemPos}
+		>
 			<li slot="item" class="absolute w-full" let:index let:style {style}>
 				<Item file={items[index]} />
 			</li>

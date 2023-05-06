@@ -31,7 +31,6 @@
 			text: 'Pin to Quick Access',
 			icon: 'OtherPin',
 			action: () => {
-				console.log('inner')
 				quickAccess.set([...$quickAccess, $selected[0]])
 				localStorage.setItem(
 					'quickAccess',
