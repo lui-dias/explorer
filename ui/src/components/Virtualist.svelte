@@ -20,12 +20,11 @@
 		const windowButtons = document.getElementById('window-buttons')!
 		const cwd = document.getElementById('cwd')!
 		const actions = document.getElementById('actions')!
-		const footer = document.getElementById('footer')!
 
 		const wbH = windowButtons.getBoundingClientRect().height
 		const cwdH = cwd.getBoundingClientRect().height
 		const actionsH = actions.getBoundingClientRect().height
-		const footerH = footer.getBoundingClientRect().height
+		const footerH = 40
 
 		const cwdMargin = 12 * 2
 		const headersH = 24
