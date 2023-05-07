@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
 
-	import { isMultipleSelected, selected } from '../store'
+	import { explorerItems, isMultipleSelected, selected } from '../store'
 	import type { ExplorerItem } from '../types'
 
 	import { E } from '../event'
@@ -17,16 +17,22 @@
 		file.size = size
 	}
 
+	function removeLastItem() {
+		explorerItems.set($explorerItems.slice(0, -1))
+	}
+
 	async function executeEdit() {
 		const path = `${file.parent}/${file.name}`
 		const exists = await __pywebview.exists(path)
 
 		if (file.name === '') {
+			removeLastItem()
 			await E.footerText({
 				text: 'The name cannot be empty',
 				type: 'error',
 			})
 		} else if (exists) {
+			removeLastItem()
 			await E.footerText({
 				text: `'${file.name}' already exists`,
 				type: 'error',
