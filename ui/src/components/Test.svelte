@@ -1,37 +1,40 @@
 <script lang="ts">
+	import { cwd as Scwd, explorerItems, scrollExplorerToEnd } from '../store'
 	import { __pywebview, assert, setPath, sleep } from '../utils'
-	import { explorerItems, scrollExplorerToEnd, cwd as Scwd, history } from '../store'
 
 	setTimeout(async () => {
 		async function TestCwd() {
 			const all = [...document.querySelectorAll('[data-test-id="cwd-item"]')]
 
 			for (const path of pwd.split('/')) {
-				assert(!!all.find(e => e.textContent!.trim() === path), `CWD ${path} not found`)
+				assert(!!all.find(e => e.textContent!.trim() === path), `Should have ${path}`)
 			}
 
 			const cwd = document.querySelector('[data-test-id="cwd"]') as HTMLDivElement
 			let cwdInput = document.querySelector('[data-test-id="cwd-input"]') as HTMLInputElement
 
-			assert(!!cwd, 'CWD not found')
-			assert(!cwdInput, 'CWD input found')
+			assert(!!cwd, 'Should have cwd')
+			assert(!cwdInput, 'Should not have cwd input')
 
 			cwd.focus()
 			await sleep(1)
 
 			cwdInput = document.querySelector('[data-test-id="cwd-input"]')!
 
-			assert(!!cwdInput, 'CWD input not found')
-			assert(cwdInput.value === pwd + '/__tests', 'CWD input value not empty')
+			assert(!!cwdInput, 'Should have cwd input')
+			assert(
+				cwdInput.value === pwd + '/__tests',
+				`Should cwd input value be ${pwd}/__tests, got ${cwdInput.value}`,
+			)
 
 			document.dispatchEvent(click)
 			await sleep(1)
 
 			cwdInput = document.querySelector('[data-test-id="cwd-input"]')!
-			assert(!cwdInput, 'CWD input found')
+			assert(!cwdInput, 'Should not have cwd input')
 
 			const reload = document.querySelector('[data-test-id="cwd-reload"]')!
-			assert(!!reload, 'CWD reload not found')
+			assert(!!reload, 'Should have reload button')
 
 			const explorerItem = '[data-test-id="explorer-item"]'
 			const explorerItemName = '[data-test-id="file-name"]'
@@ -49,7 +52,7 @@
 
 			assert(
 				allFiles.every(f => actualFiles.includes(f)),
-				'Files are different',
+				'Should all files be in explorer',
 			)
 
 			const itemsButtons = [...document.querySelectorAll('[data-test-id="cwd-item-button"]')]
@@ -57,14 +60,14 @@
 			itemsButtons.at(-2)!.dispatchEvent(click)
 			await sleep(1)
 
-			assert($Scwd === pwd, 'Parent folder not found')
+			assert($Scwd === pwd, 'Should have correct parent folder')
 		}
 
 		async function TestVirtualist() {
 			setPath(pwd + '/__tests')
 			await sleep(1)
 
-			assert($explorerItems.length === 1003, 'Incorrect items length')
+			assert($explorerItems.length === 1003, `Should have 1003 items, got ${$explorerItems.length}`)
 
 			const extraFiles = 3
 			for (let i = 0; i < $explorerItems.length - extraFiles; i++) {
@@ -72,13 +75,13 @@
 				if ($explorerItems[i].name.match(/^\d+$/)) {
 					assert(
 						$explorerItems.some(ii => parseInt(ii.name) === i),
-						`Missing item in explorer: ${i}`,
+						`Should have ${i}`,
 					)
 				}
 			}
 
 			const vl = document.querySelector('[data-test-id="vl"]')!
-			assert(!!vl, 'Virtual list not found')
+			assert(!!vl, 'Should have virtual list')
 
 			$scrollExplorerToEnd()
 			await sleep(1)
@@ -87,7 +90,7 @@
 				.at(-1)!
 				.querySelector('[data-test-id="file-name"]')!
 
-			assert(lastItem.textContent === '999', 'Last item not found')
+			assert(lastItem.textContent === '999', 'Should have the 999 item')
 		}
 
 		async function TestBackForward() {
@@ -98,20 +101,20 @@
 				'[data-test-id="forward"] > button',
 			) as HTMLButtonElement
 
-			assert(!!back, 'Back button not found')
-			assert(!!forward, 'Forward button not found')
-			assert(forward.disabled, 'Back button disabled')
+			assert(!!back, 'Should have back button')
+			assert(!!forward, 'Should have forward button')
+			assert(forward.disabled, 'Should have disabled forward button')
 
 			back.dispatchEvent(click)
 			await sleep(1)
 
-			assert(!forward.disabled, 'Forward button enabled')
-			assert($Scwd === pwd, 'Parent folder not found')
+			assert(!forward.disabled, 'Should not have disabled forward button')
+			assert($Scwd === pwd, `Should have correct parent folder, got ${$Scwd}`)
 
 			forward.dispatchEvent(click)
 			await sleep(1)
 
-			assert($Scwd === pwd + '/__tests', 'Parent folder not found')
+			assert($Scwd === pwd + '/__tests', `Should have correct parent folder, got ${$Scwd}`)
 		}
 
 		async function TestSearch() {
