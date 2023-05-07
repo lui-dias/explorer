@@ -24,7 +24,12 @@
 	</div>
 
 	<div class="flex items-center gap-x-2">
-		<button type="button" on:click={() => settingsOpen.set(true)}>
+		<button
+			type="button"
+			class="disabled:cursor-not-allowed"
+			disabled
+			on:click={() => settingsOpen.set(true)}
+		>
 			<Config class="fill-zinc-500" />
 		</button>
 	</div>
