@@ -9,10 +9,10 @@
 		json,
 		javascript,
 		yaml,
-        typescript,
-        vbscriptHtml,
-        css,
-        powershell
+		typescript,
+		vbscriptHtml,
+		css,
+		powershell,
 	} from 'svelte-highlight/languages'
 	import githubDark from 'svelte-highlight/styles/github-dark'
 	import { selected } from '../store'
@@ -44,10 +44,10 @@
 		[json, ['.json', '.prettierrc']],
 		[javascript, ['.js', '.mjs', '.cjs']],
 		[yaml, ['.yml', '.yaml']],
-        [typescript, ['.ts', '.tsx']],
-        [vbscriptHtml, ['.html']],
-        [css, ['.css']],
-        [powershell, ['.ps1']],
+		[typescript, ['.ts', '.tsx']],
+		[vbscriptHtml, ['.html']],
+		[css, ['.css']],
+		[powershell, ['.ps1']],
 	])
 
 	async function getData() {
@@ -120,8 +120,12 @@
 	{@html githubDark}
 </svelte:head>
 
-<div class="_preview w-full max-w-[250px] h-full pl-4 overflow-y-auto">
-	{#if $selected.length}
+<div
+	class={`_preview w-full transition-all duration-300 ease-out h-[398px] pl-4 overflow-y-auto ${
+		$selected.length === 1 && $selected[0].kind === 'file' ? 'max-w-[250px]' : 'max-w-0'
+	}`}
+>
+	{#if $selected.length === 1 && $selected[0].kind === 'file'}
 		{#if isLoading}
 			<span />
 		{:else if type.type === 'image'}
@@ -136,7 +140,7 @@
 			<Highlight
 				language={type.language}
 				code={type.text}
-				class="pr-2 overflow-auto h-[398px] scrollbar-thin scrollbar-thumb-zinc-700 [&>*]:scrollbar-thin [&>*]:scrollbar-thumb-zinc-700 [&>*]:h-full"
+				class="pr-2 overflow-auto h-full scrollbar-thin scrollbar-thumb-zinc-700 [&>*]:scrollbar-thin [&>*]:scrollbar-thumb-zinc-700 [&>*]:h-full"
 			/>
 		{/if}
 	{/if}
