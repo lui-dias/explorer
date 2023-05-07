@@ -41,23 +41,23 @@ export function sort<T>(arr: T[], fn: (key: T) => any, reverse = false) {
 }
 
 export function formatBytes(bytes: number) {
-	if (bytes < 1024) {
+	if (bytes < 1000) {
 		return `${bytes} B`
 	}
 
-	if (bytes < 1024 ** 2) {
-		return `${(bytes / 1024).toFixed(2)} KB`
+	if (bytes < 1000 ** 2) {
+		return `${(bytes / 1000).toFixed(2)} KB`
 	}
 
-	if (bytes < 1024 ** 3) {
-		return `${(bytes / 1024 ** 2).toFixed(2)} MB`
+	if (bytes < 1000 ** 3) {
+		return `${(bytes / 1000 ** 2).toFixed(2)} MB`
 	}
 
-	if (bytes < 1024 ** 4) {
-		return `${(bytes / 1024 ** 3).toFixed(2)} GB`
+	if (bytes < 1000 ** 4) {
+		return `${(bytes / 1000 ** 3).toFixed(2)} GB`
 	}
 
-	return `${(bytes / 1024 ** 4).toFixed(2)} TB`
+	return `${(bytes / 1000 ** 4).toFixed(2)} TB`
 }
 
 export function isNumber(value: string) {
