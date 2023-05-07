@@ -82,7 +82,7 @@
 		{#if file.isEditMode}
 			<input
 				type="text"
-				class="w-full h-full px-2 rounded-md outline-none dark:bg-transparent"
+				class="w-full h-full px-2 rounded-md outline-none text-[#b9b9b9] dark:bg-transparent"
 				spellcheck="false"
 				autocomplete="false"
 				bind:value={file.name}
