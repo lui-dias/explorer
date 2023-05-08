@@ -3,3 +3,4 @@ regex
 toml
 pybase64
 send2trash
+flask
