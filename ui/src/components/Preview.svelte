@@ -2,22 +2,21 @@
 	import isSvg from 'is-svg'
 	import Highlight from 'svelte-highlight'
 	import {
-		markdown,
-		ini as tomlAndIni,
-		python,
-		plaintext,
-		json,
+		css,
 		javascript,
-		yaml,
+		json,
+		markdown,
+		plaintext,
+		powershell,
+		python,
+		ini as tomlAndIni,
 		typescript,
 		vbscriptHtml,
-		css,
-		powershell,
+		yaml,
 	} from 'svelte-highlight/languages'
 	import githubDark from 'svelte-highlight/styles/github-dark'
 	import { selected } from '../store'
 	import type { ExplorerItem } from '../types'
-	import { __pywebview, b64ToUint8Array } from '../utils'
 
 	let selectedItem: ExplorerItem
 	let lastSelected: ExplorerItem
@@ -25,14 +24,8 @@
 	let data: any
 	let isLoading = false
 
-	let imageSignatures = {
-		'image/png': [new Uint8Array([0x89, 0x50, 0x4e, 0x47]), 4],
-		'image/jpeg': [new Uint8Array([0xff, 0xd8, 0xff, 0xe0]), 4],
-		pdf: [new Uint8Array([0x25, 0x50, 0x44, 0x46, 0x2d]), 5],
-	}
-
 	let type = {} as {
-		type: 'image' | 'pdf' | 'svg' | 'text' | 'unknown'
+		type: 'image' | 'pdf' | 'svg' | 'text' | 'video' | 'unknown'
 		[key: string]: any
 	}
 
@@ -50,12 +43,11 @@
 		[powershell, ['.ps1']],
 	])
 
+	let images = ['png', 'jpg', 'jpeg']
+
 	async function getData() {
 		isLoading = true
-		data = await __pywebview.read(selectedItem.path)
 
-		const chunk = b64ToUint8Array(data)
-		let mime = ''
 		let text = ''
 		let language = ''
 
@@ -63,28 +55,59 @@
 			return (text = atob(data))
 		}
 
-		Object.entries(imageSignatures).forEach(([key, value]) => {
-			const [signature, length] = value as [Uint8Array, number]
-
-			if (chunk.subarray(0, length).every((v, i) => v === signature[i])) {
-				mime = key
-			}
-		})
-
 		for (const [key, value] of languages) {
 			if (value.some(v => selectedItem.name.endsWith(v))) {
 				language = key
 			}
 		}
 
-		if (mime?.startsWith('image')) {
+		if (images.includes(extension)) {
 			type = {
 				type: 'image',
-				mime,
+				mime: extension,
 			}
-		} else if (mime === 'pdf') {
+		} else if (extension === 'pdf') {
 			type = {
 				type: 'pdf',
+			}
+		} else if (
+			[
+				'3g2',
+				'3gp',
+				'asf',
+				'amv',
+				'avi',
+				'divx',
+				'qt',
+				'f4a',
+				'f4b',
+				'f4p',
+				'f4v',
+				'flv',
+				'm2v',
+				'm4v',
+				'mkv',
+				'mk3d',
+				'mov',
+				'mp2',
+				'mp4',
+				'mpe',
+				'mpeg',
+				'mpeg2',
+				'mpg',
+				'mpv',
+				'nsv',
+				'ogv',
+				'rm',
+				'rmvb',
+				'svi',
+				'vob',
+				'webm',
+				'wmv',
+			].includes(extension)
+		) {
+			type = {
+				type: 'video',
 			}
 		} else if (isSvg(getText())) {
 			type = {
@@ -136,6 +159,9 @@
 			<div class="flex items-center justify-center w-full h-full bg-zinc-200/20">
 				<img src={`data:image/svg+xml;base64,${data}`} alt="Preview" />
 			</div>
+		{:else if type.type === 'video'}
+			<!-- svelte-ignore a11y-media-has-caption -->
+			<video src={`http://localhost:3003/stream/${selectedItem.path}`} controls autoplay />
 		{:else if type.type === 'text'}
 			<Highlight
 				language={type.language}

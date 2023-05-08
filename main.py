@@ -16,6 +16,7 @@ import webview
 from send2trash import send2trash
 from toml import load as load_toml, dumps as dumps_toml
 from pybase64 import b64encode
+from flask import Flask, send_from_directory
 
 try:
     from rich import print
@@ -439,12 +440,43 @@ def get_file_type(path: Path):
             ]
         ):
             return 'FileZip'
-        
-        if any(name.endswith(i.lower()) for i in ['3g2', '3gp', 'asf', 'amv', 'avi', 'divx', 'qt',
-                                                  'f4a', 'f4b', 'f4p', 'f4v', 'flv', 'm2v', 'm4v',
-                                                  'mkv', 'mk3d', 'mov', 'mp2', 'mp4', 'mpe', 'mpeg',
-                                                  'mpeg2', 'mpg', 'mpv', 'nsv', 'ogv', 'rm', 'rmvb',
-                                                  'svi', 'vob', 'webm', 'wmv']
+
+        if any(
+            name.endswith(i.lower())
+            for i in [
+                '3g2',
+                '3gp',
+                'asf',
+                'amv',
+                'avi',
+                'divx',
+                'qt',
+                'f4a',
+                'f4b',
+                'f4p',
+                'f4v',
+                'flv',
+                'm2v',
+                'm4v',
+                'mkv',
+                'mk3d',
+                'mov',
+                'mp2',
+                'mp4',
+                'mpe',
+                'mpeg',
+                'mpeg2',
+                'mpg',
+                'mpv',
+                'nsv',
+                'ogv',
+                'rm',
+                'rmvb',
+                'svi',
+                'vob',
+                'webm',
+                'wmv',
+            ]
         ):
             return 'FileVideo'
 
@@ -831,7 +863,7 @@ class API:
 
     def pwd(self):
         return Path('.').absolute().as_posix()
-    
+
     def setup_tests(self):
         tests = Path('__tests')
 
@@ -850,7 +882,7 @@ class API:
     def clear_tests(self):
         rmtree('__tests')
 
-        
+
 streams_files = {}
 streams_deletes = {}
 streams_finds = {}
@@ -933,8 +965,9 @@ if args:
             for i in range(quantity):
                 executor.submit(seed, i)
 
-else:
+elif __name__ == '__main__':
     Thread(target=start_server).start()
+    app = Flask(__name__)
 
     w = webview.create_window(
         'Explorer',
@@ -945,4 +978,11 @@ else:
         height=600,
     )
 
+    @app.route('/stream/<path:path>')
+    def _(path):
+        path = Path(path)
+
+        return send_from_directory(path.parent, path.name, conditional=True)
+
+    Thread(target=app.run, args=('localhost', 3003)).start()
     webview.start(debug=True)
