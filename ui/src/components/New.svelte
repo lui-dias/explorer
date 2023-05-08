@@ -18,6 +18,7 @@
 	let indexBtn2: (i: number) => number
 
 	let isHover: boolean | undefined = undefined
+	let canBeInvisible = true
 
 	async function _() {
 		await sleep(0.24)
@@ -25,8 +26,18 @@
 	}
 
 	$: if (isHover !== undefined) {
+		canBeInvisible = false
 		indexBtn(isHover ? 1 : 0)
 		indexBtn2(isHover ? 1 : 0)
+		_()
+	}
+
+	$: if (isHover === false) {
+		async function _() {
+			await sleep(1)
+			canBeInvisible = true
+		}
+
 		_()
 	}
 </script>
@@ -38,7 +49,10 @@
 		</Button>
 	</div>
 
-	<div class="absolute top-[calc(100%-8px)] flex flex-col gap-y-2 z-10 pt-4">
+	<div
+		class="absolute top-[calc(100%-8px)] flex flex-col gap-y-2 z-10 pt-4"
+		class:invisible={canBeInvisible}
+	>
 		<Animate {animate} transition={{ ease: 'linear' }} let:motion bind:setIndex={indexBtn}>
 			<div use:motion>
 				<Button on:click={E.createNewExplorerFile} shadow={n === 1} data-test-id="new-file">
@@ -53,7 +67,11 @@
 			bind:setIndex={indexBtn2}
 		>
 			<div use:motion>
-				<Button on:click={E.createNewExplorerFolder} shadow={n === 1} data-test-id="new-folder">
+				<Button
+					on:click={E.createNewExplorerFolder}
+					shadow={n === 1}
+					data-test-id="new-folder"
+				>
 					<Icon icon="OtherNewFolder" slot="icon" />
 				</Button>
 			</div>
