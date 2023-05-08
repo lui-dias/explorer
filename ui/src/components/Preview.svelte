@@ -17,6 +17,7 @@
 	import githubDark from 'svelte-highlight/styles/github-dark'
 	import { selected } from '../store'
 	import type { ExplorerItem } from '../types'
+	import { __pywebview } from '../utils'
 
 	let selectedItem: ExplorerItem
 	let lastSelected: ExplorerItem
@@ -48,11 +49,10 @@
 	async function getData() {
 		isLoading = true
 
-		let text = ''
 		let language = ''
 
-		function getText() {
-			return (text = atob(data))
+		async function getText() {
+			return (data = atob(await __pywebview.read(selectedItem.path)))
 		}
 
 		for (const [key, value] of languages) {
@@ -109,14 +109,14 @@
 			type = {
 				type: 'video',
 			}
-		} else if (isSvg(getText())) {
+		} else if (isSvg(await getText())) {
 			type = {
 				type: 'svg',
 			}
 		} else {
 			type = {
 				type: 'text',
-				text: getText(),
+				text: data,
 				language: language || plaintext,
 			}
 		}
