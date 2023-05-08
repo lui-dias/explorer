@@ -1,6 +1,7 @@
 <script lang="ts">
 	import ArrowLeft from '../icons/ArrowLeft.svelte'
 	import Folder from '../icons/Folder.svelte'
+	import Search from '../icons/Search.svelte'
 	import Abc from '../icons/contextmenu/Abc.svelte'
 	import Calendar from '../icons/contextmenu/Calendar.svelte'
 	import NewFile from '../icons/contextmenu/NewFile.svelte'
@@ -42,6 +43,7 @@
 	import FileToml from '../icons/files/FileToml.svelte'
 	import FileTypescript from '../icons/files/FileTypescript.svelte'
 	import FileTypescriptDef from '../icons/files/FileTypescriptDef.svelte'
+	import FileVideo from '../icons/files/FileVideo.svelte'
 	import FileYaml from '../icons/files/FileYaml.svelte'
 	import FileYarn from '../icons/files/FileYarn.svelte'
 	import FileZip from '../icons/files/FileZip.svelte'
@@ -59,7 +61,6 @@
 	import FolderTest from '../icons/folders/FolderTest.svelte'
 	import FolderView from '../icons/folders/FolderView.svelte'
 	import FolderVscode from '../icons/folders/FolderVscode.svelte'
-	import Search from '../icons/Search.svelte'
 
 	import { tv } from 'tailwind-variants'
 
@@ -76,7 +77,7 @@
 	export let glow = true
 
 	export let icon: string
-    export let noStyle = false
+	export let noStyle = false
 
 	// prettier-ignore
 	const icons = {
@@ -114,6 +115,7 @@
         'FileNPM'                  : FileNpm,
         'FilePostCSSConfig'        : FilePostCssConfig,
         'FileZip'                  : FileZip,
+        'FileVideo'                : FileVideo,
         'Folder'                   : Folder,
         'FolderVscode'             : FolderVscode,
         'FolderNode Modules'       : FolderNodeModules,
@@ -145,7 +147,7 @@
 </script>
 
 {#if noStyle}
-    <svelte:component this={icons[icon]} />
+	<svelte:component this={icons[icon]} />
 {:else}
-    <svelte:component this={icons[icon]} class={`${_icon({ glow })} ${$$props.class}`} />
+	<svelte:component this={icons[icon]} class={`${_icon({ glow })} ${$$props.class}`} />
 {/if}

@@ -439,6 +439,14 @@ def get_file_type(path: Path):
             ]
         ):
             return 'FileZip'
+        
+        if any(name.endswith(i.lower()) for i in ['3g2', '3gp', 'asf', 'amv', 'avi', 'divx', 'qt',
+                                                  'f4a', 'f4b', 'f4p', 'f4v', 'flv', 'm2v', 'm4v',
+                                                  'mkv', 'mk3d', 'mov', 'mp2', 'mp4', 'mpe', 'mpeg',
+                                                  'mpeg2', 'mpg', 'mpv', 'nsv', 'ogv', 'rm', 'rmvb',
+                                                  'svi', 'vob', 'webm', 'wmv']
+        ):
+            return 'FileVideo'
 
         # ! --------------------------------------------
         # ! KEEP ALWAYS AT THE END
