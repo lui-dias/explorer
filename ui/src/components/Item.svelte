@@ -91,6 +91,7 @@
 				class="w-full h-full px-2 rounded-md outline-none text-[#b9b9b9] dark:bg-transparent"
 				spellcheck="false"
 				autocomplete="false"
+                data-test-id="edit-file"
 				bind:value={file.name}
 				bind:this={inputEditNode}
 				on:blur={executeEdit}

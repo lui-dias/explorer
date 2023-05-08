@@ -67,7 +67,10 @@
 			setPath(pwd + '/__tests')
 			await sleep(1)
 
-			assert($explorerItems.length === 1003, `Should have 1003 items, got ${$explorerItems.length}`)
+			assert(
+				$explorerItems.length === 1003,
+				`Should have 1003 items, got ${$explorerItems.length}`,
+			)
 
 			const extraFiles = 3
 			for (let i = 0; i < $explorerItems.length - extraFiles; i++) {
@@ -181,6 +184,41 @@
 			)
 		}
 
+		async function TestNew() {
+			const newFile = document.querySelector('[data-test-id="new-file"]')!
+			const newFolder = document.querySelector('[data-test-id="new-folder"]')!
+
+			assert(!!newFile, 'Should have new file')
+			assert(!!newFolder, 'Should have new folder')
+
+			let oldItemsLength = $explorerItems.length
+
+			newFile.dispatchEvent(click)
+			await sleep(1)
+
+			document.dispatchEvent(click)
+			await sleep(1)
+
+			assert($explorerItems.length === oldItemsLength + 1, 'Should have 1 new item')
+			assert(!!$explorerItems.find(i => i.name === 'file'), 'Should have a new file')
+
+			oldItemsLength = $explorerItems.length
+
+			newFolder.dispatchEvent(click)
+			await sleep(1)
+
+			document.dispatchEvent(click)
+			await sleep(1)
+
+			assert($explorerItems.length === oldItemsLength + 1, 'Should have 1 new item')
+			assert(
+				!!$explorerItems.find(i => i.name === 'folder'),
+				'Should have a new folder',
+			)
+
+			document.dispatchEvent(click)
+		}
+
 		await __pywebview.setupTests()
 		const pwd = await __pywebview.pwd()
 
@@ -210,6 +248,9 @@
 
 			console.log('Testing Search')
 			await TestSearch()
+
+			console.log('Testing New')
+			await TestNew()
 
 			console.log(
 				'✅ %cAll tests passed',

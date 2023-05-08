@@ -41,7 +41,7 @@
 	<div class="absolute top-[calc(100%-8px)] flex flex-col gap-y-2 z-10 pt-4">
 		<Animate {animate} transition={{ ease: 'linear' }} let:motion bind:setIndex={indexBtn}>
 			<div use:motion>
-				<Button on:click={E.createNewExplorerFile} shadow={n === 1}>
+				<Button on:click={E.createNewExplorerFile} shadow={n === 1} data-test-id="new-file">
 					<Icon icon="OtherNewFile" slot="icon" />
 				</Button>
 			</div>
@@ -53,7 +53,7 @@
 			bind:setIndex={indexBtn2}
 		>
 			<div use:motion>
-				<Button on:click={E.createNewExplorerFolder} shadow={n === 1}>
+				<Button on:click={E.createNewExplorerFolder} shadow={n === 1} data-test-id="new-folder">
 					<Icon icon="OtherNewFolder" slot="icon" />
 				</Button>
 			</div>
