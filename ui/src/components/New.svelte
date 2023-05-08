@@ -19,25 +19,28 @@
 
 	let isHover: boolean | undefined = undefined
 	let canBeInvisible = true
+	let canBeInvisibleTimer: NodeJS.Timeout
 
 	async function _() {
+		if (isHover) {
+			canBeInvisible = false
+
+			if (canBeInvisibleTimer) {
+				clearTimeout(canBeInvisibleTimer)
+			}
+		} else {
+			canBeInvisibleTimer = setTimeout(() => {
+				canBeInvisible = true
+			}, 1000)
+		}
+
 		await sleep(0.24)
 		n = (n + 1) % 2
 	}
 
 	$: if (isHover !== undefined) {
-		canBeInvisible = false
 		indexBtn(isHover ? 1 : 0)
 		indexBtn2(isHover ? 1 : 0)
-		_()
-	}
-
-	$: if (isHover === false) {
-		async function _() {
-			await sleep(1)
-			canBeInvisible = true
-		}
-
 		_()
 	}
 </script>
