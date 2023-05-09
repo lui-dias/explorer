@@ -1,5 +1,6 @@
 <script lang="ts">
 	import ArrowLeft from '../icons/ArrowLeft.svelte'
+	import Disk from '../icons/Disk.svelte'
 	import Folder from '../icons/Folder.svelte'
 	import Search from '../icons/Search.svelte'
 	import Abc from '../icons/contextmenu/Abc.svelte'
@@ -143,6 +144,7 @@
         'OtherPin'                 : Pin,
         'OtherUnpin'               : Unpin,
         'OtherSearch'              : Search,
+        'OtherDisk'                : Disk,
 	} as Record<string, any>
 </script>
 

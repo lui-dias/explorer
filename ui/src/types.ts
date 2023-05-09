@@ -26,3 +26,12 @@ export type TConfig = {
 		divider: string
 	}
 }
+
+export type TDisksInfo = {
+    device: string
+    path: string
+    total: number
+    used: number
+    free: number
+    percent: number
+}

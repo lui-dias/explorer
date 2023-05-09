@@ -4,6 +4,7 @@
 	import {
 		cwd,
 		cwdSplit,
+		disks,
 		explorerItems,
 		history,
 		historyIndex,
@@ -28,6 +29,7 @@
 	import Settings from './Settings.svelte'
 	import Virtualist from './Virtualist.svelte'
 	import WindowButtons from './WindowButtons.svelte'
+	import Disks from './Disks.svelte'
 
 	let explorerItemsNode: HTMLUListElement
 
@@ -78,6 +80,8 @@
 		historyIndex.subscribe(v => {
 			cwd.set($history[$historyIndex])
 		})
+
+		disks.set(await __pywebview.disksInfo())
 
 		isLoading = false
 	})
@@ -179,10 +183,25 @@
 		<aside
 			class="w-[266px] p-6 px-8 pt-[30px] h-full bg-zinc-200 absolute left-0 -z-20 isolate after:w-full after:h-full after:absolute after:top-0 after:left-0 after:-z-10 after:bg-[rgba(0,0,0,0.65)]"
 		>
-			<strong class="text-lg text-[#ececec] dark:text-text-light tracking-wide font-inter">
-				Quick access
-			</strong>
-			<QuickAccess />
+			<div class="space-y-10">
+				<div>
+					<strong
+						class="text-lg text-[#ececec] dark:text-text-light tracking-wide font-inter"
+					>
+						Quick access
+					</strong>
+					<QuickAccess />
+				</div>
+
+				<div>
+					<strong
+						class="text-lg text-[#ececec] dark:text-text-light tracking-wide font-inter"
+					>
+						Disks
+					</strong>
+					<Disks />
+				</div>
+			</div>
 
 			<svg
 				xmlns="http://www.w3.org/2000/svg"

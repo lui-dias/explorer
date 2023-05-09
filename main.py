@@ -17,6 +17,7 @@ from send2trash import send2trash
 from toml import load as load_toml, dumps as dumps_toml
 from pybase64 import b64encode
 from flask import Flask, send_from_directory
+from psutil import disk_partitions, disk_usage
 
 try:
     from rich import print
@@ -33,6 +34,13 @@ class ExplorerItem(TypedDict):
     size: str
     parent: str
 
+class Disk(TypedDict):
+    device: str
+    path: str
+    total: int
+    used: int
+    free: int
+    percent: float
 
 def get_folder_size(path: Path):
     if path.is_dir():
@@ -881,6 +889,23 @@ class API:
 
     def clear_tests(self):
         rmtree('__tests')
+
+    def disks_info(self):
+        disks: list[Disk] = []
+
+        for i in disk_partitions():
+            usage = disk_usage(i.mountpoint)
+
+            disks.append({
+                'device': i.device.replace('\\', '/'),
+                'path': i.mountpoint.replace('\\', '/'),
+                'free': usage.free,
+                'total': usage.total,
+                'used': usage.used,
+                'percent': usage.percent
+            })
+
+        return disks
 
 
 streams_files = {}

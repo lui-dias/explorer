@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store'
-import type { TConfig, ExplorerItem, TFooter, TSortTypes } from './types'
+import type { TConfig, ExplorerItem, TFooter, TSortTypes, TDisksInfo } from './types'
 
 export const cwd = writable<string>('')
 export const sortType = writable<TSortTypes>('name')
@@ -21,3 +21,5 @@ export const selectedQuickAccess = writable<ExplorerItem | null>(null)
 
 export const searchItems = writable<ExplorerItem[]>([])
 export const isSearching = writable<boolean>(true)
+
+export const disks = writable<TDisksInfo[]>([])

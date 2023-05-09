@@ -1,6 +1,6 @@
 import { get } from 'svelte/store'
 import { cwd, cwdSplit, history, historyIndex, sortType } from './store'
-import type { ExplorerItem, TConfig } from './types'
+import type { ExplorerItem, TConfig, TDisksInfo } from './types'
 
 const isVisible = (elem: any) =>
 	!!elem && !!(elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length)
@@ -243,6 +243,10 @@ export const __pywebview = {
 		// @ts-ignore
 		return await pywebview.api.clear_tests()
 	},
+    disksInfo: async (): Promise<TDisksInfo[]> => {
+        // @ts-ignore
+        return await pywebview.api.disks_info()
+    }
 }
 
 export function isClient() {
