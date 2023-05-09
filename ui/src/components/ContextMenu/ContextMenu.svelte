@@ -8,7 +8,7 @@
 		selectedQuickAccess,
 		sortType,
 	} from '../../store'
-	import { outsideClick } from '../../utils'
+	import { __pywebview, outsideClick } from '../../utils'
 	import ContextMenuItem from './ContextMenuItem.svelte'
 
 	let contextMenuNode: HTMLMenuElement
@@ -30,19 +30,20 @@
 		pin: {
 			text: 'Pin to Quick Access',
 			icon: 'OtherPin',
-			action: () => {
+			action: async () => {
 				quickAccess.set([...$quickAccess, $selected[0]])
-				localStorage.setItem(
+				await __pywebview.set(
 					'quickAccess',
 					JSON.stringify($quickAccess.map(item => item.path)),
 				)
+
 				contextMenuOpen.set(false)
 			},
 		},
 		unpin: {
 			text: 'Unpin from Quick Access',
 			icon: 'OtherUnpin',
-			action: () => {
+			action: async () => {
 				if ($selectedQuickAccess) {
 					quickAccess.set([
 						...$quickAccess.filter(
@@ -52,7 +53,7 @@
 				} else {
 					quickAccess.set([...$quickAccess.filter(i => i.path !== $selected[0].path)])
 				}
-				localStorage.setItem(
+				await __pywebview.set(
 					'quickAccess',
 					JSON.stringify($quickAccess.map(item => item.path)),
 				)
@@ -158,7 +159,7 @@
 <menu
 	class="neuBorder absolute z-20 flex flex-col bg-[#383e45] dark:text-purple-100"
 	class:invisible={!$contextMenuOpen}
-    data-test-id="contextmenu"
+	data-test-id="contextmenu"
 	bind:this={contextMenuNode}
 >
 	<li class="dark:bg-[#32373e]">

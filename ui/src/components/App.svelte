@@ -60,19 +60,19 @@
 		document.documentElement.style.setProperty('--divider', config.colors.divider)
 
 		// Load data from localStorage
-		sortType.set((localStorage.getItem('sortType') || $sortType) as TSortTypes)
-		setPath(localStorage.getItem('cwd') || (await __pywebview.pwd()))
+		sortType.set((await __pywebview.get('sortType')) || ($sortType as TSortTypes))
+		setPath((await __pywebview.get('cwd')) || (await __pywebview.pwd()))
 
-		sortType.subscribe(() => {
+		sortType.subscribe(async () => {
 			explorerItems.set(sortItems($explorerItems))
 			searchItems.set(sortItems($searchItems))
 
-			localStorage.setItem('sortType', $sortType)
+			await __pywebview.set('sortType', $sortType)
 		})
 
 		cwd.subscribe(async v => {
 			if (v) {
-				localStorage.setItem('cwd', $cwd)
+				await __pywebview.set('cwd', $cwd)
 				cwdSplit.set($cwd.split('/'))
 				await E.stopAllFind()
 				await E.reload()

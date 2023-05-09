@@ -6,11 +6,12 @@ from contextlib import suppress
 from datetime import datetime, timezone
 from pathlib import Path, PurePath
 from subprocess import Popen, run
-from threading import Thread
+from threading import Thread, Lock
 from collections import deque
 from typing import Literal, TypedDict
 from getpass import getuser
 from shutil import rmtree
+from ujson import loads, dumps
 
 import webview
 from send2trash import send2trash
@@ -906,6 +907,20 @@ class API:
             })
 
         return disks
+    
+    def get(self, k: str):
+        with local_store_lock:
+            d = loads(LOCALSTORAGE.read_text())
+
+            return d.get(k)
+    
+    def set(self, k: str, v):
+        with local_store_lock:
+            d = loads(LOCALSTORAGE.read_text())
+
+            d[k] = v
+
+            LOCALSTORAGE.write_text(dumps(d))
 
 
 streams_files = {}
@@ -916,6 +931,12 @@ streams_ls = {}
 UI_FOLDER = Path('ui')
 SEED_FOLDER = Path('seed')
 CONFIG_FILE = Path('config.toml')
+LOCALSTORAGE = Path('localstorage.json')
+
+local_store_lock = Lock()
+
+if not LOCALSTORAGE.exists() or LOCALSTORAGE.stat().st_size == 0:
+    LOCALSTORAGE.write_text('{}')
 
 server_process = None
 

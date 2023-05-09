@@ -246,6 +246,14 @@ export const __pywebview = {
     disksInfo: async (): Promise<TDisksInfo[]> => {
         // @ts-ignore
         return await pywebview.api.disks_info()
+    },
+    get: async (key: string): Promise<any> => {
+        // @ts-ignore
+        return await pywebview.api.get(key)
+    },
+    set: async (key: string, value: any): Promise<void> => {
+        // @ts-ignore
+        return await pywebview.api.set(key, value)
     }
 }
 

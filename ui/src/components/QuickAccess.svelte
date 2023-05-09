@@ -5,7 +5,7 @@
 	import Icon from './ui/Icon.svelte'
 
 	onMount(async () => {
-		const items = JSON.parse(localStorage.getItem('quickAccess') ?? '[]') as string[]
+		const items = JSON.parse(await __pywebview.get('quickAccess') ?? '[]') as string[]
 		const files = await Promise.all(
 			items.map(async item => await __pywebview.get_path_info(item)),
 		)
