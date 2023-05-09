@@ -157,8 +157,9 @@
 
 <menu
 	class="neuBorder absolute z-20 flex flex-col bg-[#383e45] dark:text-purple-100"
-	bind:this={contextMenuNode}
 	class:invisible={!$contextMenuOpen}
+    data-test-id="contextmenu"
+	bind:this={contextMenuNode}
 >
 	<li class="dark:bg-[#32373e]">
 		{#if $selectedQuickAccess}

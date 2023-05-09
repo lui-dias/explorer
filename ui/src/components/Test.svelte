@@ -219,6 +219,18 @@
 			document.dispatchEvent(click)
 		}
 
+        async function TestContextMenu() {
+            const contextmenu = document.querySelector('[data-test-id="contextmenu"]')!
+
+            assert(!!contextmenu, 'Should have context menu')
+            assert(contextmenu.classList.contains('invisible'), 'Should be invisible')
+
+            window.dispatchEvent(evContextmenu)
+            await sleep(1)
+
+            assert(!contextmenu.classList.contains('invisible'), 'Should be visible')
+        }
+
 		await __pywebview.setupTests()
 		const pwd = await __pywebview.pwd()
 
@@ -236,6 +248,14 @@
 		})
 		const evInput = new KeyboardEvent('input', { bubbles: true })
 
+        const evContextmenu = new MouseEvent('contextmenu')
+
+        const hover = new MouseEvent('mouseover', {
+            bubbles: true,
+            cancelable: true,
+            view: window,
+        })
+
 		try {
 			console.log('Testing CWD')
 			await TestCwd()
@@ -251,6 +271,9 @@
 
 			console.log('Testing New')
 			await TestNew()
+
+            console.log('Testing Context Menu')
+            await TestContextMenu()
 
 			console.log(
 				'✅ %cAll tests passed',
