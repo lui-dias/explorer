@@ -928,6 +928,8 @@ streams_deletes = {}
 streams_finds = {}
 streams_ls = {}
 
+w = None
+
 UI_FOLDER = Path('ui')
 SEED_FOLDER = Path('seed')
 CONFIG_FILE = Path('config.toml')
@@ -966,6 +968,33 @@ def start_server():
 
 def show_ui():
     run('python main.py', shell=True)
+
+def start(debug=True, server=True):
+    global w
+
+    if server:
+        Thread(target=start_server).start()
+
+    app = Flask(__name__)
+
+    w = webview.create_window(
+        'Explorer',
+        'http://localhost:3000',
+        js_api=API(),
+        frameless=True,
+        width=1280,
+        height=600,
+    )
+
+    @app.route('/stream/<path:path>')
+    def _(path):
+        path = Path(path)
+
+        return send_from_directory(path.parent, path.name, conditional=True)
+
+    Thread(target=app.run, args=('localhost', 3003)).start()
+    webview.start(debug=debug)
+
 
 
 def parse_size(size: str):
@@ -1011,24 +1040,11 @@ if args:
             for i in range(quantity):
                 executor.submit(seed, i)
 
+    if command == 'release':
+        run('cd ui && npm run build', shell=True)
+        Thread(target=lambda: run('cd ui && npm run preview', shell=True)).start()
+
+        start(debug=False, server=False)
+
 elif __name__ == '__main__':
-    Thread(target=start_server).start()
-    app = Flask(__name__)
-
-    w = webview.create_window(
-        'Explorer',
-        'http://localhost:3000',
-        js_api=API(),
-        frameless=True,
-        width=1280,
-        height=600,
-    )
-
-    @app.route('/stream/<path:path>')
-    def _(path):
-        path = Path(path)
-
-        return send_from_directory(path.parent, path.name, conditional=True)
-
-    Thread(target=app.run, args=('localhost', 3003)).start()
-    webview.start(debug=True)
+    start()
