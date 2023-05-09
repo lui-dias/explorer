@@ -3,7 +3,7 @@
 	import { E } from '../event'
 	import { cwd, cwdSplit, history, historyIndex, selected } from '../store'
 	import { outsideClick, sleep } from '../utils'
-	import CwdChevron from './icons/CWDChevron.svelte'
+	import Chevron from './icons/Chevron.svelte'
 	import Reload from './icons/Reload.svelte'
 
 	let searchNode: HTMLButtonElement
@@ -71,7 +71,7 @@
 <button
 	type="button"
 	data-test-id="cwd"
-    id="cwd"
+	id="cwd"
 	class="dark:bg-zinc-700 w-full text-[#b9b9b9] flex items-center overflow-x-auto"
 	style="border-radius: 12px;
     background: linear-gradient(145deg, #32383b, #2a2f32);
@@ -87,7 +87,7 @@
 			type="text"
 			class="w-full h-10 px-2 tracking-wide bg-transparent outline-none focus:outline-purple-300"
 			value={$cwd}
-            data-test-id="cwd-input"
+			data-test-id="cwd-input"
 			on:keyup={async e => {
 				if (e.key === 'Enter') {
 					cwd.set(inputSearchNode.value)
@@ -104,7 +104,7 @@
 						<button
 							type="button"
 							class="dark:hover:bg-[#7f8388]/20 p-2"
-                            data-test-id="cwd-item-button"
+							data-test-id="cwd-item-button"
 							on:click={async () => {
 								const path = $cwdSplit.slice(0, hideNItems + i + 1).join('/')
 								const isLastItem = i === $cwdSplit.length - 1 - hideNItems
@@ -123,7 +123,7 @@
 						</button>
 						{#if dir !== $cwdSplit.slice(-1)[0]}
 							<span class="rotate-180">
-								<CwdChevron class="fill-[#b9b9b9] w-5" />
+								<Chevron class="fill-[#b9b9b9] w-5" />
 							</span>
 						{/if}
 					</li>
@@ -132,7 +132,7 @@
 			<button
 				type="button"
 				class="absolute inset-y-0 right-2"
-                data-test-id="cwd-reload"
+				data-test-id="cwd-reload"
 				on:click={async () => {
 					await E.stopAllFind()
 					await E.reload()

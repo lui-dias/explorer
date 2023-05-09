@@ -16,13 +16,13 @@
 <div class="flex gap-x-2">
 	<div data-test-id="back">
 		<Button disabled={backDisabled} class="group disabled:cursor-not-allowed" on:click={E.back}>
-			<Icon icon="OtherArrowLeft" slot="icon" class="rotate-180" />
+			<Icon icon="OtherArrowLeft" slot="icon" class="rotate-180" colored glow />
 		</Button>
 	</div>
 
 	<div data-test-id="forward">
 		<Button disabled={forwardDisabled} class="group disabled:cursor-not-allowed" on:click={E.forward}>
-			<Icon icon="OtherArrowLeft" slot="icon" />
+			<Icon icon="OtherArrowLeft" slot="icon" colored glow />
 		</Button>
 	</div>
 </div>

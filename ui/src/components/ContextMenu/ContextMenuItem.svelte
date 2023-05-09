@@ -59,7 +59,7 @@
 			}
 		}}
 	>
-		<Icon {icon} glow={false} />
+		<Icon {icon} colored />
 		<span class="ml-2">{text}</span>
 
 		<div
@@ -75,7 +75,7 @@
 						on:click={action}
 					>
 						<span class="w-8">
-							<Icon {icon} glow={false} />
+							<Icon {icon} colored />
 						</span>
 						<span class="ml-auto pl-6">{text}</span>
 					</button>

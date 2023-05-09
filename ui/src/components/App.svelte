@@ -30,6 +30,8 @@
 	import Virtualist from './Virtualist.svelte'
 	import WindowButtons from './WindowButtons.svelte'
 	import Disks from './Disks.svelte'
+	import Icon from './ui/Icon.svelte'
+	import Accordion from './ui/Accordion.svelte'
 
 	let explorerItemsNode: HTMLUListElement
 
@@ -184,22 +186,44 @@
 			class="w-[266px] p-6 px-8 pt-[30px] h-full bg-zinc-200 absolute left-0 -z-20 isolate after:w-full after:h-full after:absolute after:top-0 after:left-0 after:-z-10 after:bg-[rgba(0,0,0,0.65)]"
 		>
 			<div class="space-y-10">
-				<div>
-					<strong
-						class="text-lg text-[#ececec] dark:text-text-light tracking-wide font-inter"
-					>
-						Quick access
-					</strong>
-					<QuickAccess />
-				</div>
+				<Accordion class="w-full [&>*]:w-full" open>
+					<div slot="trigger" class="flex justify-between items-center w-full" let:open>
+						<strong
+							class="text-lg text-[#ececec] dark:text-text-light tracking-wide font-inter"
+						>
+							Quick access
+						</strong>
+						<Icon
+							icon="OtherChevron"
+							class={`${
+								open ? 'rotate-[270deg]' : 'rotate-180'
+							} transition-transform duration-300 fill-[#b9b9b9]`}
+						/>
+					</div>
+					<QuickAccess slot="content" />
+				</Accordion>
 
 				<div>
-					<strong
-						class="text-lg text-[#ececec] dark:text-text-light tracking-wide font-inter"
-					>
-						Disks
-					</strong>
-					<Disks />
+					<Accordion class="w-full [&>*]:w-full">
+						<div
+							slot="trigger"
+							class="flex justify-between items-center w-full"
+							let:open
+						>
+							<strong
+								class="text-lg text-[#ececec] dark:text-text-light tracking-wide font-inter"
+							>
+								Disks
+							</strong>
+							<Icon
+								icon="OtherChevron"
+								class={`${
+									open ? 'rotate-[270deg]' : 'rotate-180'
+								} transition-transform duration-300 fill-[#b9b9b9]`}
+							/>
+						</div>
+						<Disks slot="content" />
+					</Accordion>
 				</div>
 			</div>
 

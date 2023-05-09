@@ -62,23 +62,26 @@
 	import FolderTest from '../icons/folders/FolderTest.svelte'
 	import FolderView from '../icons/folders/FolderView.svelte'
 	import FolderVscode from '../icons/folders/FolderVscode.svelte'
+	import Chevron from '../icons/Chevron.svelte'
 
 	import { tv } from 'tailwind-variants'
 
 	const _icon = tv({
-		base: 'fill-primary group-disabled:fill-gray-400 group-disabled:drop-shadow-none',
 		variants: {
 			glow: {
 				true: 'drop-shadow-[0_0_5px_var(--primary)]',
 				false: '',
 			},
+			colored: {
+				true: 'fill-primary group-disabled:fill-gray-400 group-disabled:drop-shadow-none',
+				false: '',
+			},
 		},
 	})
 
-	export let glow = true
-
-	export let icon: string
-	export let noStyle = false
+    export let glow = false
+    export let colored = false
+    export let icon: string
 
 	// prettier-ignore
 	const icons = {
@@ -145,11 +148,8 @@
         'OtherUnpin'               : Unpin,
         'OtherSearch'              : Search,
         'OtherDisk'                : Disk,
+        'OtherChevron'             : Chevron,
 	} as Record<string, any>
 </script>
 
-{#if noStyle}
-	<svelte:component this={icons[icon]} />
-{:else}
-	<svelte:component this={icons[icon]} class={`${_icon({ glow })} ${$$props.class}`} />
-{/if}
+<svelte:component this={icons[icon]} class={`${_icon({ glow, colored })} ${$$props.class}`} />

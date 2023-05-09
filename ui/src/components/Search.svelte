@@ -135,7 +135,7 @@
 						showSearch = true
 					}}
 				>
-					<Icon icon="OtherSearch" slot="icon" />
+					<Icon icon="OtherSearch" slot="icon" colored glow />
 				</Button>
 			</div>
 		</Motion>

@@ -106,7 +106,7 @@
 			/>
 		{:else}
 			<div class="text-[#b9b9b9] flex items-center gap-x-1.5 w-64 text-sm" title={file.path}>
-				<Icon icon={file.type} noStyle />
+				<Icon icon={file.type} />
 				<span
 					class="w-full overflow-hidden text-ellipsis whitespace-nowrap text-start"
 					data-test-id="file-name"

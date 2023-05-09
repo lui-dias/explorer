@@ -10,7 +10,7 @@
 			<button type="button" on:click={() => appendPath(d.path)} class="w-full">
 				<div class="flex">
 					<div class="w-8">
-						<Icon icon="OtherDisk" glow={false} />
+						<Icon icon="OtherDisk" colored/>
 					</div>
 
 					<div class="w-full flex flex-col ml-2 translate-y-1">

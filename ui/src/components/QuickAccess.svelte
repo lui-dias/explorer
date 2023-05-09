@@ -39,7 +39,7 @@
 						appendPath(file.path)
 					}}
 				>
-					<Icon icon={file.type} noStyle />
+					<Icon icon={file.type} colored />
 					<span
 						class="whitespace-nowrap overflow-hidden text-ellipsis text-[#b9b9b9] font-inter hover:font-bold"
 						>{file.name}</span
