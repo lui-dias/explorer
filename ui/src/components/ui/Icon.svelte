@@ -4,6 +4,7 @@
 	import Disk from '../icons/Disk.svelte'
 	import Folder from '../icons/Folder.svelte'
 	import Search from '../icons/Search.svelte'
+	import Usb from '../icons/Usb.svelte'
 	import Abc from '../icons/contextmenu/Abc.svelte'
 	import Asc from '../icons/contextmenu/Asc.svelte'
 	import Calendar from '../icons/contextmenu/Calendar.svelte'
@@ -152,7 +153,8 @@
         'OtherDisk'                : Disk,
         'OtherChevron'             : Chevron,
         'OtherAsc'                 : Asc,
-        'OtherDesc'                : Desc
+        'OtherDesc'                : Desc,
+        'OtherUsb'                 : Usb
 	} as Record<string, any>
 </script>
 
