@@ -162,7 +162,6 @@
 				encodeURI(`http://localhost:3003/stream/${selectedItem.path}`),
 			)
 			weight = await __pywebview.getFontWeight(selectedItem.path)
-			console.log(weight)
 
 			font.actual = fontName
 			font.loaded = [
@@ -200,12 +199,12 @@
 		{#if isLoading}
 			<span />
 		{:else if type.type === 'image'}
-			<img src={`data:${type.mime};base64,${data}`} alt="Preview" />
+			<img src={`http://localhost:3003/stream/${selectedItem.path}`} alt="Preview" />
 		{:else if type.type === 'pdf'}
 			<span />
 		{:else if type.type === 'svg'}
 			<div class="flex items-center justify-center w-full h-full bg-zinc-200/20">
-				<img src={`data:image/svg+xml;base64,${data}`} alt="Preview" />
+				<img src={`http://localhost:3003/stream/${selectedItem.path}`} alt="Preview" />
 			</div>
 		{:else if type.type === 'font'}
 			<div class="bg-zinc-200/50 p-2 overflow-x-auto scrollbar-thin scrollbar-thumb-zinc-700">
