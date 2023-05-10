@@ -26,7 +26,7 @@
 
 						<div class="w-full flex justify-between">
 							<span class="text-[#7f8388] text-[12px]">{d.device}</span>
-							<span class="text-sm text-[#b9b9b9]">{d.percent}%</span>
+							<span class="text-[12px] text-[#b9b9b9]">{d.percent}%</span>
 						</div>
 					</div>
 				</div>
