@@ -37,6 +37,7 @@ class ExplorerItem(TypedDict):
     size: str
     parent: str
 
+
 class Disk(TypedDict):
     device: str
     path: str
@@ -44,6 +45,7 @@ class Disk(TypedDict):
     used: int
     free: int
     percent: float
+
 
 def get_folder_size(path: Path):
     if path.is_dir():
@@ -771,10 +773,10 @@ class API:
     def rename(self, path: str, name: str):
         Path(path).rename(Path(path).parent / name)
 
-    def createFile(self, path: str):
+    def create_file(self, path: str):
         Path(path).touch()
 
-    def createFolder(self, path: str):
+    def create_folder(self, path: str):
         Path(path).mkdir()
 
     def exists(self, path: str, ignore: str = None):
@@ -850,14 +852,14 @@ class API:
         while streams_finds:
             sleep(0.001)
 
-    def stopAllStreamsLs(self):
+    def stop_all_streams_ls(self):
         for i in streams_ls.values():
             i.end = True
 
         while streams_ls:
             sleep(0.001)
 
-    def deleteAllStreamsLs(self):
+    def delete_all_streams_ls(self):
         streams_ls.clear()
 
     def get_config(self):
@@ -899,23 +901,25 @@ class API:
         for i in disk_partitions():
             usage = disk_usage(i.mountpoint)
 
-            disks.append({
-                'device': i.device.replace('\\', '/'),
-                'path': i.mountpoint.replace('\\', '/'),
-                'free': usage.free,
-                'total': usage.total,
-                'used': usage.used,
-                'percent': usage.percent
-            })
+            disks.append(
+                {
+                    'device': i.device.replace('\\', '/'),
+                    'path': i.mountpoint.replace('\\', '/'),
+                    'free': usage.free,
+                    'total': usage.total,
+                    'used': usage.used,
+                    'percent': usage.percent,
+                }
+            )
 
         return disks
-    
+
     def get(self, k: str):
         with local_store_lock:
             d = loads(LOCALSTORAGE.read_text())
 
             return d.get(k)
-    
+
     def set(self, k: str, v):
         with local_store_lock:
             d = loads(LOCALSTORAGE.read_text())
@@ -977,6 +981,7 @@ def start_server():
 def show_ui():
     run('python main.py', shell=True)
 
+
 def start(debug=True, server=True):
     global w
 
@@ -1003,7 +1008,6 @@ def start(debug=True, server=True):
 
     Thread(target=app.run, args=('localhost', 3003)).start()
     webview.start(debug=debug)
-
 
 
 def parse_size(size: str):

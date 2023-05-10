@@ -123,11 +123,11 @@ export const __pywebview = {
 	},
 	create_file: async (path: string): Promise<void> => {
 		// @ts-ignore
-		return await pywebview.api.createFile(path)
+		return await pywebview.api.create_file(path)
 	},
 	create_folder: async (path: string): Promise<void> => {
 		// @ts-ignore
-		return await pywebview.api.createFolder(path)
+		return await pywebview.api.create_folder(path)
 	},
 	exists: async (path: string, ignore?: string): Promise<boolean> => {
 		// @ts-ignore
@@ -170,17 +170,17 @@ export const __pywebview = {
 
 	stop_stream_delete: async (path: string): Promise<void> => {
 		// @ts-ignore
-		return await pywebview.api.stopStreamDelete(path)
+		return await pywebview.api.stop_stream_delete(path)
 	},
 
 	stop_stream_file_size: async (path: string): Promise<void> => {
 		// @ts-ignore
-		return await pywebview.api.stopStreamFileSize(path)
+		return await pywebview.api.stop_stream_file_size(path)
 	},
 
 	stop_stream_find: async (path: string): Promise<void> => {
 		// @ts-ignore
-		return await pywebview.api.stopStreamFind(path)
+		return await pywebview.api.stop_stream_find(path)
 	},
 
 	stop_all_streams_delete: async (): Promise<void> => {
@@ -200,12 +200,12 @@ export const __pywebview = {
 
 	stop_all_streams_ls: async (): Promise<void> => {
 		// @ts-ignore
-		return await pywebview.api.stopAllStreamsLs()
+		return await pywebview.api.stop_all_streams_ls()
 	},
 
 	delete_all_streams_ls: async () => {
 		// @ts-ignore
-		return await pywebview.api.deleteAllStreamsLs()
+		return await pywebview.api.delete_all_streams_ls()
 	},
 
 	get_path_info: async (path: string): Promise<ExplorerItem> => {
@@ -243,22 +243,22 @@ export const __pywebview = {
 		// @ts-ignore
 		return await pywebview.api.clear_tests()
 	},
-    disksInfo: async (): Promise<TDisksInfo[]> => {
-        // @ts-ignore
-        return await pywebview.api.disks_info()
-    },
-    get: async (key: string): Promise<any> => {
-        // @ts-ignore
-        return await pywebview.api.get(key)
-    },
-    set: async (key: string, value: any): Promise<void> => {
-        // @ts-ignore
-        return await pywebview.api.set(key, value)
-    },
-    getFontWeight: async (path: string): Promise<number | null> => {
-        // @ts-ignore
-        return await pywebview.api.get_font_weight(path)
-    }
+	disksInfo: async (): Promise<TDisksInfo[]> => {
+		// @ts-ignore
+		return await pywebview.api.disks_info()
+	},
+	get: async (key: string): Promise<any> => {
+		// @ts-ignore
+		return await pywebview.api.get(key)
+	},
+	set: async (key: string, value: any): Promise<void> => {
+		// @ts-ignore
+		return await pywebview.api.set(key, value)
+	},
+	getFontWeight: async (path: string): Promise<number | null> => {
+		// @ts-ignore
+		return await pywebview.api.get_font_weight(path)
+	},
 }
 
 export function isClient() {
@@ -350,20 +350,14 @@ export function assert(condition: boolean, message: string) {
 }
 
 export async function loadFontDynamicly(url: string) {
-    const name = gen_id(8)
-    const font = new FontFace(
-        name,
-        `url(${url})`,
-        {
-            
-        }
-    )
+	const name = gen_id(8)
+	const font = new FontFace(name, `url(${url})`, {})
 
-    await font.load()
+	await font.load()
 
-    console.log(font)
+	console.log(font)
 
-    document.fonts.add(font)
+	document.fonts.add(font)
 
-    return name
+	return name
 }
