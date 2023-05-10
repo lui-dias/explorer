@@ -5,7 +5,7 @@ from concurrent.futures import ALL_COMPLETED, ThreadPoolExecutor, wait
 from contextlib import suppress
 from datetime import datetime, timezone
 from pathlib import Path, PurePath
-from subprocess import Popen, run
+from subprocess import run
 from threading import Thread, Lock
 from collections import deque
 from typing import Literal, TypedDict
@@ -736,7 +736,6 @@ class StreamLs:
 class API:
     def close(self):
         w.destroy()
-        server_process.kill()
         sys.exit(0)
 
     def minimize(self):
@@ -952,8 +951,6 @@ local_store_lock = Lock()
 if not LOCALSTORAGE.exists() or LOCALSTORAGE.stat().st_size == 0:
     LOCALSTORAGE.write_text('{}')
 
-server_process = None
-
 if not SEED_FOLDER.exists():
     SEED_FOLDER.mkdir()
 
@@ -974,8 +971,7 @@ if not CONFIG_FILE.exists():
 
 
 def start_server():
-    global server_process
-    server_process = Popen('cd ui && pnpm dev', shell=True)
+    run('cd ui && pnpm dev', shell=True)
 
 
 def show_ui():
