@@ -6,3 +6,5 @@ send2trash
 flask
 psutil
 ujson
+flask-cors
+fonttools[woff]
