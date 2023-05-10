@@ -28,6 +28,7 @@ export type TConfig = {
 }
 
 export type TDisksInfo = {
+    name: string
     device: string
     path: string
     total: number

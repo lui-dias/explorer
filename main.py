@@ -13,6 +13,7 @@ from typing import Literal, TypedDict
 
 import regex as re
 import webview
+import wmi
 from flask import Flask, send_from_directory
 from flask_cors import CORS
 from fontTools.ttLib import TTFont, TTLibError
@@ -40,6 +41,7 @@ class ExplorerItem(TypedDict):
 
 
 class Disk(TypedDict):
+    name: str
     device: str
     path: str
     total: int
@@ -896,15 +898,21 @@ class API:
         rmtree('__tests')
 
     def disks_info(self):
+        c = wmi.WMI()
+
         disks: list[Disk] = []
 
         for i in disk_partitions():
+            d = next(
+                d for d in c.Win32_LogicalDisk() if i.mountpoint.startswith(d.Caption)
+            )
             usage = disk_usage(i.mountpoint)
 
             disks.append(
                 {
-                    'device': i.device.replace('\\', '/'),
-                    'path': i.mountpoint.replace('\\', '/'),
+                    'name': d.VolumeName or DRIVE_TYPES[d.DriveType],
+                    'device': DRIVE_TYPES[d.DriveType],
+                    'path': d.Caption,
                     'free': usage.free,
                     'total': usage.total,
                     'used': usage.used,
@@ -939,6 +947,16 @@ streams_files = {}
 streams_deletes = {}
 streams_finds = {}
 streams_ls = {}
+
+DRIVE_TYPES = {
+    0: "Unknown",
+    1: "No Root Directory",
+    2: "Removable Disk",
+    3: "Local Disk",
+    4: "Network Drive",
+    5: "Compact Disc",
+    6: "RAM Disk",
+}
 
 w = None
 
@@ -988,7 +1006,13 @@ def start(debug=True, server=True):
     app = Flask(__name__)
     CORS(app)
 
-    w = webview.create_window(
+    @app.route('/stream/<path:path>')
+    def _(path):
+        path = Path(path)
+
+        return send_from_directory(path.parent, path.name, conditional=True)
+
+    webview.create_window(
         'Explorer',
         'http://localhost:3000',
         js_api=API(),
@@ -997,14 +1021,8 @@ def start(debug=True, server=True):
         height=600,
     )
 
-    @app.route('/stream/<path:path>')
-    def _(path):
-        path = Path(path)
-
-        return send_from_directory(path.parent, path.name, conditional=True)
-
     Thread(target=app.run, args=('localhost', 3003)).start()
-    webview.start(debug=debug)
+    webview.start(debug=debug, private_mode=False)
 
 
 def parse_size(size: str):

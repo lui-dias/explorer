@@ -112,8 +112,6 @@
 
 		isLoading = false
 	})
-
-	$: console.log($explorerItems)
 </script>
 
 <svelte:window
