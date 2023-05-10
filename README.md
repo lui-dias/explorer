@@ -4,6 +4,8 @@ _Icons from [vscode-icons](https://github.com/vscode-icons/vscode-icons)_
 
 It's a file explorer with some features that I think it would be nice for a file explorer to have. **Extremely WIP**.
 
+Tested only on Windows, probably not working correctly on Linux or Mac.
+
 ## How to run
 ```
 git clone https://github.com/lui-dias/explorer
