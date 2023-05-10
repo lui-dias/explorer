@@ -14,6 +14,7 @@
 		selectedQuickAccess,
 		settings,
 		sortType,
+		sortTypeReversed,
 	} from '../store'
 	import type { TSortTypes } from '../types'
 	import { __pywebview, setPath, sortItems } from '../utils'
@@ -61,13 +62,37 @@
 
 		// Load data from localStorage
 		sortType.set((await __pywebview.get('sortType')) || ($sortType as TSortTypes))
+		sortTypeReversed.set((await __pywebview.get('sortTypeReversed')) || $sortTypeReversed)
 		setPath((await __pywebview.get('cwd')) || (await __pywebview.pwd()))
 
 		sortType.subscribe(async () => {
-			explorerItems.set(sortItems($explorerItems))
-			searchItems.set(sortItems($searchItems))
+			const explorerSort = sortItems($explorerItems)
+			const searchSort = sortItems($searchItems)
+
+			if ($sortTypeReversed) {
+				explorerSort.reverse()
+				searchSort.reverse()
+			}
+
+			explorerItems.set(explorerSort)
+			searchItems.set(searchSort)
 
 			await __pywebview.set('sortType', $sortType)
+		})
+
+		sortTypeReversed.subscribe(async () => {
+			const explorerSort = sortItems($explorerItems)
+			const searchSort = sortItems($searchItems)
+
+			if ($sortTypeReversed) {
+				explorerSort.reverse()
+				searchSort.reverse()
+			}
+
+			explorerItems.set(explorerSort)
+			searchItems.set(searchSort)
+
+			await __pywebview.set('sortTypeReversed', $sortTypeReversed)
 		})
 
 		cwd.subscribe(async v => {
@@ -87,6 +112,8 @@
 
 		isLoading = false
 	})
+
+	$: console.log($explorerItems)
 </script>
 
 <svelte:window

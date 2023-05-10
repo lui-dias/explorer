@@ -3,6 +3,7 @@ import type { TConfig, ExplorerItem, TFooter, TSortTypes, TDisksInfo } from './t
 
 export const cwd = writable<string>('')
 export const sortType = writable<TSortTypes>('name')
+export const sortTypeReversed = writable<boolean>(false)
 export const contextMenuOpen = writable<boolean>(false)
 export const history = writable<string[]>([])
 export const historyIndex = writable<number>(0)

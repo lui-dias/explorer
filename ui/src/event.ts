@@ -10,6 +10,7 @@ import {
 	isSearching,
 	scrollExplorerToEnd,
 	selected,
+	sortTypeReversed,
 } from './store'
 import type { TFooter } from './types'
 import { __pywebview, debounce, formatDate, gen_id, sortItems } from './utils'
@@ -43,8 +44,17 @@ export const E = {
 
 		while (true) {
 			const { end, items: newItems } = await __pywebview.ls($cwd)
+			const $sortTypeReversed = get(sortTypeReversed)
 
-			explorerItems.update(items => sortItems([...items, ...newItems]))
+			explorerItems.update(items => {
+				const v = sortItems([...items, ...newItems])
+
+				if ($sortTypeReversed) {
+					v.reverse()
+				}
+
+				return v
+			})
 
 			if (end) {
 				isSearching.set(false)

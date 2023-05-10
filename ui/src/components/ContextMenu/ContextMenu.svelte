@@ -7,6 +7,7 @@
 		selected,
 		selectedQuickAccess,
 		sortType,
+		sortTypeReversed,
 	} from '../../store'
 	import { __pywebview, outsideClick } from '../../utils'
 	import ContextMenuItem from './ContextMenuItem.svelte'
@@ -83,7 +84,7 @@
 				{
 					text: 'Name',
 					icon: 'OtherAbc',
-					selected: $sortType === 'name',
+					selected: () => $sortType === 'name',
 					action: () => {
 						sortType.set('name')
 						contextMenuOpen.set(false)
@@ -92,7 +93,7 @@
 				{
 					text: 'Modified',
 					icon: 'OtherCalendar',
-					selected: $sortType === 'modified',
+					selected: () => $sortType === 'modified',
 					action: () => {
 						sortType.set('modified')
 						contextMenuOpen.set(false)
@@ -101,7 +102,7 @@
 				{
 					text: 'Size',
 					icon: 'OtherSize',
-					selected: $sortType === 'size',
+					selected: () => $sortType === 'size',
 					action: () => {
 						sortType.set('type')
 						contextMenuOpen.set(false)
@@ -110,11 +111,32 @@
 				{
 					text: 'Type',
 					icon: 'OtherTypes',
-					selected: $sortType === 'type',
+					selected: () => $sortType === 'type',
 					action: () => {
 						sortType.set('size')
 						contextMenuOpen.set(false)
 					},
+					dividerBelow: true,
+				},
+				{
+					text: 'Asc',
+					icon: 'OtherAsc',
+					selected: () => $sortTypeReversed === false,
+					action: () => {
+						sortTypeReversed.set(false)
+						contextMenuOpen.set(false)
+					},
+					__useStroke: true,
+				},
+				{
+					text: 'Desc',
+					icon: 'OtherDesc',
+					selected: () => $sortTypeReversed === true,
+					action: () => {
+						sortTypeReversed.set(true)
+						contextMenuOpen.set(false)
+					},
+					__useStroke: true,
 				},
 			],
 		},

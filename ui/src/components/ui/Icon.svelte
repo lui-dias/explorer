@@ -5,7 +5,9 @@
 	import Folder from '../icons/Folder.svelte'
 	import Search from '../icons/Search.svelte'
 	import Abc from '../icons/contextmenu/Abc.svelte'
+	import Asc from '../icons/contextmenu/Asc.svelte'
 	import Calendar from '../icons/contextmenu/Calendar.svelte'
+	import Desc from '../icons/contextmenu/Desc.svelte'
 	import NewFile from '../icons/contextmenu/NewFile.svelte'
 	import NewFolder from '../icons/contextmenu/NewFolder.svelte'
 	import Pin from '../icons/contextmenu/Pin.svelte'
@@ -79,9 +81,9 @@
 		},
 	})
 
-    export let glow = false
-    export let colored = false
-    export let icon: string
+	export let glow = false
+	export let colored = false
+	export let icon: string
 
 	// prettier-ignore
 	const icons = {
@@ -149,6 +151,8 @@
         'OtherSearch'              : Search,
         'OtherDisk'                : Disk,
         'OtherChevron'             : Chevron,
+        'OtherAsc'                 : Asc,
+        'OtherDesc'                : Desc
 	} as Record<string, any>
 </script>
 

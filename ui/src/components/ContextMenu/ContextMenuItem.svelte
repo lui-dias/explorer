@@ -13,7 +13,9 @@
 		icon: string
 		condition?: () => boolean
 		action: () => void
-		selected?: boolean
+		selected?: () => boolean
+		dividerBelow?: boolean
+		__useStroke?: boolean
 	}[]
 
 	let menuList: HTMLDivElement | null = null
@@ -62,25 +64,36 @@
 		<Icon {icon} colored />
 		<span class="ml-2">{text}</span>
 
-		<div
-			class="absolute top-0 left-full bg-[#32373e]"
-			class:hidden={!isHovered}
-			bind:this={menuList}
-		>
-			{#each inner as { text, icon, condition, action, selected }}
-				{#if condition === undefined || condition()}
-					<button
-						type="button"
-						class={`px-4 py-2 flex items-center w-full ${selected ? '' : ''}`}
-						on:click={action}
-					>
-						<span class="w-8">
-							<Icon {icon} colored />
-						</span>
-						<span class="ml-auto pl-6">{text}</span>
-					</button>
-				{/if}
-			{/each}
-		</div>
+		{#if isHovered}
+			<div
+				class="absolute top-0 left-full bg-[#32373e]"
+				class:hidden={!isHovered}
+				bind:this={menuList}
+			>
+				{#each inner as { text, icon, condition, action, selected, dividerBelow, __useStroke }}
+					{#if condition === undefined || condition()}
+						<button
+							type="button"
+							class={`px-4 py-2 flex items-center w-full ${
+								selected?.() ? 'bg-[#474C53]' : ''
+							}`}
+							on:click={action}
+						>
+							<span class="w-8">
+								{#if __useStroke}
+									<Icon {icon} colored class="stroke-primary" />
+								{:else}
+									<Icon {icon} colored />
+								{/if}
+							</span>
+							<span class="ml-auto pl-6">{text}</span>
+						</button>
+					{/if}
+					{#if dividerBelow}
+						<hr class="my-2 mx-4 h-px border-0 bg-[#5D636C]" />
+					{/if}
+				{/each}
+			</div>
+		{/if}
 	</button>
 {/if}
