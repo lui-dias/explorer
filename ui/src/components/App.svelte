@@ -331,8 +331,8 @@
 					<div class="flex flex-col w-full h-full">
 						<div class="flex items-center h-20 gap-x-4" id="actions">
 							<Arrows />
-							<Search />
 							<New />
+							<Search />
 						</div>
 						<div class="flex w-full h-full">
 							<div class="w-full h-full">
