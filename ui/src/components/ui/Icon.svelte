@@ -1,5 +1,6 @@
 <script lang="ts">
 	import ArrowLeft from '../icons/ArrowLeft.svelte'
+	import Chevron from '../icons/Chevron.svelte'
 	import Disk from '../icons/Disk.svelte'
 	import Folder from '../icons/Folder.svelte'
 	import Search from '../icons/Search.svelte'
@@ -62,7 +63,6 @@
 	import FolderTest from '../icons/folders/FolderTest.svelte'
 	import FolderView from '../icons/folders/FolderView.svelte'
 	import FolderVscode from '../icons/folders/FolderVscode.svelte'
-	import Chevron from '../icons/Chevron.svelte'
 
 	import { tv } from 'tailwind-variants'
 

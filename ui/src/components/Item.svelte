@@ -5,7 +5,7 @@
 	import type { ExplorerItem } from '../types'
 
 	import { E } from '../event'
-	import { __pywebview, formatBytes, outsideClick, appendPath } from '../utils'
+	import { __pywebview, appendPath, formatBytes, outsideClick } from '../utils'
 	import Icon from './ui/Icon.svelte'
 
 	export let file: ExplorerItem

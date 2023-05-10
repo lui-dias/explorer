@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
-	import { explorerItems, isSearching, searchItems, scrollExplorerToEnd } from '../store'
+	import VirtualList from 'svelte-tiny-virtual-list'
+	import { explorerItems, isSearching, scrollExplorerToEnd, searchItems } from '../store'
 	import type { ExplorerItem } from '../types'
 	import Item from './Item.svelte'
 	import Loading from './Loading.svelte'
-	import VirtualList from 'svelte-tiny-virtual-list'
 
 	let height = 0
 	let items = [] as ExplorerItem[]

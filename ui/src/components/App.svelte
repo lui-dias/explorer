@@ -20,6 +20,7 @@
 	import Arrows from './Arrows.svelte'
 	import ContextMenu from './ContextMenu/ContextMenu.svelte'
 	import Cwd from './Cwd.svelte'
+	import Disks from './Disks.svelte'
 	import Footer from './Footer.svelte'
 	import Loading from './Loading.svelte'
 	import New from './New.svelte'
@@ -29,9 +30,8 @@
 	import Settings from './Settings.svelte'
 	import Virtualist from './Virtualist.svelte'
 	import WindowButtons from './WindowButtons.svelte'
-	import Disks from './Disks.svelte'
-	import Icon from './ui/Icon.svelte'
 	import Accordion from './ui/Accordion.svelte'
+	import Icon from './ui/Icon.svelte'
 
 	let explorerItemsNode: HTMLUListElement
 

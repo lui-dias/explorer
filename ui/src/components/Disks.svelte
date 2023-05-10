@@ -1,7 +1,7 @@
 <script>
 	import { disks } from '../store'
-	import Icon from './ui/Icon.svelte'
 	import { appendPath, formatBytes } from '../utils'
+	import Icon from './ui/Icon.svelte'
 </script>
 
 <ul class="space-y-3">

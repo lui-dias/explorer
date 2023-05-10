@@ -2,7 +2,6 @@
 	import { createEventDispatcher } from 'svelte'
 	import type { HTMLButtonAttributes } from 'svelte/elements'
 	import { tv } from 'tailwind-variants'
-	import { sleep } from '../../utils'
 
 	const button = tv({
 		slots: {

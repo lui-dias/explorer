@@ -1,26 +1,27 @@
-from time import sleep
-import regex as re
 import sys
+from collections import deque
 from concurrent.futures import ALL_COMPLETED, ThreadPoolExecutor, wait
 from contextlib import suppress
 from datetime import datetime, timezone
-from pathlib import Path, PurePath
-from subprocess import run
-from threading import Thread, Lock
-from collections import deque
-from typing import Literal, TypedDict
 from getpass import getuser
+from pathlib import Path, PurePath
 from shutil import rmtree
-from ujson import loads, dumps
+from subprocess import run
+from threading import Lock, Thread
+from time import sleep
+from typing import Literal, TypedDict
 
+import regex as re
 import webview
-from send2trash import send2trash
-from toml import load as load_toml, dumps as dumps_toml
-from pybase64 import b64encode
 from flask import Flask, send_from_directory
 from flask_cors import CORS
-from psutil import disk_partitions, disk_usage
 from fontTools.ttLib import TTFont, TTLibError
+from psutil import disk_partitions, disk_usage
+from pybase64 import b64encode
+from send2trash import send2trash
+from toml import dumps as dumps_toml
+from toml import load as load_toml
+from ujson import dumps, loads
 
 try:
     from rich import print
