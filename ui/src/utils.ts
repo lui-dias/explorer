@@ -254,6 +254,10 @@ export const __pywebview = {
     set: async (key: string, value: any): Promise<void> => {
         // @ts-ignore
         return await pywebview.api.set(key, value)
+    },
+    getFontWeight: async (path: string): Promise<number | null> => {
+        // @ts-ignore
+        return await pywebview.api.get_font_weight(path)
     }
 }
 
@@ -343,4 +347,23 @@ export function assert(condition: boolean, message: string) {
 	if (!condition) {
 		throw new Error(message)
 	}
+}
+
+export async function loadFontDynamicly(url: string) {
+    const name = gen_id(8)
+    const font = new FontFace(
+        name,
+        `url(${url})`,
+        {
+            
+        }
+    )
+
+    await font.load()
+
+    console.log(font)
+
+    document.fonts.add(font)
+
+    return name
 }

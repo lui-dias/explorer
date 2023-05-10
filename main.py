@@ -18,7 +18,9 @@ from send2trash import send2trash
 from toml import load as load_toml, dumps as dumps_toml
 from pybase64 import b64encode
 from flask import Flask, send_from_directory
+from flask_cors import CORS
 from psutil import disk_partitions, disk_usage
+from fontTools.ttLib import TTFont, TTLibError
 
 try:
     from rich import print
@@ -922,6 +924,12 @@ class API:
 
             LOCALSTORAGE.write_text(dumps(d))
 
+    def get_font_weight(self, path: str):
+        try:
+            return TTFont(path)['OS/2'].usWeightClass
+        except TTLibError:
+            return
+
 
 streams_files = {}
 streams_deletes = {}
@@ -976,6 +984,7 @@ def start(debug=True, server=True):
         Thread(target=start_server).start()
 
     app = Flask(__name__)
+    CORS(app)
 
     w = webview.create_window(
         'Explorer',

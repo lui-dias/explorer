@@ -17,16 +17,28 @@
 	import githubDark from 'svelte-highlight/styles/github-dark'
 	import { selected } from '../store'
 	import type { ExplorerItem } from '../types'
-	import { __pywebview } from '../utils'
+	import { __pywebview, loadFontDynamicly } from '../utils'
 
 	let selectedItem: ExplorerItem
 	let lastSelected: ExplorerItem
 	let extension: string
 	let data: any
 	let isLoading = false
+	let weight: number | null
+	let font = {
+		actual: '',
+		loaded: [],
+	} as {
+		actual: string
+		loaded: {
+			name: string
+			path: string
+			weight: number | null
+		}[]
+	}
 
 	let type = {} as {
-		type: 'image' | 'pdf' | 'svg' | 'text' | 'video' | 'unknown'
+		type: 'unknown' | 'image' | 'pdf' | 'svg' | 'text' | 'video' | 'font'
 		[key: string]: any
 	}
 
@@ -109,6 +121,12 @@
 			type = {
 				type: 'video',
 			}
+		} else if (
+			['woff', 'woff2', 'ttf', 'otf', 'eot', 'pfa', 'pfb', 'sfd'].includes(extension)
+		) {
+			type = {
+				type: 'font',
+			}
 		} else if (isSvg(await getText())) {
 			type = {
 				type: 'svg',
@@ -137,6 +155,36 @@
 			}
 		}
 	}
+
+	$: if (type.type === 'font') {
+		async function _() {
+			const fontName = await loadFontDynamicly(
+				encodeURI(`http://localhost:3003/stream/${selectedItem.path}`),
+			)
+			weight = await __pywebview.getFontWeight(selectedItem.path)
+			console.log(weight)
+
+			font.actual = fontName
+			font.loaded = [
+				...font.loaded,
+				{
+					name: fontName,
+					path: selectedItem.path,
+					weight,
+				},
+			]
+
+			font = { ...font }
+		}
+
+		if (font.loaded.some(f => f.path === selectedItem.path)) {
+			font.actual = font.loaded.find(f => f.path === selectedItem.path)!.name
+			font = { ...font }
+		} else {
+			font.actual = ''
+			_()
+		}
+	}
 </script>
 
 <svelte:head>
@@ -144,7 +192,7 @@
 </svelte:head>
 
 <div
-	class={`_preview w-full transition-all duration-300 ease-out h-[398px] pl-4 overflow-y-auto ${
+	class={`_preview w-full transition-all duration-300 ease-out h-[398px] pl-4 overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-700 ${
 		$selected.length === 1 && $selected[0].kind === 'file' ? 'max-w-[250px]' : 'max-w-0'
 	}`}
 >
@@ -158,6 +206,30 @@
 		{:else if type.type === 'svg'}
 			<div class="flex items-center justify-center w-full h-full bg-zinc-200/20">
 				<img src={`data:image/svg+xml;base64,${data}`} alt="Preview" />
+			</div>
+		{:else if type.type === 'font'}
+			<div class="bg-zinc-200/50 p-2 overflow-x-auto scrollbar-thin scrollbar-thumb-zinc-700">
+				<div class="">
+					{#if weight}
+						<p class="text-sm">Weight {weight}</p>
+						<p>---------------------------</p>
+					{:else if weight === null}
+						<p class="text-sm">It was not possible to get the weight of this font</p>
+					{/if}
+					<div>
+						{#each [12, 16, 24, 32, 48, 64] as size}
+                            <div class="flex items-center gap-x-2">
+                                <p class="text-sm">{size}</p>
+                                <p
+                                    class="font-thin whitespace-nowrap"
+                                    style={`font-family: ${font.actual}; font-weight: ${weight}; font-size: ${size}px`}
+                                >
+                                    The quick brown fox jumps over the lazy dog
+                                </p>
+                            </div>
+						{/each}
+					</div>
+				</div>
 			</div>
 		{:else if type.type === 'video'}
 			<!-- svelte-ignore a11y-media-has-caption -->
