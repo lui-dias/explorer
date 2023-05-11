@@ -17,6 +17,7 @@
 - [x] Rename on F2
 - [x] Select multiples files/folders
 - [x] Add file preview
+- [x] Move files (dnd)
 - [ ] An Icon
 - [ ] Move window on drag header
 - [ ] Resize columns
