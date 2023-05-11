@@ -924,17 +924,17 @@ class API:
 
     def get(self, k: str):
         with local_store_lock:
-            d = loads(LOCALSTORAGE.read_text())
+            d = loads(LOCAL_STORAGE.read_text())
 
             return d.get(k)
 
     def set(self, k: str, v):
         with local_store_lock:
-            d = loads(LOCALSTORAGE.read_text())
+            d = loads(LOCAL_STORAGE.read_text())
 
             d[k] = v
 
-            LOCALSTORAGE.write_text(dumps(d))
+            LOCAL_STORAGE.write_text(dumps(d))
 
     def get_font_weight(self, path: str):
         try:
@@ -963,12 +963,12 @@ w = None
 UI_FOLDER = Path('ui')
 SEED_FOLDER = Path('seed')
 CONFIG_FILE = Path('config.toml')
-LOCALSTORAGE = Path('localstorage.json')
+LOCAL_STORAGE = Path('localstorage.json')
 
 local_store_lock = Lock()
 
-if not LOCALSTORAGE.exists() or LOCALSTORAGE.stat().st_size == 0:
-    LOCALSTORAGE.write_text('{}')
+if not LOCAL_STORAGE.exists() or LOCAL_STORAGE.stat().st_size == 0:
+    LOCAL_STORAGE.write_text('{}')
 
 if not SEED_FOLDER.exists():
     SEED_FOLDER.mkdir()
@@ -1012,7 +1012,7 @@ def start(debug=True, server=True):
 
         return send_from_directory(path.parent, path.name, conditional=True)
 
-    webview.create_window(
+    w = webview.create_window(
         'Explorer',
         'http://localhost:3000',
         js_api=API(),
