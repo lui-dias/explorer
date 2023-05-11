@@ -104,7 +104,7 @@
 					icon: 'OtherSize',
 					selected: () => $sortType === 'size',
 					action: () => {
-						sortType.set('type')
+						sortType.set('size')
 						contextMenuOpen.set(false)
 					},
 				},
@@ -113,7 +113,7 @@
 					icon: 'OtherTypes',
 					selected: () => $sortType === 'type',
 					action: () => {
-						sortType.set('size')
+						sortType.set('type')
 						contextMenuOpen.set(false)
 					},
 					dividerBelow: true,
