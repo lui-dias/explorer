@@ -99,7 +99,7 @@
 									type: 'info',
 								})
 
-								searchItems.set(NewFiles)
+								searchItems.set([...$searchItems, ...NewFiles])
 
 								if (end || lastCwd !== $cwd) {
 									if (!end) {
