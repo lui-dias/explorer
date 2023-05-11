@@ -214,7 +214,7 @@
 				<Accordion class="w-full [&>*]:w-full" open>
 					<div slot="trigger" class="flex justify-between items-center w-full" let:open>
 						<strong
-							class="text-lg text-[#ececec] dark:text-text-light tracking-wide font-inter"
+							class="text-[#ececec] tracking-wide font-inter"
 						>
 							Quick access
 						</strong>
@@ -236,7 +236,7 @@
 							let:open
 						>
 							<strong
-								class="text-lg text-[#ececec] dark:text-text-light tracking-wide font-inter"
+								class="text-[#ececec] dark:text-text-light tracking-wide font-inter"
 							>
 								Disks
 							</strong>
