@@ -25,6 +25,9 @@ dependencies:
   svelte:
     specifier: ^3.54.0
     version: 3.58.0
+  svelte-drag-and-drop-actions:
+    specifier: ^1.0.0
+    version: 1.0.0
   svelte-highlight:
     specifier: ^7.2.1
     version: 7.2.1
@@ -1805,6 +1808,10 @@ packages:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
     dev: false
 
+  /javascript-interface-library@0.1.14:
+    resolution: {integrity: sha512-TSdQbLKqq6PcFk9M9Qk+l45rjqWfTMhSkvZVcByy1tKsDYDH+kblKu/FcVk4lWkeYXvcczX8NtPGdeyrZYEBrw==}
+    dev: false
+
   /jiti@1.18.2:
     resolution: {integrity: sha512-QAdOptna2NYiSSpv0O/BwoHBSmz4YhpzJHyi+fnMRTXFjp7B8i/YG5Z8IfusxB1ufjcD2Sre1F3R+nX3fvy7gg==}
     hasBin: true
@@ -3131,6 +3138,25 @@ packages:
   /supports-preserve-symlinks-flag@1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
+    dev: false
+
+  /svelte-coordinate-conversion@0.1.9:
+    resolution: {integrity: sha512-9BBAoZ7U5psGxgYKd61DEFxou3MmWrW9xIGvgG1n+Jtg47ll/jpNYsiS8iy6fVu1Sfbq3TQF/cljqRKHwaOeeg==}
+    dev: false
+
+  /svelte-drag-and-drop-actions@0.1.35:
+    resolution: {integrity: sha512-v2XtENssLfX5BE41E5653emXSTHd1hHtEXtB2k8PbTQ0jC0iB/WdEx9SwWesoKXRLcvLN7WLDVnmuSB3g3BIeg==}
+    dependencies:
+      javascript-interface-library: 0.1.14
+      svelte-coordinate-conversion: 0.1.9
+    dev: false
+
+  /svelte-drag-and-drop-actions@1.0.0:
+    resolution: {integrity: sha512-L9KERCXLWKZGpmKoTEKFsXasfaKGFNC5ftV2Fjsbbndv8pmzGoR+JMnlbSXpOpFUAyOILAo6iT8RTaQW2KKh2g==}
+    dependencies:
+      javascript-interface-library: 0.1.14
+      svelte-coordinate-conversion: 0.1.9
+      svelte-drag-and-drop-actions: 0.1.35
     dev: false
 
   /svelte-highlight@7.2.1:

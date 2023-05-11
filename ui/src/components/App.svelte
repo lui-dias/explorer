@@ -53,7 +53,7 @@
 		})
 
 		settings.set(config)
-
+        
 		document.documentElement.style.setProperty('--primary', config.colors.primary)
 		document.documentElement.style.setProperty('--accent', config.colors.accent)
 		document.documentElement.style.setProperty('--text', config.colors.text)

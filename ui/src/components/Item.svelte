@@ -3,6 +3,7 @@
 
 	import { explorerItems, isMultipleSelected, selected } from '../store'
 	import type { ExplorerItem } from '../types'
+	import { asDroppable, asDropZone } from 'svelte-drag-and-drop-actions'
 
 	import { E } from '../event'
 	import { __pywebview, appendPath, formatBytes, outsideClick } from '../utils'
@@ -12,6 +13,8 @@
 	let size = file.size ?? '0 B'
 	let itemNode: HTMLButtonElement
 	let inputEditNode: HTMLInputElement
+	let n = 0
+	let isInside = false
 
 	$: if (size) {
 		file.size = size
@@ -71,7 +74,9 @@
 
 <button
 	class={`_item flex items-center w-full hover:bg-[#7f8388]/20 hover:font-bold cursor-pointer outline-none ${
-		$selected.find(item => item.path === file.path) ? 'bg-purple-300/20 font-bold' : ''
+		isInside || $selected.find(item => item.path === file.path)
+			? 'bg-purple-300/20 font-bold'
+			: ''
 	}`}
 	data-test-id="explorer-item"
 	bind:this={itemNode}
@@ -83,6 +88,56 @@
 			appendPath(file.path)
 		}
 	}}
+	on:dragleave={e => {
+		if (file.kind === 'folder') {
+			n -= 1
+
+			if (n === 0) {
+				isInside = false
+			}
+		}
+	}}
+	on:dragenter={e => {
+		if (file.kind === 'folder') {
+			n += 1
+			isInside = true
+		}
+	}}
+	on:drop={e => {
+		if (file.kind === 'folder') {
+			n -= 1
+			isInside = false
+
+			if (n === 0) {
+				isInside = false
+			}
+		}
+	}}
+	use:asDroppable={{
+		DataToOffer: { 'text/plain': file.path },
+		Operations: 'copy',
+	}}
+	use:asDropZone={{
+		TypesToAccept: { 'text/plain': 'copy' },
+		// @ts-ignore
+		onDrop: async (x, y, Operation, data) => {
+			if (file.kind === 'folder') {
+				const path = Object.values(data)[0]
+				// @ts-ignore
+				const name = path.split('/').pop()
+
+				// @ts-ignore
+				await __pywebview.rename(path, `${file.path}/${name}`)
+
+				await E.reload()
+
+				await E.footerText({
+					text: `Moved '${name}' to '${file.path}'`,
+					type: 'info',
+				})
+			}
+		},
+	}}
 >
 	<div class="w-[50%]">
 		{#if file.isEditMode}
@@ -91,7 +146,7 @@
 				class="w-full h-full px-2 rounded-md outline-none text-[#b9b9b9] dark:bg-transparent"
 				spellcheck="false"
 				autocomplete="false"
-                data-test-id="edit-file"
+				data-test-id="edit-file"
 				bind:value={file.name}
 				bind:this={inputEditNode}
 				on:blur={executeEdit}
