@@ -355,8 +355,6 @@ export async function loadFontDynamicly(url: string) {
 
 	await font.load()
 
-	console.log(font)
-
 	document.fonts.add(font)
 
 	return name

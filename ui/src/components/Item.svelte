@@ -8,6 +8,7 @@
 	import { E } from '../event'
 	import { __pywebview, appendPath, formatBytes, outsideClick } from '../utils'
 	import Icon from './ui/Icon.svelte'
+    import dayjs from 'dayjs'
 
 	export let file: ExplorerItem
 	let size = file.size ?? '0 B'
@@ -18,6 +19,11 @@
 
 	$: if (size) {
 		file.size = size
+
+        // Update selected file, useful to get updated file size on properties
+        if ($selected.length === 1 && $selected[0].path === file.path) {
+            selected.set([file])
+        }
 	}
 
 	function removeLastItem() {
@@ -173,7 +179,7 @@
 	</div>
 
 	<span class="text-[#b9b9b9] text-sm text-start w-[20%]">
-		{file.modified}
+		{dayjs(file.modified).format('DD/MM/YYYY HH:mm')}
 	</span>
 	<span class="text-[#b9b9b9] text-sm capitalize text-start w-[15%]">
 		{#if file.kind === 'folder'}

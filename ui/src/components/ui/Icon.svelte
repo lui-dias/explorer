@@ -66,6 +66,7 @@
 	import FolderTest from '../icons/folders/FolderTest.svelte'
 	import FolderView from '../icons/folders/FolderView.svelte'
 	import FolderVscode from '../icons/folders/FolderVscode.svelte'
+    import Info from '../icons/Info.svelte'
 
 	import { tv } from 'tailwind-variants'
 
@@ -154,7 +155,8 @@
         'OtherChevron'             : Chevron,
         'OtherAsc'                 : Asc,
         'OtherDesc'                : Desc,
-        'OtherUsb'                 : Usb
+        'OtherUsb'                 : Usb,
+        'OtherInfo'                : Info,
 	} as Record<string, any>
 </script>
 

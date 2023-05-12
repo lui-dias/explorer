@@ -35,6 +35,8 @@ class ExplorerItem(TypedDict):
     path: str
     kind: Literal['file', 'folder']
     modified: str
+    accessed: str
+    created: str
     type: str
     size: str
     parent: str
@@ -59,17 +61,18 @@ def get_folder_size(path: Path):
 
 
 def get_path_info(path: str):
-    path = Path(path)
+    p = Path(path)
+    stat = p.stat()
     return ExplorerItem(
-        name=path.name,
-        path=path.as_posix(),
-        kind='folder' if path.is_dir() else 'file',
-        modified=datetime.fromtimestamp(path.stat().st_mtime, timezone.utc).strftime(
-            '%d/%m/%Y %H:%M'
-        ),
-        type=get_file_type(path),
+        name=p.name,
+        path=p.as_posix(),
+        kind='folder' if p.is_dir() else 'file',
+        modified=datetime.fromtimestamp(stat.st_mtime, timezone.utc).isoformat(),
+        accessed=datetime.fromtimestamp(stat.st_atime, timezone.utc).isoformat(),
+        created=datetime.fromtimestamp(stat.st_ctime, timezone.utc).isoformat(),
+        type=get_file_type(p),
         size=0,
-        parent=path.parent.as_posix(),
+        parent=p.parent.as_posix(),
     )
 
 

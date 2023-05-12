@@ -11,8 +11,10 @@
 	} from '../../store'
 	import { __pywebview, outsideClick } from '../../utils'
 	import ContextMenuItem from './ContextMenuItem.svelte'
+	import Properties from '../Properties.svelte'
 
 	let contextMenuNode: HTMLMenuElement
+	let propertiesNode: HTMLDialogElement
 	let parentHeight = 0
 
 	onMount(() => {
@@ -140,6 +142,14 @@
 				},
 			],
 		},
+		properties: {
+			text: 'Properties',
+			icon: 'OtherInfo',
+			action: () => {
+				propertiesNode.showModal()
+                contextMenuOpen.set(false)
+			},
+		},
 	}
 </script>
 
@@ -178,6 +188,8 @@
 	}}
 />
 
+<Properties bind:propertiesNode file={$selected[0]} />
+
 <menu
 	class="neuBorder absolute z-20 flex flex-col bg-[#383e45] dark:text-purple-100"
 	class:invisible={!$contextMenuOpen}
@@ -188,7 +200,6 @@
 		{#if $selectedQuickAccess}
 			<svelte:component this={ContextMenuItem} {parentHeight} {...components.unpin} />
 		{:else if $selected.length}
-			<span> Context menu item </span>
 			{#if $selected.length === 1 && $selected[0].kind === 'folder'}
 				{#if $quickAccess.some(i => i.path === $selected[0].path)}
 					<svelte:component this={ContextMenuItem} {parentHeight} {...components.unpin} />
@@ -196,6 +207,7 @@
 					<svelte:component this={ContextMenuItem} {parentHeight} {...components.pin} />
 				{/if}
 			{/if}
+			<svelte:component this={ContextMenuItem} {parentHeight} {...components.properties} />
 		{:else}
 			<svelte:component this={ContextMenuItem} {parentHeight} {...components.new} />
 			<svelte:component this={ContextMenuItem} {parentHeight} {...components.sort} />

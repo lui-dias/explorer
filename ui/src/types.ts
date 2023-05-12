@@ -3,6 +3,8 @@ export type ExplorerItem = {
 	path: string
 	kind: 'file' | 'folder'
 	modified: string
+    accessed: string
+    created: string
 	type: string
 	size: number
 	parent: string
