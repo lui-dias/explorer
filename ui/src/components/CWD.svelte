@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
 	import { E } from '../event'
-	import { cwd, cwdSplit, history, historyIndex, selected } from '../store'
+	import { cwd, cwdSplit, selected } from '../store'
 	import { outsideClick, sleep } from '../utils'
-	import Chevron from './icons/Chevron.svelte'
 	import Reload from './icons/Reload.svelte'
+	import CwdItem from './CwdItem.svelte'
 
 	let searchNode: HTMLButtonElement
 	let inputSearchNode: HTMLInputElement
@@ -101,33 +101,7 @@
 		<div class="relative w-full">
 			<ul class="flex overflow-x-hidden" bind:this={cwdList}>
 				{#each $cwdSplit.slice(hideNItems, $cwdSplit.length) as dir, i}
-					<li class="flex items-center" data-test-id="cwd-item">
-						<button
-							type="button"
-							class="dark:hover:bg-[#7f8388]/20 p-2"
-							data-test-id="cwd-item-button"
-							on:click={async () => {
-								const path = $cwdSplit.slice(0, hideNItems + i + 1).join('/')
-								const isLastItem = i === $cwdSplit.length - 1 - hideNItems
-
-								if (isLastItem) {
-									await E.stopAllFind()
-									await E.reload()
-								} else {
-									history.set([...$history, path])
-									historyIndex.set($history.length)
-									cwd.set(path)
-								}
-							}}
-						>
-							<span class="text-[#b9b9b9] whitespace-nowrap">{dir}</span>
-						</button>
-						{#if dir !== $cwdSplit.slice(-1)[0]}
-							<span class="rotate-180">
-								<Chevron class="fill-[#b9b9b9] w-5" />
-							</span>
-						{/if}
-					</li>
+					<CwdItem {dir} {i} {hideNItems} />
 				{/each}
 			</ul>
 			<button
