@@ -72,7 +72,8 @@
 	type="button"
 	data-test-id="cwd"
 	id="cwd"
-	class="dark:bg-zinc-700 w-full text-[#b9b9b9] flex items-center overflow-x-auto"
+	class="dark:bg-zinc-700 w-full text-[#b9b9b9] flex items-center overflow-x-auto transition-transform duration-[250ms]"
+	class:scale-[101%]={isSearchSelected}
 	style="border-radius: 12px;
     background: linear-gradient(145deg, #32383b, #2a2f32);
     box-shadow:  4px 4px 8px #24282a,
