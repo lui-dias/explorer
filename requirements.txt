@@ -8,3 +8,4 @@ psutil
 ujson
 flask-cors
 fonttools[woff]
+wmi
