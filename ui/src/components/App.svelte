@@ -15,6 +15,7 @@
 		settings,
 		sortType,
 		sortTypeReversed,
+		isExplorerFocused,
 	} from '../store'
 	import type { TSortTypes } from '../types'
 	import { __pywebview, setPath, sortItems } from '../utils'
@@ -34,6 +35,7 @@
 	import Accordion from './ui/Accordion.svelte'
 	import Icon from './ui/Icon.svelte'
 
+	let explorerNode: HTMLDivElement
 	let explorerItemsNode: HTMLUListElement
 
 	let isLoading = true
@@ -53,7 +55,7 @@
 		})
 
 		settings.set(config)
-        
+
 		document.documentElement.style.setProperty('--primary', config.colors.primary)
 		document.documentElement.style.setProperty('--accent', config.colors.accent)
 		document.documentElement.style.setProperty('--text', config.colors.text)
@@ -112,9 +114,36 @@
 
 		isLoading = false
 	})
+
+	$: if (!$isExplorerFocused) {
+        selected.set([])
+    }
 </script>
 
 <svelte:window
+	on:click={e => {
+		const preview = document.querySelector('._preview')
+		const cwd = document.querySelector('#cwd')
+
+		if (!preview || !cwd) return
+
+		// @ts-ignore
+		const isInCwd = e.target === cwd || cwd.contains(e.target)
+		// @ts-ignore
+		const isInPreview = e.target === preview || preview.contains(e.target)
+
+		if (
+			explorerNode &&
+			!isInCwd &&
+			!isInPreview &&
+			// @ts-ignore
+			(explorerNode.contains(e.target) || e.target === explorerNode)
+		) {
+			isExplorerFocused.set(true)
+		} else {
+			isExplorerFocused.set(false)
+		}
+	}}
 	on:mousedown={e => {
 		if (e.button == 3) {
 			back()
@@ -133,10 +162,22 @@
 		}
 
 		if (e.ctrlKey && e.key === 'a') {
-			selected.set($explorerItems)
+			if ($isExplorerFocused) {
+				selected.set($explorerItems)
+			}
 		}
 
 		if ($selected.length === 0) return
+
+		if (e.ctrlKey && e.key === 'c') {
+			const paths = $selected.map(i => i.path)
+			E.copy(paths)
+
+			E.footerText({
+				text: `Copied ${paths.length} items to clipboard`,
+				type: 'info',
+			})
+		}
 
 		if (e.key === 'F2') {
 			if ($selected.length > 1) {
@@ -213,9 +254,7 @@
 			<div class="space-y-10">
 				<Accordion class="w-full [&>*]:w-full" open>
 					<div slot="trigger" class="flex justify-between items-center w-full" let:open>
-						<strong
-							class="text-[#ececec] tracking-wide font-inter"
-						>
+						<strong class="text-[#ececec] tracking-wide font-inter">
 							Quick access
 						</strong>
 						<Icon
@@ -313,6 +352,7 @@
 		</aside>
 
 		<div
+			bind:this={explorerNode}
 			class="flex flex-col ml-auto w-[calc(100%-250px)] h-full bg-gradient-to-b dark:from-[#32373e] dark:to-[#16171b] rounded-l-2xl"
 		>
 			<WindowButtons />

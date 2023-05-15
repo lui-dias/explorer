@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
 	import { E } from '../event'
-	import { cwd, cwdSplit, selected } from '../store'
+	import { cwd, cwdSplit, isExplorerFocused, selected } from '../store'
 	import { outsideClick, sleep } from '../utils'
 	import Reload from './icons/Reload.svelte'
 	import CwdItem from './CwdItem.svelte'
@@ -80,6 +80,10 @@
                  -4px -4px 8px #3a4044;"
 	on:focus={() => {
 		isSearchSelected = true
+		isExplorerFocused.set(false)
+	}}
+	on:click={() => {
+		isExplorerFocused.set(false)
 	}}
 	bind:this={searchNode}
 >

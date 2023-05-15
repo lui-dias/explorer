@@ -11,6 +11,7 @@ export const selected = writable<ExplorerItem[]>([])
 export const explorerItems = writable<ExplorerItem[]>([])
 export const isMultipleSelected = writable<boolean>(false)
 export const scrollExplorerToEnd = writable<() => void>(() => {})
+export const isExplorerFocused = writable<boolean>(true)
 export const footer = writable<TFooter>({ text: '', type: 'none' })
 export const settingsOpen = writable<boolean>(false)
 

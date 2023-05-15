@@ -15,7 +15,7 @@
 		yaml,
 	} from 'svelte-highlight/languages'
 	import githubDark from 'svelte-highlight/styles/github-dark'
-	import { selected } from '../store'
+	import { isExplorerFocused, selected } from '../store'
 	import type { ExplorerItem } from '../types'
 	import { __pywebview, loadFontDynamicly } from '../utils'
 
@@ -190,7 +190,10 @@
 	{@html githubDark}
 </svelte:head>
 
-<div
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<div on:click={() => {
+    isExplorerFocused.set(false)
+}}
 	class={`_preview w-full transition-all duration-300 ease-out h-[398px] pl-4 overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-700 ${
 		$selected.length === 1 && $selected[0].kind === 'file' ? 'max-w-[250px]' : 'max-w-0'
 	}`}
