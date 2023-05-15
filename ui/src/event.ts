@@ -209,4 +209,7 @@ export const E = {
 	copy: async (paths: string[]) => {
 		await __pywebview.copy(paths.join(' '))
 	},
+    paste: async (folder: string) => {
+        await __pywebview.paste(folder)
+    }
 }

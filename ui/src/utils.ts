@@ -262,6 +262,10 @@ export const __pywebview = {
     copy: async (path: string): Promise<void> => {
         // @ts-ignore
         return await pywebview.api.copy(path)
+    },
+    paste: async (folder: string): Promise<void> => {
+        // @ts-ignore
+        return await pywebview.api.paste(folder)
     }
 }
 

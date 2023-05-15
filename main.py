@@ -1,3 +1,4 @@
+import logging
 import sys
 from collections import deque
 from concurrent.futures import ALL_COMPLETED, ThreadPoolExecutor, wait
@@ -10,12 +11,11 @@ from subprocess import run
 from threading import Lock, Thread
 from time import sleep
 from typing import Literal, TypedDict
-import logging
 
+import click as c
 import regex as re
 import webview
 import wmi
-import click as c
 from flask import Flask, send_from_directory
 from flask_cors import CORS
 from fontTools.ttLib import TTFont, TTLibError
@@ -946,9 +946,13 @@ class API:
             return TTFont(path)['OS/2'].usWeightClass
         except TTLibError:
             return
-        
+
     def copy(self, path: str):
         run(f'fileclip.exe {path}')
+
+    def paste(self, folder: str):
+        run(f'cd {folder} && fileclip.exe -v', shell=True)
+        return
 
 
 streams_files = {}

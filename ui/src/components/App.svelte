@@ -152,7 +152,7 @@
 			isMultipleSelected.set(false)
 		}
 	}}
-	on:keydown={e => {
+	on:keydown={async e => {
 		if (e.key === 'Control') {
 			isMultipleSelected.set(true)
 		}
@@ -163,14 +163,21 @@
 			}
 		}
 
+		if (e.ctrlKey && e.key === 'v') {
+			if ($isExplorerFocused) {
+				await E.paste($cwd)
+                await E.reload()
+			}
+		}
+
 		if ($selected.length === 0) return
 
 		if (e.ctrlKey && e.key === 'c') {
 			if ($selected.length > 1 && $isExplorerFocused) {
 				const paths = $selected.map(i => i.path)
-				E.copy(paths)
+				await E.copy(paths)
 
-				E.footerText({
+				await E.footerText({
 					text: `Copied ${paths.length} items to clipboard`,
 					type: 'info',
 				})
@@ -179,7 +186,7 @@
 
 		if (e.key === 'F2') {
 			if ($selected.length > 1) {
-				E.footerText({
+				await E.footerText({
 					text: 'Cannot rename multiple items',
 					type: 'warning',
 				})
@@ -207,7 +214,7 @@
 		}
 
 		if (e.key === 'Delete') {
-			E.delete(
+			await E.delete(
 				$selected.map(i => i.path),
 				!e.shiftKey,
 			)
