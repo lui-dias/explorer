@@ -24,7 +24,6 @@
 - [ ] Resize window
 
 ### Fix
-- [ ] Ctrl + A on input, selects all files
 - [ ] Sort by size
 
 ### UI
