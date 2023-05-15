@@ -166,13 +166,15 @@
 		if ($selected.length === 0) return
 
 		if (e.ctrlKey && e.key === 'c') {
-			const paths = $selected.map(i => i.path)
-			E.copy(paths)
+			if ($selected.length > 1 && $isExplorerFocused) {
+				const paths = $selected.map(i => i.path)
+				E.copy(paths)
 
-			E.footerText({
-				text: `Copied ${paths.length} items to clipboard`,
-				type: 'info',
-			})
+				E.footerText({
+					text: `Copied ${paths.length} items to clipboard`,
+					type: 'info',
+				})
+			}
 		}
 
 		if (e.key === 'F2') {
