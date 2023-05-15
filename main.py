@@ -10,10 +10,12 @@ from subprocess import run
 from threading import Lock, Thread
 from time import sleep
 from typing import Literal, TypedDict
+import logging
 
 import regex as re
 import webview
 import wmi
+import click as c
 from flask import Flask, send_from_directory
 from flask_cors import CORS
 from fontTools.ttLib import TTFont, TTLibError
@@ -1008,6 +1010,13 @@ def start(debug=True, server=True):
 
     app = Flask(__name__)
     CORS(app)
+
+    # Disable flask logging
+    log = logging.getLogger('werkzeug')
+    log.setLevel(logging.ERROR)
+
+    c.echo = lambda *args, **kwargs: None
+    c.secho = lambda *args, **kwargs: None
 
     @app.route('/stream/<path:path>')
     def _(path):
