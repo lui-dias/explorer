@@ -206,4 +206,7 @@ export const E = {
 
 		$scrollExplorerToEnd()
 	},
+	copy: async (paths: string[]) => {
+		await __pywebview.copy(paths.join(' '))
+	},
 }

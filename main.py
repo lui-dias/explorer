@@ -946,6 +946,9 @@ class API:
             return TTFont(path)['OS/2'].usWeightClass
         except TTLibError:
             return
+        
+    def copy(self, path: str):
+        run(f'fileclip.exe {path}')
 
 
 streams_files = {}

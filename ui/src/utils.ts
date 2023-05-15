@@ -259,6 +259,10 @@ export const __pywebview = {
 		// @ts-ignore
 		return await pywebview.api.get_font_weight(path)
 	},
+    copy: async (path: string): Promise<void> => {
+        // @ts-ignore
+        return await pywebview.api.copy(path)
+    }
 }
 
 export function isClient() {
