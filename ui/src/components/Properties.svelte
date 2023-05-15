@@ -7,12 +7,6 @@
 
 	export let propertiesNode: HTMLDialogElement | null = null
 	export let file: ExplorerItem
-
-	$: {
-		if (file) {
-			console.log(file.size)
-		}
-	}
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
