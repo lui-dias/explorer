@@ -1036,6 +1036,7 @@ def start(debug=True, server=True):
         'http://localhost:3000',
         js_api=API(),
         frameless=True,
+        easy_drag=False,
         width=1280,
         height=600,
     )
