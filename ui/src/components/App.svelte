@@ -114,10 +114,6 @@
 
 		isLoading = false
 	})
-
-	$: if (!$isExplorerFocused) {
-        selected.set([])
-    }
 </script>
 
 <svelte:window
