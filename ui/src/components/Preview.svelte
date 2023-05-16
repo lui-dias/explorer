@@ -195,7 +195,8 @@
 	on:click={() => {
 		isExplorerFocused.set(false)
 	}}
-	class={`_preview w-full transition-all duration-300 ease-out h-[398px] pl-4 overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-700 ${
+    class:pl-4={$selected.length === 1 && $selected[0].kind === 'file'}
+	class={`_preview w-full transition-all duration-300 ease-out h-[398px] overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-700 ${
 		$selected.length === 1 && $selected[0].kind === 'file' ? 'max-w-[250px]' : 'max-w-0'
 	}`}
 >
