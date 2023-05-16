@@ -32,12 +32,12 @@
 		height = wh - wbH - cwdH - actionsH - footerH - cwdMargin - headersH
 	})
 
-	$: if ($explorerItems.length) {
-		items = $explorerItems
-	}
-
-	$: if ($searchItems.length) {
-		items = $searchItems
+	$: {
+		if ($searchItems.length) {
+			items = $searchItems
+		} else {
+			items = $explorerItems
+		}
 	}
 </script>
 

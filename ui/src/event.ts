@@ -13,7 +13,7 @@ import {
 	sortTypeReversed,
 } from './store'
 import type { TFooter } from './types'
-import { __pywebview, debounce, formatDate, gen_id, sortItems } from './utils'
+import { __pywebview, debounce, gen_id, sortItems } from './utils'
 
 // Without this, the footer will be cleared after 5 seconds
 // even if other events are emitted
@@ -209,7 +209,7 @@ export const E = {
 	copy: async (paths: string[]) => {
 		await __pywebview.copy(paths.join(' '))
 	},
-    paste: async (folder: string) => {
-        await __pywebview.paste(folder)
-    }
+	paste: async (folder: string) => {
+		await __pywebview.paste(folder)
+	},
 }

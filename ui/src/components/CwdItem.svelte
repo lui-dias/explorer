@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { asDropZone } from 'svelte-drag-and-drop-actions'
-	import { cwd, cwdSplit, history, historyIndex } from '../store'
+	import { cwd, cwdSplit, history, historyIndex, searchItems } from '../store'
 	import { __pywebview } from '../utils'
 	import Chevron from './icons/Chevron.svelte'
 	import { E } from '../event'
@@ -67,6 +67,7 @@
 			if (isLastItem) {
 				await E.stopAllFind()
 				await E.reload()
+                searchItems.set([])
 			} else {
 				history.set([...$history, path])
 				historyIndex.set($history.length)

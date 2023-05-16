@@ -99,6 +99,7 @@
 
 		cwd.subscribe(async v => {
 			if (v) {
+                searchItems.set([])
 				await __pywebview.set('cwd', $cwd)
 				cwdSplit.set($cwd.split('/'))
 				await E.stopAllFind()
