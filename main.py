@@ -983,7 +983,7 @@ class API:
 
             d[k] = v
 
-            LOCAL_STORAGE.write_text(dumps(d))
+            LOCAL_STORAGE.write_text(dumps(d, indent=4))
 
     def get_font_weight(self, path: str):
         try:
