@@ -21,7 +21,8 @@
 - [x] Add file preview
 - [x] Move files (dnd)
 - [x] Move window on drag header
-- [ ] Resize columns
+- [x] Resize columns (explorer/aside)
+- [ ] Resize columns (explorer content)
 - [ ] Resize window
 
 ### Fix
