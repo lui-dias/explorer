@@ -37,6 +37,15 @@
 
 	let explorerNode: HTMLDivElement
 	let explorerItemsNode: HTMLUListElement
+	let asideNode: HTMLElement
+
+	let isInBorder = false
+	let isMouseDown = false
+	let lastX = 0
+
+	let el = 0
+	let ew = 0
+	let aw = 0
 
 	let isLoading = true
 
@@ -117,8 +126,22 @@
 
 		disks.set(await py.disksInfo())
 
+		const components = await py.get('components')
+
+		if (components) {
+			el = components.explorer.left
+			ew = components.explorer.width
+			aw = components.aside.width
+		}
+
 		isLoading = false
 	})
+
+	$: if (explorerNode && asideNode && el && ew && aw) {
+		explorerNode.style.left = `${el}px`
+		explorerNode.style.width = `${ew}px`
+		asideNode.style.width = `${aw}px`
+	}
 </script>
 
 <svelte:window
@@ -150,6 +173,45 @@
 			back()
 		} else if (e.button == 4) {
 			forward()
+		}
+	}}
+	on:mouseup={e => {
+		isMouseDown = false
+	}}
+	on:mousemove={async e => {
+		const rect = explorerNode.getBoundingClientRect()
+
+		const l = rect.left
+		const w = rect.width
+
+		const ww = window.innerWidth
+		const x = e.clientX
+
+		const isLeftBorder = x < l + 10
+
+		if (isLeftBorder) {
+			isInBorder = true
+			document.body.style.cursor = 'col-resize'
+		} else if (!isMouseDown) {
+			isInBorder = false
+			document.body.style.cursor = 'default'
+		}
+
+		if (isMouseDown) {
+			const diffX = x - lastX
+
+			lastX = x
+
+			el = l + diffX
+			ew = w - diffX
+			aw = ww - (ew - 14)
+
+			const components = (await py.get('components')) || {}
+
+			components['explorer'] = { width: ew, left: el }
+			components['aside'] = { width: aw }
+
+			await py.set('components', components)
 		}
 	}}
 	on:keyup={e => {
@@ -230,6 +292,10 @@
 <ContextMenu />
 <Settings />
 
+{#if isMouseDown}
+	<span class="absolute inset-0 text-white z-10">{aw} {ew}</span>
+{/if}
+
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div
 	class="flex w-full h-full dark:bg-zinc-100 isolate"
@@ -259,6 +325,7 @@
 		<Loading />
 	{:else}
 		<aside
+			bind:this={asideNode}
 			class="w-[266px] p-6 px-8 pt-[30px] h-full bg-zinc-200 absolute left-0 -z-20 isolate after:w-full after:h-full after:absolute after:top-0 after:left-0 after:-z-10 after:bg-[rgba(0,0,0,0.65)]"
 		>
 			<div class="space-y-10">
@@ -301,68 +368,15 @@
 				</div>
 			</div>
 
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				width="100%"
-				height="100%"
-				class="absolute top-0 left-0 -z-10"
-				><defs
-					><linearGradient
-						gradientTransform="rotate(70 .5 .5)"
-						x1="50%"
-						y1="0%"
-						x2="50%"
-						y2="100%"
-						id="a"
-						><stop stop-color="hsl(195, 75%, 43%)" offset="0%" /><stop
-							stop-color="hsl(235, 84%, 55%)"
-							offset="100%"
-						/></linearGradient
-					><filter
-						id="b"
-						x="-20%"
-						y="-20%"
-						width="140%"
-						height="140%"
-						filterUnits="objectBoundingBox"
-						primitiveUnits="userSpaceOnUse"
-						color-interpolation-filters="sRGB"
-						><feTurbulence
-							type="fractalNoise"
-							baseFrequency="0.005 0.003"
-							numOctaves="2"
-							seed="2"
-							stitchTiles="stitch"
-							x="0%"
-							y="0%"
-							width="100%"
-							height="100%"
-							result="turbulence"
-						/><feGaussianBlur
-							stdDeviation="20 0"
-							x="0%"
-							y="0%"
-							width="100%"
-							height="100%"
-							in="turbulence"
-							result="blur"
-						/><feBlend
-							mode="color-dodge"
-							x="0%"
-							y="0%"
-							width="100%"
-							height="100%"
-							in="SourceGraphic"
-							in2="blur"
-							result="blend"
-						/></filter
-					></defs
-				><path fill="url(#a)" filter="url(#b)" d="M0 0h700v700H0z" /></svg
-			>
+			<div class="absolute top-0 left-0 -z-10 w-full h-full bg-[url('/bg.svg')]" />
 		</aside>
 
 		<div
 			bind:this={explorerNode}
+			on:mousedown={e => {
+				isMouseDown = true
+				lastX = e.clientX
+			}}
 			class="flex flex-col ml-auto w-[calc(100%-250px)] h-full bg-gradient-to-b dark:from-[#32373e] dark:to-[#16171b] rounded-l-2xl"
 		>
 			<WindowButtons />
