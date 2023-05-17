@@ -745,13 +745,17 @@ class StreamLs:
         self.paused = False
 
     def ls(self):
-        for i in self.path.iterdir():
-            if i.exists():
-                self.items.append(get_path_info(i.as_posix()))
+        def get(path: Path):
+            if path.exists():
+                self.items.append(get_path_info(path.as_posix()))
                 self.total += 1
 
             while self.paused:
                 sleep(0.001)
+
+        with ThreadPoolExecutor(max_workers=4) as executor:
+            for i in self.path.iterdir():
+                executor.submit(get, i)
 
         self.end = True
 
