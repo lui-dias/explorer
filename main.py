@@ -4,7 +4,7 @@ from asyncio import Future
 from asyncio import run as run_async
 from collections import deque
 from concurrent.futures import ALL_COMPLETED, ThreadPoolExecutor, wait
-from contextlib import suppress
+from contextlib import suppress, contextmanager
 from datetime import datetime, timezone
 from getpass import getuser
 from pathlib import Path, PurePath
@@ -49,6 +49,13 @@ def measure(text):
 
     return wrapper
 
+@contextmanager
+def with_measure(text):
+    start = time_ns()
+    yield
+    end = time_ns()
+    print(f'{text} took {(end - start) / 1_000_000} ms')
+
 
 class ExplorerItem(TypedDict):
     name: str
@@ -83,6 +90,7 @@ def get_folder_size(path: Path):
 def get_path_info(path: str):
     p = Path(path)
     stat = p.stat()
+
     return ExplorerItem(
         name=p.name,
         path=p.as_posix(),
@@ -96,29 +104,37 @@ def get_path_info(path: str):
     )
 
 
+file_type_cache = {}
+
+
 def get_file_type(path: Path):
     name = path.name
 
+    if name in file_type_cache:
+        return file_type_cache[name]
+
+    n = ''
+
     if path.is_dir():
         if any(name.endswith(i.lower()) for i in ['.vscode', 'vscode']):
-            return 'FolderVscode'
+            n = 'FolderVscode'
 
-        if any(name.endswith(i.lower()) for i in ['node_modules']):
-            return 'FolderNode Modules'
+        elif any(name.endswith(i.lower()) for i in ['node_modules']):
+            n = 'FolderNode Modules'
 
-        if any(name.endswith(i.lower()) for i in ['public', '.public']):
-            return 'FolderPublic'
+        elif any(name.endswith(i.lower()) for i in ['public', '.public']):
+            n = 'FolderPublic'
 
-        if any(name.endswith(i.lower()) for i in ['src', 'source', 'sources']):
-            return 'FolderSrc'
+        elif any(name.endswith(i.lower()) for i in ['src', 'source', 'sources']):
+            n = 'FolderSrc'
 
-        if any(
+        elif any(
             name.endswith(i.lower())
             for i in ['component', 'components', '.components', 'gui', 'ui', 'widgets']
         ):
-            return 'FolderComponent'
+            n = 'FolderComponent'
 
-        if any(
+        elif any(
             name.endswith(i.lower())
             for i in [
                 'html',
@@ -136,9 +152,9 @@ def get_file_type(path: Path):
                 '_pages',
             ]
         ):
-            return 'FolderView'
+            n = 'FolderView'
 
-        if any(
+        elif any(
             name.endswith(i.lower())
             for i in [
                 'dist',
@@ -157,30 +173,30 @@ def get_file_type(path: Path):
                 'targets',
             ]
         ):
-            return 'FolderDist'
+            n = 'FolderDist'
 
-        if any(
+        elif any(
             name.endswith(i.lower())
             for i in ['assets', '.assets', 'asset', '.asset', 'static']
         ):
-            return 'FolderAssets'
+            n = 'FolderAssets'
 
-        if any(
+        elif any(
             name.endswith(i.lower())
             for i in ['git', '.git', 'submodules', '.submodules']
         ):
-            return 'FolderGit'
+            n = 'FolderGit'
 
-        if any(
+        elif any(
             name.endswith(i.lower())
             for i in ['cli', 'cmd', 'command', 'commands', 'commandline', 'console']
         ):
-            return 'FolderCLI'
+            n = 'FolderCLI'
 
-        if any(name.endswith(i.lower()) for i in ['.github']):
-            return 'FolderGithub'
+        elif any(name.endswith(i.lower()) for i in ['.github']):
+            n = 'FolderGithub'
 
-        if any(
+        elif any(
             name.endswith(i.lower())
             for i in [
                 'tests',
@@ -196,23 +212,23 @@ def get_file_type(path: Path):
                 'integration',
             ]
         ):
-            return 'FolderTest'
+            n = 'FolderTest'
 
-        if any(name.endswith(i.lower()) for i in ['docs', '.docs', 'doc', '.doc']):
-            return 'FolderDocs'
+        elif any(name.endswith(i.lower()) for i in ['docs', '.docs', 'doc', '.doc']):
+            n = 'FolderDocs'
 
-        if any(name.endswith(i.lower()) for i in ['.next']):
-            return 'FolderNext'
-
-        return 'Folder'
+        elif any(name.endswith(i.lower()) for i in ['.next']):
+            n = 'FolderNext'
+        else:
+            n = 'Folder'
     elif path.is_file():
         if any(name.endswith(i.lower()) for i in ['.py']):
-            return 'FilePython'
+            n = 'FilePython'
 
-        if any(name.endswith(i.lower()) for i in ['.prettierrc', '.prettierignore']):
-            return 'FilePrettier'
+        elif any(name.endswith(i.lower()) for i in ['.prettierrc', '.prettierignore']):
+            n = 'FilePrettier'
 
-        if any(
+        elif any(
             name.endswith(i.lower())
             for i in [
                 'tsconfig.json',
@@ -234,9 +250,9 @@ def get_file_type(path: Path):
                 'tsconfig.lib.prod.json',
             ]
         ):
-            return 'FileTsconfig'
+            n = 'FileTsconfig'
 
-        if any(
+        elif any(
             name.endswith(i.lower())
             for i in [
                 '.gitattributes',
@@ -248,18 +264,18 @@ def get_file_type(path: Path):
                 '.issuetracker',
             ]
         ):
-            return 'FileGit'
+            n = 'FileGit'
 
-        if any(name.endswith(i.lower()) for i in ['.markdown', '.md', '.mdown']):
-            return 'FileMarkdown'
+        elif any(name.endswith(i.lower()) for i in ['.markdown', '.md', '.mdown']):
+            n = 'FileMarkdown'
 
-        if any(name.endswith(i.lower()) for i in ['.toml']):
-            return 'FileToml'
+        elif any(name.endswith(i.lower()) for i in ['.toml']):
+            n = 'FileToml'
 
-        if any(name.endswith(i.lower()) for i in ['.astro']):
-            return 'FileAstro'
+        elif any(name.endswith(i.lower()) for i in ['.astro']):
+            n = 'FileAstro'
 
-        if any(
+        elif any(
             name.endswith(i.lower())
             for i in [
                 'astro.config.js',
@@ -268,9 +284,9 @@ def get_file_type(path: Path):
                 'astro.config.ts',
             ]
         ):
-            return 'FileAstro Config'
+            n = 'FileAstro Config'
 
-        if any(
+        elif any(
             name.endswith(i.lower())
             for i in [
                 'tailwind.js',
@@ -295,36 +311,36 @@ def get_file_type(path: Path):
                 '.tailwindrc.json',
             ]
         ):
-            return 'FileTailwind'
+            n = 'FileTailwind'
 
-        if any(name.endswith(i.lower()) for i in ['.d.ts', '.d.cts', '.d.mts']):
-            return 'FileTypescript Definition'
+        elif any(name.endswith(i.lower()) for i in ['.d.ts', '.d.cts', '.d.mts']):
+            n = 'FileTypescript Definition'
 
-        if any(name.endswith(i.lower()) for i in ['.db']):
-            return 'FileDatabase'
+        elif any(name.endswith(i.lower()) for i in ['.db']):
+            n = 'FileDatabase'
 
-        if any(name.endswith(i.lower()) for i in ['.svg']):
-            return 'FileSVG'
+        elif any(name.endswith(i.lower()) for i in ['.svg']):
+            n = 'FileSVG'
 
-        if any(name.endswith(i.lower()) for i in ['.html']):
-            return 'FileHTML'
+        elif any(name.endswith(i.lower()) for i in ['.html']):
+            n = 'FileHTML'
 
-        if any(name.endswith(i.lower()) for i in ['.css']):
-            return 'FileCSS'
+        elif any(name.endswith(i.lower()) for i in ['.css']):
+            n = 'FileCSS'
 
-        if any(
+        elif any(
             name.endswith(i.lower())
             for i in ['.woff', '.woff2', '.ttf', '.otf', '.eot', '.pfa', '.pfb', '.sfd']
         ):
-            return 'FileFont'
+            n = 'FileFont'
 
-        if any(name.endswith(i.lower()) for i in ['.csv', '.tsv', '.txt']):
-            return 'FileText'
+        elif any(name.endswith(i.lower()) for i in ['.csv', '.tsv', '.txt']):
+            n = 'FileText'
 
-        if any(name.endswith(i.lower()) for i in ['.plist', '.properties', '.env']):
-            return 'FileConfig'
+        elif any(name.endswith(i.lower()) for i in ['.plist', '.properties', '.env']):
+            n = 'FileConfig'
 
-        if any(
+        elif any(
             name.endswith(i.lower())
             for i in [
                 'yarn.lock',
@@ -336,18 +352,18 @@ def get_file_type(path: Path):
                 '.yarnignore',
             ]
         ):
-            return 'FileYarn'
+            n = 'FileYarn'
 
-        if any(
+        elif any(
             name.endswith(i.lower())
             for i in ['pnpmfile.js', 'pnpm-lock.yaml', 'pnpm-workspace.yaml']
         ):
-            return 'FilePNPM'
+            n = 'FilePNPM'
 
-        if any(name.endswith(i.lower()) for i in ['.pdf']):
-            return 'FilePDF'
+        elif any(name.endswith(i.lower()) for i in ['.pdf']):
+            n = 'FilePDF'
 
-        if any(
+        elif any(
             name.endswith(i.lower())
             for i in [
                 '.dockerignore',
@@ -368,9 +384,9 @@ def get_file_type(path: Path):
                 'Dockerfile',
             ]
         ):
-            return 'FileDocker'
+            n = 'FileDocker'
 
-        if any(
+        elif any(
             name.endswith(i.lower())
             for i in [
                 'LICENSE',
@@ -397,12 +413,12 @@ def get_file_type(path: Path):
                 'license-apache.txt',
             ]
         ):
-            return 'FileLicense'
+            n = 'FileLicense'
 
-        if any(name.endswith(i.lower()) for i in ['.rst']):
-            return 'FileRst'
+        elif any(name.endswith(i.lower()) for i in ['.rst']):
+            n = 'FileRst'
 
-        if any(
+        elif any(
             name.endswith(i.lower())
             for i in [
                 '.jpeg',
@@ -415,9 +431,9 @@ def get_file_type(path: Path):
                 '.webp',
             ]
         ):
-            return 'FileImage'
+            n = 'FileImage'
 
-        if any(
+        elif any(
             name.endswith(i.lower())
             for i in [
                 '.eslintrc',
@@ -431,9 +447,9 @@ def get_file_type(path: Path):
                 '.eslintrc.yml',
             ]
         ):
-            return 'FileESLint'
+            n = 'FileESLint'
 
-        if any(
+        elif any(
             name.endswith(i.lower())
             for i in [
                 '.npmignore',
@@ -443,9 +459,9 @@ def get_file_type(path: Path):
                 'npm-shrinkwrap.json',
             ]
         ):
-            return 'FileNPM'
+            n = 'FileNPM'
 
-        if any(
+        elif any(
             name.endswith(i.lower())
             for i in [
                 '.postcssrc',
@@ -460,9 +476,9 @@ def get_file_type(path: Path):
                 'postcss.config.cjs',
             ]
         ):
-            return 'FilePostCSSConfig'
+            n = 'FilePostCSSConfig'
 
-        if any(
+        elif any(
             name.endswith(i.lower())
             for i in [
                 '.zip',
@@ -478,9 +494,9 @@ def get_file_type(path: Path):
                 '.zipx',
             ]
         ):
-            return 'FileZip'
+            n = 'FileZip'
 
-        if any(
+        elif any(
             name.endswith(i.lower())
             for i in [
                 '3g2',
@@ -517,28 +533,30 @@ def get_file_type(path: Path):
                 'wmv',
             ]
         ):
-            return 'FileVideo'
+            n = 'FileVideo'
 
         # ! --------------------------------------------
         # ! KEEP ALWAYS AT THE END
         # ! --------------------------------------------
 
-        if any(
+        elif any(
             name.endswith(i.lower())
             for i in ['.json', '.jsonl', '.ndjson', '.json-tmlanguage', '.jsonc']
         ):
-            return 'FileJson'
+            n = 'FileJson'
 
-        if any(name.endswith(i.lower()) for i in ['.js']):
-            return 'FileJavascript'
+        elif any(name.endswith(i.lower()) for i in ['.js']):
+            n = 'FileJavascript'
 
-        if any(name.endswith(i.lower()) for i in ['.ts']):
-            return 'FileTypescript'
+        elif any(name.endswith(i.lower()) for i in ['.ts']):
+            n = 'FileTypescript'
 
-        if any(name.endswith(i.lower()) for i in ['.yaml', '.yml', '.yaml-tmlanguage']):
-            return 'FileYaml'
+        elif any(
+            name.endswith(i.lower()) for i in ['.yaml', '.yml', '.yaml-tmlanguage']
+        ):
+            n = 'FileYaml'
 
-        if any(
+        elif any(
             name.endswith(i.lower())
             for i in [
                 '.a',
@@ -567,10 +585,15 @@ def get_file_type(path: Path):
                 '.so',
             ]
         ):
-            return 'FileBinary'
+            n = 'FileBinary'
+        else:
+            n = 'File'
+    else:
+        n = 'unknown'
 
-        return 'File'
-    return 'unknown'
+    file_type_cache[name] = n
+
+    return n
 
 
 class StreamFolderSize:
@@ -746,9 +769,8 @@ class StreamLs:
 
     def ls(self):
         def get(path: Path):
-            if path.exists():
-                self.items.append(get_path_info(path.as_posix()))
-                self.total += 1
+            self.items.append(get_path_info(path.as_posix()))
+            self.total += 1
 
             while self.paused:
                 sleep(0.001)
