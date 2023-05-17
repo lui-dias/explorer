@@ -19,7 +19,7 @@
 		ws,
 	} from '../store'
 	import type { TSortTypes } from '../types'
-	import { py, setPath, sortItems, waitWsOpen } from '../utils'
+	import { createWs, py, setPath, sortItems, waitWsOpen } from '../utils'
 	import Arrows from './Arrows.svelte'
 	import ContextMenu from './ContextMenu/ContextMenu.svelte'
 	import Cwd from './Cwd.svelte'
@@ -45,8 +45,9 @@
 	const forward = E.forward
 
 	onMount(async () => {
-		ws.set(new WebSocket('ws://localhost:3004'))
+		createWs()
 		await waitWsOpen()
+
 		console.log('ready')
 
 		const config = await py.get_config()
@@ -104,7 +105,10 @@
 				await py.set('cwd', $cwd)
 				cwdSplit.set($cwd.split('/'))
 				await E.stopAllFind()
+
+				console.time('reload')
 				await E.reload()
+				console.timeEnd('reload')
 			}
 		})
 

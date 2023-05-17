@@ -393,3 +393,13 @@ export function callWsFunction(name: string, ...args: any[]) {
 		$ws.send(JSON.stringify({ type: 'call', id: r_id, name, args }))
 	})
 }
+
+export function createWs() {
+    const _ws = new WebSocket('ws://localhost:3004')
+
+    _ws.onclose = () => {
+        createWs()
+    }
+
+    ws.set(_ws)
+}
