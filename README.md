@@ -2,9 +2,11 @@
 
 _Icons from [vscode-icons](https://github.com/vscode-icons/vscode-icons)_
 
-It's a file explorer with some features that I think it would be nice for a file explorer to have. **Extremely WIP**.
+🚧 **WIP**
 
-Tested only on Windows, probably not working correctly on Linux or Mac.
+A file explorer with some features that I think it would be nice for a file explorer to have.
+
+It was made to work on windows, however most functions should work on mac or linux.
 
 ## How to run
 ```
