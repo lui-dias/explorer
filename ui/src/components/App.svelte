@@ -18,7 +18,15 @@
 		sortTypeReversed,
 	} from '../store'
 	import type { TSortTypes } from '../types'
-	import { createWs, py, setPath, sortItems, waitWsOpen, xIsWhatPercentOfY } from '../utils'
+	import {
+		createWs,
+		isClient,
+		py,
+		setPath,
+		sortItems,
+		waitWsOpen,
+		xIsWhatPercentOfY,
+	} from '../utils'
 	import Arrows from './Arrows.svelte'
 	import ContextMenu from './ContextMenu/ContextMenu.svelte'
 	import Cwd from './Cwd.svelte'
@@ -46,6 +54,9 @@
 	let el = 0
 	let ew = 0
 	let aw = 0
+
+	let quickAccessOpen = true
+	let disksOpen = false
 
 	let isLoading = true
 
@@ -127,12 +138,18 @@
 		disks.set(await py.disksInfo())
 
 		const components = await py.get('components')
+        const accordions = await py.get('accordions')
 
 		if (components) {
 			el = components.explorer.left
 			ew = components.explorer.width
 			aw = components.aside.width
 		}
+
+        if (accordions) {
+            quickAccessOpen = accordions.quickAccess
+            disksOpen = accordions.disks
+        }
 
 		isLoading = false
 	})
@@ -141,6 +158,24 @@
 		explorerNode.style.left = `${el}px`
 		explorerNode.style.width = `${ew}%`
 		asideNode.style.width = `${aw}%`
+	}
+
+	$: if (isClient()) {
+		async function _() {
+			let accordions = (await py.get('accordions')) || {}
+
+			accordions = {
+				...accordions,
+				...{
+					quickAccess: quickAccessOpen,
+					disks: disksOpen,
+				},
+			}
+
+			await py.set('accordions', accordions)
+		}
+
+        _()
 	}
 </script>
 
@@ -329,7 +364,7 @@
 			class="w-[266px] p-6 px-8 pt-[30px] h-full bg-zinc-200 absolute left-0 -z-20 isolate after:w-full after:h-full after:absolute after:top-0 after:left-0 after:-z-10 after:bg-[rgba(0,0,0,0.65)]"
 		>
 			<div class="space-y-10">
-				<Accordion class="w-full [&>*]:w-full" open>
+				<Accordion class="w-full [&>*]:w-full" bind:open={quickAccessOpen}>
 					<div slot="trigger" class="flex justify-between items-center w-full" let:open>
 						<strong class="text-[#ececec] tracking-wide font-inter">
 							Quick access
@@ -345,7 +380,7 @@
 				</Accordion>
 
 				<div>
-					<Accordion class="w-full [&>*]:w-full">
+					<Accordion class="w-full [&>*]:w-full" bind:open={disksOpen}>
 						<div
 							slot="trigger"
 							class="flex justify-between items-center w-full"
