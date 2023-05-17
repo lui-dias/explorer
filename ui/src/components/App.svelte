@@ -16,7 +16,6 @@
 		settings,
 		sortType,
 		sortTypeReversed,
-		ws,
 	} from '../store'
 	import type { TSortTypes } from '../types'
 	import { createWs, py, setPath, sortItems, waitWsOpen } from '../utils'

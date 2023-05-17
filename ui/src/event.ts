@@ -7,13 +7,12 @@ import {
 	footer,
 	history,
 	historyIndex,
-	isSearching,
 	scrollExplorerToEnd,
 	selected,
 	sortTypeReversed,
 } from './store'
 import type { TFooter } from './types'
-import { py, debounce, gen_id, sortItems } from './utils'
+import { debounce, gen_id, py, sortItems } from './utils'
 
 // Without this, the footer will be cleared after 5 seconds
 // even if other events are emitted
@@ -29,8 +28,6 @@ let footerDebounce = debounce(
 export const E = {
 	reload: async () => {
 		await E.deleteAllStreamsLs()
-
-		isSearching.set(true)
 
 		// When creating a file/folder, even using ls, the size of the files was buggy,
 		// a file had the size of another file
@@ -57,8 +54,6 @@ export const E = {
 			})
 
 			if (end) {
-				isSearching.set(false)
-
 				break
 			}
 		}

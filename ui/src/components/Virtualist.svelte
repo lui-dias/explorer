@@ -42,18 +42,20 @@
 </script>
 
 {#if items.length === 0}
-	{#if $isSearching && items.length === 0}
-		<Loading />
-	{:else}
-		<div
-			class="absolute flex flex-col transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
-		>
-			<p class="text-3xl font-medium text-center text-zinc-200">Nothing found...</p>
-			<p class="text-lg text-center text-zinc-500 whitespace-nowrap">
-				Come back later, maybe something will show up
-			</p>
-			<p class="mt-2 text-3xl text-center text-zinc-500">😭</p>
-		</div>
+	{#if $isSearching}
+		{#if items.length === 0}
+			<Loading />
+		{:else}
+			<div
+				class="absolute flex flex-col transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+			>
+				<p class="text-3xl font-medium text-center text-zinc-200">Nothing found...</p>
+				<p class="text-lg text-center text-zinc-500 whitespace-nowrap">
+					Come back later, maybe something will show up
+				</p>
+				<p class="mt-2 text-3xl text-center text-zinc-500">😭</p>
+			</div>
+		{/if}
 	{/if}
 {:else}
 	<div data-test-id="vl" class="[&>*]:pr-2 [&>*]:scrollbar-thin [&>*]:scrollbar-thumb-zinc-700">

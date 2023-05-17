@@ -23,6 +23,6 @@ export const quickAccess = writable<ExplorerItem[]>([])
 export const selectedQuickAccess = writable<ExplorerItem | null>(null)
 
 export const searchItems = writable<ExplorerItem[]>([])
-export const isSearching = writable<boolean>(true)
+export const isSearching = writable<boolean>(false)
 
 export const disks = writable<TDisksInfo[]>([])
