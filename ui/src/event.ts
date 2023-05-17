@@ -13,7 +13,7 @@ import {
 	sortTypeReversed,
 } from './store'
 import type { TFooter } from './types'
-import { __pywebview, debounce, gen_id, sortItems } from './utils'
+import { py, debounce, gen_id, sortItems } from './utils'
 
 // Without this, the footer will be cleared after 5 seconds
 // even if other events are emitted
@@ -43,7 +43,7 @@ export const E = {
 		await E.startLs($cwd)
 
 		while (true) {
-			const { end, items: newItems } = await __pywebview.ls($cwd)
+			const { end, items: newItems } = await py.ls($cwd)
 			const $sortTypeReversed = get(sortTypeReversed)
 
 			explorerItems.update(items => {
@@ -65,41 +65,41 @@ export const E = {
 	},
 
 	startLs: async (folder: string) => {
-		await __pywebview.start_ls(folder)
+		await py.start_ls(folder)
 	},
 
 	stopAllDelete: async () => {
-		await __pywebview.stop_all_streams_delete()
+		await py.stop_all_streams_delete()
 	},
 
 	stopAllFileSize: async () => {
-		await __pywebview.stop_all_streams_file_size()
+		await py.stop_all_streams_file_size()
 	},
 
 	stopAllFind: async () => {
-		await __pywebview.stop_all_streams_find()
+		await py.stop_all_streams_find()
 	},
 
 	stopAllStreamsLs: async () => {
-		await __pywebview.stop_all_streams_ls()
+		await py.stop_all_streams_ls()
 	},
 
 	deleteAllStreamsLs: async () => {
-		await __pywebview.delete_all_streams_ls()
+		await py.delete_all_streams_ls()
 	},
 
 	createFile: async (path: string) => {
-		await __pywebview.create_file(path)
+		await py.create_file(path)
 		await E.reload()
 	},
 
 	createFolder: async (path: string) => {
-		await __pywebview.create_folder(path)
+		await py.create_folder(path)
 		await E.reload()
 	},
 
 	rename: async (from: string, to: string) => {
-		await __pywebview.rename(from, to)
+		await py.rename(from, to)
 		await E.reload()
 	},
 
@@ -107,7 +107,7 @@ export const E = {
 		const id = gen_id()
 
 		while (true) {
-			const { end, total, deleted, last_deleted } = await __pywebview.stream_delete(
+			const { end, total, deleted, last_deleted } = await py.stream_delete(
 				id,
 				path,
 				moveToTrash,
@@ -207,9 +207,9 @@ export const E = {
 		$scrollExplorerToEnd()
 	},
 	copy: async (paths: string[]) => {
-		await __pywebview.copy(paths.join(' '))
+		await py.copy(paths.join(' '))
 	},
 	paste: async (folder: string) => {
-		await __pywebview.paste(folder)
+		await py.paste(folder)
 	},
 }

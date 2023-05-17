@@ -6,9 +6,9 @@
 	import { asDroppable, asDropZone } from 'svelte-drag-and-drop-actions'
 
 	import { E } from '../event'
-	import { __pywebview, appendPath, formatBytes, outsideClick } from '../utils'
+	import { py, appendPath, formatBytes, outsideClick } from '../utils'
 	import Icon from './ui/Icon.svelte'
-    import dayjs from 'dayjs'
+	import dayjs from 'dayjs'
 
 	export let file: ExplorerItem
 	let size = file.size ?? '0 B'
@@ -20,10 +20,10 @@
 	$: if (size) {
 		file.size = size
 
-        // Update selected file, useful to get updated file size on properties
-        if ($selected.length === 1 && $selected[0].path === file.path) {
-            selected.set([file])
-        }
+		// Update selected file, useful to get updated file size on properties
+		if ($selected.length === 1 && $selected[0].path === file.path) {
+			selected.set([file])
+		}
 	}
 
 	function removeLastItem() {
@@ -32,7 +32,7 @@
 
 	async function executeEdit() {
 		const path = `${file.parent}/${file.name}`
-		const exists = await __pywebview.exists(path)
+		const exists = await py.exists(path)
 
 		if (file.name === '') {
 			removeLastItem()
@@ -65,7 +65,7 @@
 		})
 
 		while (true) {
-			const { size: newSize, end } = await __pywebview.stream_folder_size(file.path)
+			const { size: newSize, end } = await py.stream_folder_size(file.path)
 
 			size = newSize
 
@@ -133,7 +133,7 @@
 				const name = path.split('/').pop()
 
 				// @ts-ignore
-				await __pywebview.rename(path, `${file.path}/${name}`)
+				await py.rename(path, `${file.path}/${name}`)
 
 				await E.reload()
 

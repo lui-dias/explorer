@@ -1,5 +1,7 @@
 import logging
 import sys
+from asyncio import Future
+from asyncio import run as run_async
 from collections import deque
 from concurrent.futures import ALL_COMPLETED, ThreadPoolExecutor, wait
 from contextlib import suppress
@@ -9,7 +11,7 @@ from pathlib import Path, PurePath
 from shutil import rmtree
 from subprocess import run
 from threading import Lock, Thread
-from time import sleep
+from time import sleep, time_ns
 from typing import Literal, TypedDict
 
 import click as c
@@ -25,11 +27,27 @@ from send2trash import send2trash
 from toml import dumps as dumps_toml
 from toml import load as load_toml
 from ujson import dumps, loads
+from websockets.legacy.server import WebSocketServerProtocol
+from websockets.server import serve
 
 try:
     from rich import print
 except ImportError:
     ...
+
+
+def measure(text):
+    def wrapper(fn):
+        def inner(*args, **kwargs):
+            start = time_ns()
+            result = fn(*args, **kwargs)
+            end = time_ns()
+            print(f'{text} took {(end - start) / 1_000_000} ms')
+            return result
+
+        return inner
+
+    return wrapper
 
 
 class ExplorerItem(TypedDict):
@@ -952,7 +970,6 @@ class API:
 
     def paste(self, folder: str):
         run(f'cd {folder} && fileclip.exe -v', shell=True)
-        return
 
 
 streams_files = {}
@@ -1034,15 +1051,36 @@ def start(debug=True, server=True):
     w = webview.create_window(
         'Explorer',
         'http://localhost:3000',
-        js_api=API(),
         frameless=True,
         easy_drag=False,
         width=1280,
         height=600,
     )
 
+    def ws_server():
+        async def server(ws: WebSocketServerProtocol):
+            while True:
+                data = loads(await ws.recv())
+
+                if data['type'] == 'call':
+                    id = data['id']
+                    name = data['name']
+                    args = data['args']
+
+                    with suppress(Exception):
+                        r = getattr(api, name)(*args)
+
+                    await ws.send(dumps({'type': 'return', 'id': id, 'r': r}))
+
+        async def main():
+            async with serve(server, 'localhost', 3004):
+                await Future()
+
+        api = API()
+        run_async(main())
+
     Thread(target=app.run, args=('localhost', 3003)).start()
-    webview.start(debug=debug, private_mode=False)
+    webview.start(ws_server, debug=debug, private_mode=False)
 
 
 def parse_size(size: str):

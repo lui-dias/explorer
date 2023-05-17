@@ -9,7 +9,7 @@
 		sortType,
 		sortTypeReversed,
 	} from '../../store'
-	import { __pywebview, outsideClick } from '../../utils'
+	import { py, outsideClick } from '../../utils'
 	import ContextMenuItem from './ContextMenuItem.svelte'
 	import Properties from '../Properties.svelte'
 
@@ -35,10 +35,7 @@
 			icon: 'OtherPin',
 			action: async () => {
 				quickAccess.set([...$quickAccess, $selected[0]])
-				await __pywebview.set(
-					'quickAccess',
-					JSON.stringify($quickAccess.map(item => item.path)),
-				)
+				await py.set('quickAccess', JSON.stringify($quickAccess.map(item => item.path)))
 
 				contextMenuOpen.set(false)
 			},
@@ -56,10 +53,7 @@
 				} else {
 					quickAccess.set([...$quickAccess.filter(i => i.path !== $selected[0].path)])
 				}
-				await __pywebview.set(
-					'quickAccess',
-					JSON.stringify($quickAccess.map(item => item.path)),
-				)
+				await py.set('quickAccess', JSON.stringify($quickAccess.map(item => item.path)))
 				contextMenuOpen.set(false)
 			},
 		},
@@ -147,7 +141,7 @@
 			icon: 'OtherInfo',
 			action: () => {
 				propertiesNode.showModal()
-                contextMenuOpen.set(false)
+				contextMenuOpen.set(false)
 			},
 		},
 	}

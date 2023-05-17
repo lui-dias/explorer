@@ -1,14 +1,12 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
 	import { contextMenuOpen, quickAccess, selectedQuickAccess } from '../store'
-	import { __pywebview, appendPath } from '../utils'
+	import { py, appendPath } from '../utils'
 	import Icon from './ui/Icon.svelte'
 
 	onMount(async () => {
-		const items = JSON.parse(await __pywebview.get('quickAccess') ?? '[]') as string[]
-		const files = await Promise.all(
-			items.map(async item => await __pywebview.get_path_info(item)),
-		)
+		const items = JSON.parse((await py.get('quickAccess')) ?? '[]') as string[]
+		const files = await Promise.all(items.map(async item => await py.get_path_info(item)))
 
 		quickAccess.set(files)
 	})

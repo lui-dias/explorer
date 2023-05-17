@@ -8,6 +8,7 @@
 		explorerItems,
 		history,
 		historyIndex,
+		isExplorerFocused,
 		isMultipleSelected,
 		searchItems,
 		selected,
@@ -15,10 +16,10 @@
 		settings,
 		sortType,
 		sortTypeReversed,
-		isExplorerFocused,
+		ws,
 	} from '../store'
 	import type { TSortTypes } from '../types'
-	import { __pywebview, setPath, sortItems } from '../utils'
+	import { py, setPath, sortItems, waitWsOpen } from '../utils'
 	import Arrows from './Arrows.svelte'
 	import ContextMenu from './ContextMenu/ContextMenu.svelte'
 	import Cwd from './Cwd.svelte'
@@ -44,14 +45,14 @@
 	const forward = E.forward
 
 	onMount(async () => {
-		// Wait pywebview to be ready
-		await __pywebview.__wait()
+		ws.set(new WebSocket('ws://localhost:3004'))
+		await waitWsOpen()
 		console.log('ready')
 
-		const config = await __pywebview.get_config()
+		const config = await py.get_config()
 
 		settings.subscribe(async v => {
-			await __pywebview.set_config(v)
+			await py.set_config(v)
 		})
 
 		settings.set(config)
@@ -63,9 +64,9 @@
 		document.documentElement.style.setProperty('--divider', config.colors.divider)
 
 		// Load data from localStorage
-		sortType.set((await __pywebview.get('sortType')) || ($sortType as TSortTypes))
-		sortTypeReversed.set((await __pywebview.get('sortTypeReversed')) || $sortTypeReversed)
-		setPath((await __pywebview.get('cwd')) || (await __pywebview.pwd()))
+		sortType.set((await py.get('sortType')) || ($sortType as TSortTypes))
+		sortTypeReversed.set((await py.get('sortTypeReversed')) || $sortTypeReversed)
+		setPath((await py.get('cwd')) || (await py.pwd()))
 
 		sortType.subscribe(async () => {
 			const explorerSort = sortItems($explorerItems)
@@ -79,7 +80,7 @@
 			explorerItems.set(explorerSort)
 			searchItems.set(searchSort)
 
-			await __pywebview.set('sortType', $sortType)
+			await py.set('sortType', $sortType)
 		})
 
 		sortTypeReversed.subscribe(async () => {
@@ -94,13 +95,13 @@
 			explorerItems.set(explorerSort)
 			searchItems.set(searchSort)
 
-			await __pywebview.set('sortTypeReversed', $sortTypeReversed)
+			await py.set('sortTypeReversed', $sortTypeReversed)
 		})
 
 		cwd.subscribe(async v => {
 			if (v) {
-                searchItems.set([])
-				await __pywebview.set('cwd', $cwd)
+				searchItems.set([])
+				await py.set('cwd', $cwd)
 				cwdSplit.set($cwd.split('/'))
 				await E.stopAllFind()
 				await E.reload()
@@ -111,7 +112,7 @@
 			cwd.set($history[$historyIndex])
 		})
 
-		disks.set(await __pywebview.disksInfo())
+		disks.set(await py.disksInfo())
 
 		isLoading = false
 	})
@@ -167,7 +168,7 @@
 		if (e.ctrlKey && e.key === 'v') {
 			if ($isExplorerFocused) {
 				await E.paste($cwd)
-                await E.reload()
+				await E.reload()
 			}
 		}
 

@@ -17,7 +17,7 @@
 	import githubDark from 'svelte-highlight/styles/github-dark'
 	import { isExplorerFocused, selected } from '../store'
 	import type { ExplorerItem } from '../types'
-	import { __pywebview, loadFontDynamicly } from '../utils'
+	import { py, loadFontDynamicly } from '../utils'
 
 	let selectedItem: ExplorerItem
 	let lastSelected: ExplorerItem
@@ -64,7 +64,7 @@
 		let language = ''
 
 		async function getText() {
-			return (data = atob(await __pywebview.read(selectedItem.path)))
+			return (data = atob(await py.read(selectedItem.path)))
 		}
 
 		for (const [key, value] of languages) {
@@ -161,7 +161,7 @@
 			const fontName = await loadFontDynamicly(
 				encodeURI(`http://localhost:3003/stream/${selectedItem.path}`),
 			)
-			weight = await __pywebview.getFontWeight(selectedItem.path)
+			weight = await py.getFontWeight(selectedItem.path)
 
 			font.actual = fontName
 			font.loaded = [
@@ -195,7 +195,7 @@
 	on:click={() => {
 		isExplorerFocused.set(false)
 	}}
-    class:pl-4={$selected.length === 1 && $selected[0].kind === 'file'}
+	class:pl-4={$selected.length === 1 && $selected[0].kind === 'file'}
 	class={`_preview w-full transition-all duration-300 ease-out h-[398px] overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-700 ${
 		$selected.length === 1 && $selected[0].kind === 'file' ? 'max-w-[250px]' : 'max-w-0'
 	}`}

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { asDropZone } from 'svelte-drag-and-drop-actions'
 	import { cwd, cwdSplit, history, historyIndex, searchItems } from '../store'
-	import { __pywebview } from '../utils'
+	import { py } from '../utils'
 	import Chevron from './icons/Chevron.svelte'
 	import { E } from '../event'
 
@@ -45,7 +45,7 @@
 			const name = fileToMove.split('/').pop()
 
 			// @ts-ignore
-			await __pywebview.rename(fileToMove, `${path}/${name}`)
+			await py.rename(fileToMove, `${path}/${name}`)
 
 			await E.reload()
 
@@ -67,7 +67,7 @@
 			if (isLastItem) {
 				await E.stopAllFind()
 				await E.reload()
-                searchItems.set([])
+				searchItems.set([])
 			} else {
 				history.set([...$history, path])
 				historyIndex.set($history.length)

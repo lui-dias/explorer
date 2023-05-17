@@ -3,7 +3,7 @@
 	import { Motion } from 'svelte-motion'
 	import { E } from '../event'
 	import { cwd, isSearching, searchItems } from '../store'
-	import { __pywebview, outsideClick, sleep } from '../utils'
+	import { py, outsideClick, sleep } from '../utils'
 	import Button from './ui/Button.svelte'
 	import Icon from './ui/Icon.svelte'
 
@@ -79,7 +79,7 @@
 					on:keydown={async e => {
 						if (e.key === 'Enter' && query) {
 							if (lastCwd) {
-								await __pywebview.stream_find(lastCwd, query)
+								await py.stream_find(lastCwd, query)
 								searchItems.set([])
 							}
 
@@ -92,7 +92,7 @@
 									end,
 									total,
 									files: NewFiles,
-								} = await __pywebview.stream_find($cwd, query)
+								} = await py.stream_find($cwd, query)
 
 								E.footerText({
 									text: `Searching for '${q}', found ${total} files...`,
@@ -104,7 +104,7 @@
 								if (end || lastCwd !== $cwd) {
 									if (!end) {
 										// Call last time to set end as true and delete the stream
-										await __pywebview.stream_find(lastCwd, query)
+										await py.stream_find(lastCwd, query)
 									}
 
 									await E.footerText({

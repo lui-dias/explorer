@@ -14,6 +14,7 @@ export const scrollExplorerToEnd = writable<() => void>(() => {})
 export const isExplorerFocused = writable<boolean>(true)
 export const footer = writable<TFooter>({ text: '', type: 'none' })
 export const settingsOpen = writable<boolean>(false)
+export const ws = writable<WebSocket>()
 
 export const settings = writable<TConfig>({} as TConfig)
 

@@ -1,5 +1,5 @@
 import { get } from 'svelte/store'
-import { cwd, cwdSplit, history, historyIndex, sortType } from './store'
+import { cwd, cwdSplit, history, historyIndex, sortType, ws } from './store'
 import type { ExplorerItem, TConfig, TDisksInfo } from './types'
 
 const isVisible = (elem: any) =>
@@ -79,30 +79,22 @@ export function formatDate(date: Date) {
 	}, 'dd/MM/yyyy HH:mm')
 }
 
-export const __pywebview = {
-	__wait: async () => {
-		const interval = setInterval(() => {
-			// @ts-ignore
-			if (window.pywebview) {
-				clearInterval(interval)
-			}
-		}, 100)
-	},
+export const py = {
 	close: async (): Promise<void> => {
 		// @ts-ignore
-		return await pywebview.api.close()
+		return await callWsFunction('close')
 	},
 	minimize: async (): Promise<void> => {
 		// @ts-ignore
-		return await pywebview.api.minimize()
+		return await callWsFunction('minimize')
 	},
 	maximize: async (): Promise<void> => {
 		// @ts-ignore
-		return await pywebview.api.maximize()
+		return await callWsFunction('maximize')
 	},
 	start_ls: async (folder: string): Promise<void> => {
 		// @ts-ignore
-		return await pywebview.api.start_ls(folder)
+		return await callWsFunction('start_ls', folder)
 	},
 	ls: async (
 		folder: string,
@@ -111,27 +103,27 @@ export const __pywebview = {
 		end: boolean
 	}> => {
 		// @ts-ignore
-		return await pywebview.api.ls(folder)
+		return await callWsFunction('ls', folder)
 	},
 	home: async (): Promise<string> => {
 		// @ts-ignore
-		return await pywebview.api.home()
+		return await callWsFunction('home')
 	},
 	rename: async (from: string, to: string): Promise<void> => {
 		// @ts-ignore
-		return await pywebview.api.rename(from, to)
+		return await callWsFunction('rename', from, to)
 	},
 	create_file: async (path: string): Promise<void> => {
 		// @ts-ignore
-		return await pywebview.api.create_file(path)
+		return await callWsFunction('create_file', path)
 	},
 	create_folder: async (path: string): Promise<void> => {
 		// @ts-ignore
-		return await pywebview.api.create_folder(path)
+		return await callWsFunction('create_folder', path)
 	},
 	exists: async (path: string, ignore?: string): Promise<boolean> => {
 		// @ts-ignore
-		return await pywebview.api.exists(path, ignore)
+		return await callWsFunction('exists', path, ignore)
 	},
 	stream_folder_size: async (
 		path: string,
@@ -140,7 +132,7 @@ export const __pywebview = {
 		end: boolean
 	}> => {
 		// @ts-ignore
-		return await pywebview.api.stream_folder_size(path)
+		return await callWsFunction('stream_folder_size', path)
 	},
 	stream_delete: async (
 		id: string,
@@ -153,7 +145,7 @@ export const __pywebview = {
 		last_deleted: string
 	}> => {
 		// @ts-ignore
-		return await pywebview.api.stream_delete(id, path, moveToTrash)
+		return await callWsFunction('stream_delete', id, path, moveToTrash)
 	},
 
 	stream_find: async (
@@ -165,108 +157,108 @@ export const __pywebview = {
 		files: ExplorerItem[]
 	}> => {
 		// @ts-ignore
-		return await pywebview.api.stream_find(path, query)
+		return await callWsFunction('stream_find', path, query)
 	},
 
 	stop_stream_delete: async (path: string): Promise<void> => {
 		// @ts-ignore
-		return await pywebview.api.stop_stream_delete(path)
+		return await callWsFunction('stop_stream_delete', path)
 	},
 
 	stop_stream_file_size: async (path: string): Promise<void> => {
 		// @ts-ignore
-		return await pywebview.api.stop_stream_file_size(path)
+		return await callWsFunction('stop_stream_file_size', path)
 	},
 
 	stop_stream_find: async (path: string): Promise<void> => {
 		// @ts-ignore
-		return await pywebview.api.stop_stream_find(path)
+		return await callWsFunction('stop_stream_find', path)
 	},
 
 	stop_all_streams_delete: async (): Promise<void> => {
 		// @ts-ignore
-		return await pywebview.api.stop_all_streams_delete()
+		return await callWsFunction('stop_all_streams_delete')
 	},
 
 	stop_all_streams_file_size: async (): Promise<void> => {
 		// @ts-ignore
-		return await pywebview.api.stop_all_streams_file_size()
+		return await callWsFunction('stop_all_streams_file_size')
 	},
 
 	stop_all_streams_find: async (): Promise<void> => {
 		// @ts-ignore
-		return await pywebview.api.stop_all_streams_find()
+		return await callWsFunction('stop_all_streams_find')
 	},
 
 	stop_all_streams_ls: async (): Promise<void> => {
 		// @ts-ignore
-		return await pywebview.api.stop_all_streams_ls()
+		return await callWsFunction('stop_all_streams_ls')
 	},
 
 	delete_all_streams_ls: async () => {
 		// @ts-ignore
-		return await pywebview.api.delete_all_streams_ls()
+		return await callWsFunction('delete_all_streams_ls')
 	},
 
 	get_path_info: async (path: string): Promise<ExplorerItem> => {
 		// @ts-ignore
-		return await pywebview.api.get_path_info(path)
+		return await callWsFunction('get_path_info', path)
 	},
 
 	get_config: async (): Promise<TConfig> => {
 		// @ts-ignore
-		return await pywebview.api.get_config()
+		return await callWsFunction('get_config')
 	},
 
 	set_config: async (config: TConfig): Promise<void> => {
 		// @ts-ignore
-		return await pywebview.api.set_config(config)
+		return await callWsFunction('set_config', config)
 	},
 
 	read: async (path: string): Promise<string> => {
 		// @ts-ignore
-		return await pywebview.api.read(path)
+		return await callWsFunction('read', path)
 	},
 	user: async () => {
 		// @ts-ignore
-		return await pywebview.api.user()
+		return await callWsFunction('user')
 	},
 	pwd: async () => {
 		// @ts-ignore
-		return await pywebview.api.pwd()
+		return await callWsFunction('pwd')
 	},
 	setupTests: async () => {
 		// @ts-ignore
-		return await pywebview.api.setup_tests()
+		return await callWsFunction('setup_tests')
 	},
 	clearTests: async () => {
 		// @ts-ignore
-		return await pywebview.api.clear_tests()
+		return await callWsFunction('clear_tests')
 	},
 	disksInfo: async (): Promise<TDisksInfo[]> => {
 		// @ts-ignore
-		return await pywebview.api.disks_info()
+		return await callWsFunction('disks_info')
 	},
 	get: async (key: string): Promise<any> => {
 		// @ts-ignore
-		return await pywebview.api.get(key)
+		return await callWsFunction('get', key)
 	},
 	set: async (key: string, value: any): Promise<void> => {
 		// @ts-ignore
-		return await pywebview.api.set(key, value)
+		return await callWsFunction('set', key, value)
 	},
 	getFontWeight: async (path: string): Promise<number | null> => {
 		// @ts-ignore
-		return await pywebview.api.get_font_weight(path)
+		return await callWsFunction('get_font_weight', path)
 	},
-    copy: async (path: string): Promise<void> => {
-        // @ts-ignore
-        return await pywebview.api.copy(path)
-    },
-    paste: async (folder: string): Promise<void> => {
-        // @ts-ignore
-        return await pywebview.api.paste(folder)
-    }
+	copy: async (path: string): Promise<void> => {
+		// @ts-ignore
+		return await callWsFunction('copy', path)
+	},
+	paste: async (folder: string): Promise<void> => {
+		// @ts-ignore
+		return await callWsFunction('paste', folder)
+	},
 }
 
 export function isClient() {
@@ -366,4 +358,38 @@ export async function loadFontDynamicly(url: string) {
 	document.fonts.add(font)
 
 	return name
+}
+
+export function waitWsOpen() {
+	return new Promise<void>((resolve, reject) => {
+		const $ws = get(ws)
+
+		$ws.addEventListener('open', () => {
+			resolve()
+		})
+	})
+}
+
+export function callWsFunction(name: string, ...args: any[]) {
+	const $ws = get(ws)
+
+	return new Promise((resolve, reject) => {
+		const r_id = gen_id(8)
+
+		function listener(event: MessageEvent) {
+			const { type, id, r } = JSON.parse(event.data) as {
+				type: 'return'
+				id: string
+				r: any
+			}
+
+			if (type === 'return' && id === r_id) {
+				$ws.removeEventListener('message', listener)
+				resolve(r)
+			}
+		}
+
+		$ws.addEventListener('message', listener)
+		$ws.send(JSON.stringify({ type: 'call', id: r_id, name, args }))
+	})
 }

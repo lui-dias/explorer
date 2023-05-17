@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { cwd as Scwd, explorerItems, scrollExplorerToEnd } from '../store'
-	import { __pywebview, assert, setPath, sleep } from '../utils'
+	import { py, assert, setPath, sleep } from '../utils'
 
 	setTimeout(async () => {
 		async function TestCwd() {
@@ -211,28 +211,25 @@
 			await sleep(1)
 
 			assert($explorerItems.length === oldItemsLength + 1, 'Should have 1 new item')
-			assert(
-				!!$explorerItems.find(i => i.name === 'folder'),
-				'Should have a new folder',
-			)
+			assert(!!$explorerItems.find(i => i.name === 'folder'), 'Should have a new folder')
 
 			document.dispatchEvent(click)
 		}
 
-        async function TestContextMenu() {
-            const contextmenu = document.querySelector('[data-test-id="contextmenu"]')!
+		async function TestContextMenu() {
+			const contextmenu = document.querySelector('[data-test-id="contextmenu"]')!
 
-            assert(!!contextmenu, 'Should have context menu')
-            assert(contextmenu.classList.contains('invisible'), 'Should be invisible')
+			assert(!!contextmenu, 'Should have context menu')
+			assert(contextmenu.classList.contains('invisible'), 'Should be invisible')
 
-            window.dispatchEvent(evContextmenu)
-            await sleep(1)
+			window.dispatchEvent(evContextmenu)
+			await sleep(1)
 
-            assert(!contextmenu.classList.contains('invisible'), 'Should be visible')
-        }
+			assert(!contextmenu.classList.contains('invisible'), 'Should be visible')
+		}
 
-		await __pywebview.setupTests()
-		const pwd = await __pywebview.pwd()
+		await py.setupTests()
+		const pwd = await py.pwd()
 
 		setPath(pwd + '/__tests')
 		await sleep(1)
@@ -248,13 +245,13 @@
 		})
 		const evInput = new KeyboardEvent('input', { bubbles: true })
 
-        const evContextmenu = new MouseEvent('contextmenu')
+		const evContextmenu = new MouseEvent('contextmenu')
 
-        const hover = new MouseEvent('mouseover', {
-            bubbles: true,
-            cancelable: true,
-            view: window,
-        })
+		const hover = new MouseEvent('mouseover', {
+			bubbles: true,
+			cancelable: true,
+			view: window,
+		})
 
 		try {
 			console.log('Testing CWD')
@@ -272,8 +269,8 @@
 			console.log('Testing New')
 			await TestNew()
 
-            console.log('Testing Context Menu')
-            await TestContextMenu()
+			console.log('Testing Context Menu')
+			await TestContextMenu()
 
 			console.log(
 				'✅ %cAll tests passed',
@@ -284,6 +281,6 @@
 		}
 
 		setPath(pwd)
-		await __pywebview.clearTests()
+		await py.clearTests()
 	}, 1000)
 </script>

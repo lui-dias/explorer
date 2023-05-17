@@ -9,3 +9,4 @@ ujson
 flask-cors
 fonttools[woff]
 wmi
+websockets
