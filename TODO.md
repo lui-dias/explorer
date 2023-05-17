@@ -2,7 +2,8 @@
 - [x] Implement virtualized list
 - [x] Streamed files list and search
 - [x] Streamed get file size
-- [ ] Instant ls (no loading)
+- [x] Cache file icons
+- [x] Ls Multithreaded
 
 ### Features
 - [x] Add context menu
@@ -20,7 +21,6 @@
 - [x] Add file preview
 - [x] Move files (dnd)
 - [x] Move window on drag header
-- [ ] An Icon
 - [ ] Resize columns
 - [ ] Resize window
 
