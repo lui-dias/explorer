@@ -18,7 +18,7 @@
 		sortTypeReversed,
 	} from '../store'
 	import type { TSortTypes } from '../types'
-	import { createWs, py, setPath, sortItems, waitWsOpen } from '../utils'
+	import { createWs, py, setPath, sortItems, waitWsOpen, xIsWhatPercentOfY } from '../utils'
 	import Arrows from './Arrows.svelte'
 	import ContextMenu from './ContextMenu/ContextMenu.svelte'
 	import Cwd from './Cwd.svelte'
@@ -139,8 +139,8 @@
 
 	$: if (explorerNode && asideNode && el && ew && aw) {
 		explorerNode.style.left = `${el}px`
-		explorerNode.style.width = `${ew}px`
-		asideNode.style.width = `${aw}px`
+		explorerNode.style.width = `${ew}%`
+		asideNode.style.width = `${aw}%`
 	}
 </script>
 
@@ -203,8 +203,8 @@
 			lastX = x
 
 			el = l + diffX
-			ew = w - diffX
-			aw = ww - (ew - 14)
+			ew = xIsWhatPercentOfY(w - diffX, ww)
+			aw = xIsWhatPercentOfY(ww - (w - diffX - 14), ww)
 
 			const components = (await py.get('components')) || {}
 
@@ -293,7 +293,7 @@
 <Settings />
 
 {#if isMouseDown}
-	<span class="absolute inset-0 text-white z-10">{aw} {ew}</span>
+	<span class="absolute inset-0 text-white z-10">{aw.toFixed(2)}% | {ew.toFixed(2)}%</span>
 {/if}
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->

@@ -403,3 +403,7 @@ export function createWs() {
 
     ws.set(_ws)
 }
+
+export function xIsWhatPercentOfY(x: number, y: number) {
+    return (x / y) * 100
+}
