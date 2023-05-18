@@ -124,10 +124,7 @@
 				await py.set('cwd', $cwd)
 				cwdSplit.set($cwd.split('/'))
 				await E.stopAllFind()
-
-				console.time('reload')
 				await E.reload()
-				console.timeEnd('reload')
 			}
 		})
 
