@@ -1,10 +1,12 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
 	import { contextMenuOpen, quickAccess, selectedQuickAccess } from '../store'
-	import { py, appendPath } from '../utils'
+	import { py, appendPath, waitAppLoad } from '../utils'
 	import Icon from './ui/Icon.svelte'
 
 	onMount(async () => {
+        await waitAppLoad()
+        console.log(222)
 		const items = JSON.parse((await py.get('quickAccess')) ?? '[]') as string[]
 		const files = await Promise.all(items.map(async item => await py.get_path_info(item)))
 

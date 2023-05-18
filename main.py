@@ -4,15 +4,17 @@ from asyncio import Future
 from asyncio import run as run_async
 from collections import deque
 from concurrent.futures import ALL_COMPLETED, ThreadPoolExecutor, wait
-from contextlib import suppress, contextmanager
+from contextlib import contextmanager, suppress
 from datetime import datetime, timezone
 from getpass import getuser
+from hashlib import md5, sha1, sha256
 from pathlib import Path, PurePath
 from shutil import rmtree
 from subprocess import run
 from threading import Lock, Thread
 from time import sleep, time_ns
 from typing import Literal, TypedDict
+from zlib import crc32
 
 import click as c
 import regex as re
@@ -48,6 +50,7 @@ def measure(text):
         return inner
 
     return wrapper
+
 
 @contextmanager
 def with_measure(text):
@@ -996,6 +999,55 @@ class API:
 
     def paste(self, folder: str):
         run(f'cd {folder} && fileclip.exe -v', shell=True)
+
+    def get_crc32(self, path: str):
+        with open(path, 'rb') as f:
+            h = 0
+            while True:
+                data = f.read(65536)
+                if not data:
+                    break
+                h = crc32(data, h)
+
+            h = h & 0xFFFFFFFF
+
+        return f'{h:08x}'
+
+    def get_md5(self, path: str):
+        with open(path, 'rb') as f:
+            h = md5()
+
+            while True:
+                data = f.read(65536)
+                if not data:
+                    break
+                h.update(data)
+
+        return h.hexdigest()
+
+    def get_sha1(self, path: str):
+        with open(path, 'rb') as f:
+            h = sha1()
+
+            while True:
+                data = f.read(65536)
+                if not data:
+                    break
+                h.update(data)
+
+        return h.hexdigest()
+
+    def get_sha256(self, path: str):
+        with open(path, 'rb') as f:
+            h = sha256()
+
+            while True:
+                data = f.read(65536)
+                if not data:
+                    break
+                h.update(data)
+
+        return h.hexdigest()
 
 
 streams_files = {}

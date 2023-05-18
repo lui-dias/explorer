@@ -9,6 +9,7 @@
 		history,
 		historyIndex,
 		isExplorerFocused,
+		isLoading,
 		isMultipleSelected,
 		searchItems,
 		selected,
@@ -18,15 +19,7 @@
 		sortTypeReversed,
 	} from '../store'
 	import type { TSortTypes } from '../types'
-	import {
-		createWs,
-		isClient,
-		py,
-		setPath,
-		sortItems,
-		waitWsOpen,
-		xIsWhatPercentOfY,
-	} from '../utils'
+	import { createWs, py, setPath, sortItems, waitWsOpen, xIsWhatPercentOfY } from '../utils'
 	import Arrows from './Arrows.svelte'
 	import ContextMenu from './ContextMenu/ContextMenu.svelte'
 	import Cwd from './Cwd.svelte'
@@ -57,8 +50,6 @@
 
 	let quickAccessOpen = true
 	let disksOpen = false
-
-	let isLoading = true
 
 	const back = E.back
 	const forward = E.forward
@@ -148,7 +139,7 @@
 			disksOpen = accordions.disks
 		}
 
-		isLoading = false
+		isLoading.set(false)
 	})
 
 	$: if (explorerNode && asideNode && el && ew && aw) {
@@ -157,7 +148,7 @@
 		asideNode.style.width = `${aw}%`
 	}
 
-	$: if (isClient()) {
+	$: if (!$isLoading) {
 		async function _() {
 			let accordions = (await py.get('accordions')) || {}
 
@@ -331,7 +322,7 @@
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div
 	class="flex w-full h-full dark:bg-zinc-100 isolate"
-	class:dark:bg-zinc-800={isLoading}
+	class:dark:bg-zinc-800={$isLoading}
 	on:click={e => {
 		// Idk other way to select all items
 		const allItems = document.querySelectorAll('._item')
@@ -353,7 +344,7 @@
 		selectedQuickAccess.set(null)
 	}}
 >
-	{#if isLoading}
+	{#if $isLoading}
 		<Loading />
 	{:else}
 		<aside

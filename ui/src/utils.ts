@@ -1,6 +1,7 @@
 import { get } from 'svelte/store'
-import { cwd, cwdSplit, history, historyIndex, sortType, ws } from './store'
+import { cwd, cwdSplit, history, historyIndex, isLoading, sortType, ws } from './store'
 import type { ExplorerItem, TConfig, TDisksInfo } from './types'
+import { E } from './event'
 
 const isVisible = (elem: any) =>
 	!!elem && !!(elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length)
@@ -259,6 +260,22 @@ export const py = {
 		// @ts-ignore
 		return await callWsFunction('paste', folder)
 	},
+    crc32: async (path: string): Promise<string> => {
+        // @ts-ignore
+        return await callWsFunction('get_crc32', path)
+    },
+    md5: async (path: string): Promise<string> => {
+        // @ts-ignore
+        return await callWsFunction('get_md5', path)
+    },
+    sha1: async (path: string): Promise<string> => {
+        // @ts-ignore
+        return await callWsFunction('get_sha1', path)
+    },
+    sha256: async (path: string): Promise<string> => {
+        // @ts-ignore
+        return await callWsFunction('get_sha256', path)
+    }
 }
 
 export function isClient() {
@@ -361,13 +378,22 @@ export async function loadFontDynamicly(url: string) {
 }
 
 export function waitWsOpen() {
-	return new Promise<void>((resolve, reject) => {
+	return new Promise<void>(async (resolve, reject) => {
 		const $ws = get(ws)
 
 		$ws.addEventListener('open', () => {
 			resolve()
 		})
 	})
+}
+
+export async function waitAppLoad() {
+	let $isLoading = get(isLoading)
+
+	while (!$isLoading) {
+		await sleep(0.001)
+		$isLoading = get(isLoading)
+	}
 }
 
 export function callWsFunction(name: string, ...args: any[]) {
@@ -406,4 +432,13 @@ export function createWs() {
 
 export function xIsWhatPercentOfY(x: number, y: number) {
     return (x / y) * 100
+}
+
+export async function clipboard(text: string) {
+    await navigator.clipboard.writeText(text)
+
+    await E.footerText({
+        text: `Copied to clipboard: ${text}`,
+        type: 'info'
+    })
 }

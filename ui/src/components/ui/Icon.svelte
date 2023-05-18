@@ -1,8 +1,10 @@
 <script lang="ts">
 	import ArrowLeft from '../icons/ArrowLeft.svelte'
 	import Chevron from '../icons/Chevron.svelte'
+	import Copy from '../icons/Copy.svelte'
 	import Disk from '../icons/Disk.svelte'
 	import Folder from '../icons/Folder.svelte'
+	import Info from '../icons/Info.svelte'
 	import Search from '../icons/Search.svelte'
 	import Usb from '../icons/Usb.svelte'
 	import Abc from '../icons/contextmenu/Abc.svelte'
@@ -66,7 +68,6 @@
 	import FolderTest from '../icons/folders/FolderTest.svelte'
 	import FolderView from '../icons/folders/FolderView.svelte'
 	import FolderVscode from '../icons/folders/FolderVscode.svelte'
-    import Info from '../icons/Info.svelte'
 
 	import { tv } from 'tailwind-variants'
 
@@ -157,6 +158,7 @@
         'OtherDesc'                : Desc,
         'OtherUsb'                 : Usb,
         'OtherInfo'                : Info,
+        'OtherCopy'                : Copy
 	} as Record<string, any>
 </script>
 
