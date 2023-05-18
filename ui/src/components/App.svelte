@@ -138,7 +138,7 @@
 		disks.set(await py.disksInfo())
 
 		const components = await py.get('components')
-        const accordions = await py.get('accordions')
+		const accordions = await py.get('accordions')
 
 		if (components) {
 			el = components.explorer.left
@@ -146,10 +146,10 @@
 			aw = components.aside.width
 		}
 
-        if (accordions) {
-            quickAccessOpen = accordions.quickAccess
-            disksOpen = accordions.disks
-        }
+		if (accordions) {
+			quickAccessOpen = accordions.quickAccess
+			disksOpen = accordions.disks
+		}
 
 		isLoading = false
 	})
@@ -175,7 +175,7 @@
 			await py.set('accordions', accordions)
 		}
 
-        _()
+		_()
 	}
 </script>
 
@@ -409,8 +409,10 @@
 		<div
 			bind:this={explorerNode}
 			on:mousedown={e => {
-				isMouseDown = true
-				lastX = e.clientX
+				if (isInBorder) {
+					isMouseDown = true
+					lastX = e.clientX
+				}
 			}}
 			class="flex flex-col ml-auto w-[calc(100%-250px)] h-full bg-gradient-to-b dark:from-[#32373e] dark:to-[#16171b] rounded-l-2xl"
 		>
