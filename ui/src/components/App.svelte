@@ -202,6 +202,8 @@
 		isMouseDown = false
 	}}
 	on:mousemove={async e => {
+        if (!explorerNode) return
+
 		const rect = explorerNode.getBoundingClientRect()
 
 		const l = rect.left
