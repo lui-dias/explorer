@@ -63,15 +63,18 @@
 				file.isEditMode = false
 			}
 		})
-
+        
         await py.startFolderSize(file.path)
 
 		while (true) {
 			const r = await py.streamFolderSize(file.path)
 
-            if (!r) break
+			if (!r) {
+				await py.startFolderSize(file.path)
+                continue
+			}
 
-            const { size: newSize, end } = r
+			const { size: newSize, end } = r
 
 			size = newSize
 
