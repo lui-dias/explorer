@@ -44,9 +44,13 @@
 						{file.name}
 					</strong>
 
-                    <button type="button" title="Copy file content" on:click={async () => await clipboard(crc32)}>
-                        <Icon icon="OtherCopy" class="fill-[#7f8388]" />
-                    </button>
+					<button
+						type="button"
+						title="Copy file content"
+						on:click={async () => await clipboard(await py.read(file.path))}
+					>
+						<Icon icon="OtherCopy" class="fill-[#7f8388]" />
+					</button>
 				</div>
 				<p class="text-[12px] text-[#7f8388]">
 					{file.parent}

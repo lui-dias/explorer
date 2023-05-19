@@ -923,7 +923,7 @@ class API:
         CONFIG_FILE.write_text(dumps_toml(config))
 
     def read(self, path: str):
-        return b64encode(Path(path).read_bytes()).decode()
+        return Path(path).read_text()
 
     def user(self):
         return getuser()
