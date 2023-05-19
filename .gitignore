@@ -23,6 +23,6 @@ pnpm-debug.log*
 # seed files
 seed
 
-files
+_files
 
 localstorage.json
