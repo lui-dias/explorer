@@ -31,6 +31,7 @@ from toml import load as load_toml
 from ujson import dumps, loads
 from websockets.legacy.server import WebSocketServerProtocol
 from websockets.server import serve
+from websockets.exceptions import ConnectionClosedOK
 
 try:
     from rich import print
@@ -1138,17 +1139,20 @@ def start(debug=True, server=True):
     def ws_server():
         async def server(ws: WebSocketServerProtocol):
             while True:
-                data = loads(await ws.recv())
+                try:
+                    data = loads(await ws.recv())
 
-                if data['type'] == 'call':
-                    id = data['id']
-                    name = data['name']
-                    args = data['args']
+                    if data['type'] == 'call':
+                        id = data['id']
+                        name = data['name']
+                        args = data['args']
 
-                    with suppress(Exception):
-                        r = getattr(api, name)(*args)
+                        with suppress(Exception):
+                            r = getattr(api, name)(*args)
 
-                    await ws.send(dumps({'type': 'return', 'id': id, 'r': r}))
+                        await ws.send(dumps({'type': 'return', 'id': id, 'r': r}))
+                except ConnectionClosedOK:
+                    ...
 
         async def main():
             async with serve(server, 'localhost', 3004):
