@@ -6,7 +6,7 @@
 
 	onMount(async () => {
 		const items = JSON.parse((await py.get('quickAccess')) ?? '[]') as string[]
-		const files = await Promise.all(items.map(async item => await py.get_path_info(item)))
+		const files = await Promise.all(items.map(async item => await py.getPathInfo(item)))
 
 		quickAccess.set(files)
 	})

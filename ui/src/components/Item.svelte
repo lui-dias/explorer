@@ -65,7 +65,7 @@
 		})
 
 		while (true) {
-			const { size: newSize, end } = await py.stream_folder_size(file.path)
+			const { size: newSize, end } = await py.streamFolderSize(file.path)
 
 			size = newSize
 

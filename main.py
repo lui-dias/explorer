@@ -807,6 +807,11 @@ class API:
         s.start()
         streams_ls[folder] = s
 
+    def start_find(self, path: str, query: str):
+        s = StreamFind(path, query)
+        s.start()
+        streams_finds[path] = s
+
     def ls(self, folder: str):
         streams_ls[folder].pause()
 
@@ -820,24 +825,6 @@ class API:
             del streams_ls[folder]
 
         return r
-
-    def home(self):
-        return Path.home().as_posix()
-
-    def rename(self, path: str, name: str):
-        Path(path).rename(Path(path).parent / name)
-
-    def create_file(self, path: str):
-        Path(path).touch()
-
-    def create_folder(self, path: str):
-        Path(path).mkdir()
-
-    def exists(self, path: str, ignore: str = None):
-        p1 = Path(path)
-        p2 = Path(ignore) if ignore else None
-
-        return p1.exists() and p1 != p2
 
     def stream_folder_size(self, path: str | list[str]):
         s = StreamFolderSize(path)
@@ -871,12 +858,6 @@ class API:
             del streams_deletes[s.id]
 
         return r
-    
-    def start_find(self, path: str, query: str):
-        s = StreamFind(path, query)
-        s.start()
-        streams_finds[path] = s
-
 
     def stream_find(self, path: str, query: str):
         if path not in streams_finds:
@@ -894,6 +875,24 @@ class API:
             del streams_finds[path]
 
         return r
+
+    def home(self):
+        return Path.home().as_posix()
+
+    def rename(self, path: str, name: str):
+        Path(path).rename(Path(path).parent / name)
+
+    def create_file(self, path: str):
+        Path(path).touch()
+
+    def create_folder(self, path: str):
+        Path(path).mkdir()
+
+    def exists(self, path: str, ignore: str = None):
+        p1 = Path(path)
+        p2 = Path(ignore) if ignore else None
+
+        return p1.exists() and p1 != p2
 
     def stop_all_streams_file_size(self):
         for i in streams_files.values():

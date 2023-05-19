@@ -28,7 +28,7 @@
 			[1, 0],
 		][ssi]
 	}
-	// This is necessary to avoid create another stream_find when cwd changes
+	// This is necessary to avoid create another streamFind when cwd changes
 	let lastCwd = ''
 
 	onMount(() => {
@@ -77,16 +77,16 @@
 					bind:this={input}
 					on:keydown={async e => {
 						if (e.key === 'Enter' && query) {
-							await py.delete_all_streams_find()
+							await py.deleteAllStreamsFind()
 							searchItems.set([])
 
 							lastCwd = $cwd
 							const q = query
-							await py.start_find($cwd, query)
+							await py.startFind($cwd, query)
 							isSearching.set(true)
 
 							while (true) {
-								const r = await py.stream_find($cwd, query)
+								const r = await py.streamFind($cwd, query)
 
 								if (!r) break
 
@@ -102,7 +102,7 @@
 								if (end || lastCwd !== $cwd) {
 									if (!end) {
 										// Call last time to set end as true and delete the stream
-										await py.stream_find(lastCwd, query)
+										await py.streamFind(lastCwd, query)
 									}
 
 									await E.footerText({

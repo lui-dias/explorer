@@ -93,14 +93,14 @@ export const py = {
 		// @ts-ignore
 		return await callWsFunction('maximize')
 	},
-	start_ls: async (folder: string): Promise<void> => {
+	startLs: async (folder: string): Promise<void> => {
 		// @ts-ignore
 		return await callWsFunction('start_ls', folder)
 	},
-    start_find: async (path: string, query: string): Promise<void> => {
-        // @ts-ignore
-        return await callWsFunction('start_find', path, query)
-    },
+	startFind: async (path: string, query: string): Promise<void> => {
+		// @ts-ignore
+		return await callWsFunction('start_find', path, query)
+	},
 	ls: async (
 		folder: string,
 	): Promise<{
@@ -118,11 +118,11 @@ export const py = {
 		// @ts-ignore
 		return await callWsFunction('rename', from, to)
 	},
-	create_file: async (path: string): Promise<void> => {
+	createFile: async (path: string): Promise<void> => {
 		// @ts-ignore
-		return await callWsFunction('create_file', path)
+		return await callWsFunction('create_folder', path)
 	},
-	create_folder: async (path: string): Promise<void> => {
+	createFolder: async (path: string): Promise<void> => {
 		// @ts-ignore
 		return await callWsFunction('create_folder', path)
 	},
@@ -130,7 +130,7 @@ export const py = {
 		// @ts-ignore
 		return await callWsFunction('exists', path, ignore)
 	},
-	stream_folder_size: async (
+	streamFolderSize: async (
 		path: string,
 	): Promise<{
 		size: number
@@ -139,7 +139,7 @@ export const py = {
 		// @ts-ignore
 		return await callWsFunction('stream_folder_size', path)
 	},
-	stream_delete: async (
+	streamDelete: async (
 		id: string,
 		path: string | string[],
 		moveToTrash: boolean,
@@ -153,7 +153,7 @@ export const py = {
 		return await callWsFunction('stream_delete', id, path, moveToTrash)
 	},
 
-	stream_find: async (
+	streamFind: async (
 		path: string,
 		query: string,
 	): Promise<{
@@ -165,62 +165,62 @@ export const py = {
 		return await callWsFunction('stream_find', path, query)
 	},
 
-	stop_stream_delete: async (path: string): Promise<void> => {
+	stopStreamDelete: async (path: string): Promise<void> => {
 		// @ts-ignore
 		return await callWsFunction('stop_stream_delete', path)
 	},
 
-	stop_stream_file_size: async (path: string): Promise<void> => {
+	stopStreamFileSize: async (path: string): Promise<void> => {
 		// @ts-ignore
 		return await callWsFunction('stop_stream_file_size', path)
 	},
 
-	stop_stream_find: async (path: string): Promise<void> => {
+	stopStreamFind: async (path: string): Promise<void> => {
 		// @ts-ignore
 		return await callWsFunction('stop_stream_find', path)
 	},
 
-	stop_all_streams_delete: async (): Promise<void> => {
+	stopAllStreamsDelete: async (): Promise<void> => {
 		// @ts-ignore
 		return await callWsFunction('stop_all_streams_delete')
 	},
 
-	stop_all_streams_file_size: async (): Promise<void> => {
+	stopAllStreamsFileSize: async (): Promise<void> => {
 		// @ts-ignore
 		return await callWsFunction('stop_all_streams_file_size')
 	},
 
-	stop_all_streams_find: async (): Promise<void> => {
+	stopAllStreamsFind: async (): Promise<void> => {
 		// @ts-ignore
 		return await callWsFunction('stop_all_streams_find')
 	},
 
-	stop_all_streams_ls: async (): Promise<void> => {
+	stopAllStreamsLs: async (): Promise<void> => {
 		// @ts-ignore
 		return await callWsFunction('stop_all_streams_ls')
 	},
 
-	delete_all_streams_ls: async () => {
+	deleteAllStreamsLs: async () => {
 		// @ts-ignore
 		return await callWsFunction('delete_all_streams_ls')
 	},
 
-    delete_all_streams_find: async () => {
-        // @ts-ignore
-        return await callWsFunction('delete_all_streams_find')
-    },
+	deleteAllStreamsFind: async () => {
+		// @ts-ignore
+		return await callWsFunction('delete_all_streams_find')
+	},
 
-	get_path_info: async (path: string): Promise<ExplorerItem> => {
+	getPathInfo: async (path: string): Promise<ExplorerItem> => {
 		// @ts-ignore
 		return await callWsFunction('get_path_info', path)
 	},
 
-	get_config: async (): Promise<TConfig> => {
+	getConfig: async (): Promise<TConfig> => {
 		// @ts-ignore
 		return await callWsFunction('get_config')
 	},
 
-	set_config: async (config: TConfig): Promise<void> => {
+	setConfig: async (config: TConfig): Promise<void> => {
 		// @ts-ignore
 		return await callWsFunction('set_config', config)
 	},
@@ -269,22 +269,22 @@ export const py = {
 		// @ts-ignore
 		return await callWsFunction('paste', folder)
 	},
-    crc32: async (path: string): Promise<string> => {
-        // @ts-ignore
-        return await callWsFunction('get_crc32', path)
-    },
-    md5: async (path: string): Promise<string> => {
-        // @ts-ignore
-        return await callWsFunction('get_md5', path)
-    },
-    sha1: async (path: string): Promise<string> => {
-        // @ts-ignore
-        return await callWsFunction('get_sha1', path)
-    },
-    sha256: async (path: string): Promise<string> => {
-        // @ts-ignore
-        return await callWsFunction('get_sha256', path)
-    }
+	crc32: async (path: string): Promise<string> => {
+		// @ts-ignore
+		return await callWsFunction('get_crc32', path)
+	},
+	md5: async (path: string): Promise<string> => {
+		// @ts-ignore
+		return await callWsFunction('get_md5', path)
+	},
+	sha1: async (path: string): Promise<string> => {
+		// @ts-ignore
+		return await callWsFunction('get_sha1', path)
+	},
+	sha256: async (path: string): Promise<string> => {
+		// @ts-ignore
+		return await callWsFunction('get_sha256', path)
+	},
 }
 
 export function isClient() {
@@ -430,24 +430,24 @@ export function callWsFunction(name: string, ...args: any[]) {
 }
 
 export function createWs() {
-    const _ws = new WebSocket('ws://localhost:3004')
+	const _ws = new WebSocket('ws://localhost:3004')
 
-    _ws.onclose = () => {
-        createWs()
-    }
+	_ws.onclose = () => {
+		createWs()
+	}
 
-    ws.set(_ws)
+	ws.set(_ws)
 }
 
 export function xIsWhatPercentOfY(x: number, y: number) {
-    return (x / y) * 100
+	return (x / y) * 100
 }
 
 export async function clipboard(text: string) {
-    await navigator.clipboard.writeText(text)
+	await navigator.clipboard.writeText(text)
 
-    await E.footerText({
-        text: `Copied to clipboard: ${text}`,
-        type: 'info'
-    })
+	await E.footerText({
+		text: `Copied to clipboard: ${text}`,
+		type: 'info',
+	})
 }

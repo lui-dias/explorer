@@ -65,7 +65,7 @@
 			const isLastItem = i === $cwdSplit.length - 1 - hideNItems
 
 			console.log('start')
-			await py.delete_all_streams_find()
+			await py.deleteAllStreamsFind()
 			searchItems.set([])
 
 			if (!isLastItem) {

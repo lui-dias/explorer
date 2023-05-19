@@ -60,10 +60,10 @@
 
 		console.log('ready')
 
-		const config = await py.get_config()
+		const config = await py.getConfig()
 
 		settings.subscribe(async v => {
-			await py.set_config(v)
+			await py.setConfig(v)
 		})
 
 		settings.set(config)
@@ -202,7 +202,7 @@
 		isMouseDown = false
 	}}
 	on:mousemove={async e => {
-        if (!explorerNode) return
+		if (!explorerNode) return
 
 		const rect = explorerNode.getBoundingClientRect()
 

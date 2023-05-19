@@ -60,36 +60,36 @@ export const E = {
 	},
 
 	startLs: async (folder: string) => {
-		await py.start_ls(folder)
+		await py.startLs(folder)
 	},
 
 	stopAllDelete: async () => {
-		await py.stop_all_streams_delete()
+		await py.stopAllStreamsDelete()
 	},
 
 	stopAllFileSize: async () => {
-		await py.stop_all_streams_file_size()
+		await py.stopAllStreamsFileSize()
 	},
 
 	stopAllFind: async () => {
-		await py.stop_all_streams_find()
+		await py.stopAllStreamsFind()
 	},
 
 	stopAllStreamsLs: async () => {
-		await py.stop_all_streams_ls()
+		await py.stopAllStreamsLs()
 	},
 
 	deleteAllStreamsLs: async () => {
-		await py.delete_all_streams_ls()
+		await py.deleteAllStreamsLs()
 	},
 
 	createFile: async (path: string) => {
-		await py.create_file(path)
+		await py.createFile(path)
 		await E.reload()
 	},
 
 	createFolder: async (path: string) => {
-		await py.create_folder(path)
+		await py.createFolder(path)
 		await E.reload()
 	},
 
@@ -102,7 +102,7 @@ export const E = {
 		const id = gen_id()
 
 		while (true) {
-			const { end, total, deleted, last_deleted } = await py.stream_delete(
+			const { end, total, deleted, last_deleted } = await py.streamDelete(
 				id,
 				path,
 				moveToTrash,
