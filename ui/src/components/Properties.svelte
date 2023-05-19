@@ -92,7 +92,7 @@
 			</Accordion>
 
 			{#if file && file.kind === 'file'}
-				<Accordion class="w-full [&>*]:w-full mt-8" open>
+				<Accordion class="w-full [&>*]:w-full mt-8">
 					<div slot="trigger" class="flex justify-between items-center w-full" let:open>
 						<strong
 							class="text-[#ececec] dark:text-text-light tracking-wide font-inter"
