@@ -27,7 +27,7 @@
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <dialog
-	class="w-72 h-[600px] rounded-md bg-gradient-to-b from-[#404449] to-[#2A2D32]"
+	class="w-72 h-[600px] p-0 rounded-md bg-gradient-to-b from-[#404449] to-[#2A2D32]"
 	bind:this={propertiesNode}
 	on:click={() => {
 		if (propertiesNode) {
@@ -36,13 +36,17 @@
 	}}
 >
 	{#if file}
-		<div on:click={e => e.stopPropagation()} class="w-full h-full">
+		<div on:click={e => e.stopPropagation()} class="w-full h-full p-4">
 			<div>
 				<div class="flex items-center gap-x-2">
 					<Icon icon={file.type} />
 					<strong class="text-[#ececec] text-lg">
 						{file.name}
 					</strong>
+
+                    <button type="button" title="Copy file content" on:click={async () => await clipboard(crc32)}>
+                        <Icon icon="OtherCopy" class="fill-[#7f8388]" />
+                    </button>
 				</div>
 				<p class="text-[12px] text-[#7f8388]">
 					{file.parent}
