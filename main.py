@@ -871,13 +871,16 @@ class API:
             del streams_deletes[s.id]
 
         return r
+    
+    def start_find(self, path: str, query: str):
+        s = StreamFind(path, query)
+        s.start()
+        streams_finds[path] = s
+
 
     def stream_find(self, path: str, query: str):
-        s = StreamFind(path, query)
-
         if path not in streams_finds:
-            s.start()
-            streams_finds[path] = s
+            return
 
         r = {
             'end': streams_finds[path].end,
@@ -904,6 +907,9 @@ class API:
             i.end = True
 
         while streams_finds:
+            for i in streams_finds.values():
+                print(i.end)
+
             sleep(0.001)
 
     def stop_all_streams_ls(self):
@@ -915,6 +921,9 @@ class API:
 
     def delete_all_streams_ls(self):
         streams_ls.clear()
+
+    def delete_all_streams_find(self):
+        streams_finds.clear()
 
     def get_config(self):
         return load_toml(CONFIG_FILE)

@@ -97,6 +97,10 @@ export const py = {
 		// @ts-ignore
 		return await callWsFunction('start_ls', folder)
 	},
+    start_find: async (path: string, query: string): Promise<void> => {
+        // @ts-ignore
+        return await callWsFunction('start_find', path, query)
+    },
 	ls: async (
 		folder: string,
 	): Promise<{
@@ -200,6 +204,11 @@ export const py = {
 		// @ts-ignore
 		return await callWsFunction('delete_all_streams_ls')
 	},
+
+    delete_all_streams_find: async () => {
+        // @ts-ignore
+        return await callWsFunction('delete_all_streams_find')
+    },
 
 	get_path_info: async (path: string): Promise<ExplorerItem> => {
 		// @ts-ignore

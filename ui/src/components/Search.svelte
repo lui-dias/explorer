@@ -73,26 +73,24 @@
 					placeholder="Search"
 					class="w-full h-full bg-transparent outline-none px-2 rounded text-[#b9b9b9] placeholder:text-[#b9b9b9]"
 					spellcheck="false"
-					autocomplete="false"
 					bind:value={query}
 					bind:this={input}
 					on:keydown={async e => {
 						if (e.key === 'Enter' && query) {
-							if (lastCwd) {
-								await py.stream_find(lastCwd, query)
-								searchItems.set([])
-							}
+							await py.delete_all_streams_find()
+							searchItems.set([])
 
 							lastCwd = $cwd
 							const q = query
+							await py.start_find($cwd, query)
 							isSearching.set(true)
 
 							while (true) {
-								const {
-									end,
-									total,
-									files: NewFiles,
-								} = await py.stream_find($cwd, query)
+								const r = await py.stream_find($cwd, query)
+
+								if (!r) break
+
+								const { end, total, files: NewFiles } = r
 
 								E.footerText({
 									text: `Searching for '${q}', found ${total} files...`,

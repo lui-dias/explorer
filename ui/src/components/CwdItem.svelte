@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { asDropZone } from 'svelte-drag-and-drop-actions'
 	import { cwd, cwdSplit, history, historyIndex, searchItems } from '../store'
-	import { py } from '../utils'
+	import { py, sleep } from '../utils'
 	import Chevron from './icons/Chevron.svelte'
 	import { E } from '../event'
 
@@ -64,14 +64,16 @@
 			const path = $cwdSplit.slice(0, hideNItems + i + 1).join('/')
 			const isLastItem = i === $cwdSplit.length - 1 - hideNItems
 
-			if (isLastItem) {
-				await E.stopAllFind()
-				await E.reload()
-				searchItems.set([])
-			} else {
+			console.log('start')
+			await py.delete_all_streams_find()
+			searchItems.set([])
+
+			if (!isLastItem) {
 				history.set([...$history, path])
 				historyIndex.set($history.length)
 				cwd.set(path)
+			} else {
+				await E.reload()
 			}
 		}}
 	>
