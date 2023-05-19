@@ -64,8 +64,14 @@
 			}
 		})
 
+        await py.startFolderSize(file.path)
+
 		while (true) {
-			const { size: newSize, end } = await py.streamFolderSize(file.path)
+			const r = await py.streamFolderSize(file.path)
+
+            if (!r) break
+
+            const { size: newSize, end } = r
 
 			size = newSize
 

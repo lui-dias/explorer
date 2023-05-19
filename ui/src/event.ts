@@ -40,7 +40,12 @@ export const E = {
 		await E.startLs($cwd)
 
 		while (true) {
-			const { end, items: newItems } = await py.ls($cwd)
+			const r = await py.ls($cwd)
+
+			if (!r) break
+
+			const { end, items: newItems } = r
+
 			const $sortTypeReversed = get(sortTypeReversed)
 
 			explorerItems.update(items => {
@@ -61,22 +66,6 @@ export const E = {
 
 	startLs: async (folder: string) => {
 		await py.startLs(folder)
-	},
-
-	stopAllDelete: async () => {
-		await py.stopAllStreamsDelete()
-	},
-
-	stopAllFileSize: async () => {
-		await py.stopAllStreamsFileSize()
-	},
-
-	stopAllFind: async () => {
-		await py.stopAllStreamsFind()
-	},
-
-	stopAllStreamsLs: async () => {
-		await py.stopAllStreamsLs()
 	},
 
 	deleteAllStreamsLs: async () => {
@@ -101,13 +90,16 @@ export const E = {
 	delete: async (path: string | string[], moveToTrash: boolean) => {
 		const id = gen_id()
 
-		while (true) {
-			const { end, total, deleted, last_deleted } = await py.streamDelete(
-				id,
-				path,
-				moveToTrash,
-			)
+		await py.startDelete(id, path, moveToTrash)
 
+		while (true) {
+			const r = await py.streamDelete(id)
+            
+			if (!r) break
+            
+			const { end, total, deleted, last_deleted } = r
+            
+            console.log(1)
 			await E.footerText({
 				text: `Deleted ${deleted}/${total} ${!!last_deleted ? `- ${last_deleted}` : ''}`,
 				type: 'info',

@@ -1,7 +1,7 @@
 import { get } from 'svelte/store'
+import { E } from './event'
 import { cwd, cwdSplit, history, historyIndex, isLoading, sortType, ws } from './store'
 import type { ExplorerItem, TConfig, TDisksInfo } from './types'
-import { E } from './event'
 
 const isVisible = (elem: any) =>
 	!!elem && !!(elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length)
@@ -101,6 +101,18 @@ export const py = {
 		// @ts-ignore
 		return await callWsFunction('start_find', path, query)
 	},
+	startFolderSize: async (path: string): Promise<void> => {
+		// @ts-ignore
+		return await callWsFunction('start_folder_size', path)
+	},
+	startDelete: async (
+		id: string,
+		path: string | string[],
+		moveToTrash: boolean,
+	): Promise<void> => {
+		// @ts-ignore
+		return await callWsFunction('start_delete', id, path, moveToTrash)
+	},
 	ls: async (
 		folder: string,
 	): Promise<{
@@ -141,8 +153,6 @@ export const py = {
 	},
 	streamDelete: async (
 		id: string,
-		path: string | string[],
-		moveToTrash: boolean,
 	): Promise<{
 		end: boolean
 		total: number
@@ -150,7 +160,7 @@ export const py = {
 		last_deleted: string
 	}> => {
 		// @ts-ignore
-		return await callWsFunction('stream_delete', id, path, moveToTrash)
+		return await callWsFunction('stream_delete', id)
 	},
 
 	streamFind: async (
@@ -162,42 +172,7 @@ export const py = {
 		files: ExplorerItem[]
 	}> => {
 		// @ts-ignore
-		return await callWsFunction('stream_find', path, query)
-	},
-
-	stopStreamDelete: async (path: string): Promise<void> => {
-		// @ts-ignore
-		return await callWsFunction('stop_stream_delete', path)
-	},
-
-	stopStreamFileSize: async (path: string): Promise<void> => {
-		// @ts-ignore
-		return await callWsFunction('stop_stream_file_size', path)
-	},
-
-	stopStreamFind: async (path: string): Promise<void> => {
-		// @ts-ignore
-		return await callWsFunction('stop_stream_find', path)
-	},
-
-	stopAllStreamsDelete: async (): Promise<void> => {
-		// @ts-ignore
-		return await callWsFunction('stop_all_streams_delete')
-	},
-
-	stopAllStreamsFileSize: async (): Promise<void> => {
-		// @ts-ignore
-		return await callWsFunction('stop_all_streams_file_size')
-	},
-
-	stopAllStreamsFind: async (): Promise<void> => {
-		// @ts-ignore
-		return await callWsFunction('stop_all_streams_find')
-	},
-
-	stopAllStreamsLs: async (): Promise<void> => {
-		// @ts-ignore
-		return await callWsFunction('stop_all_streams_ls')
+		return await callWsFunction('stream_find', path)
 	},
 
 	deleteAllStreamsLs: async () => {
@@ -208,6 +183,16 @@ export const py = {
 	deleteAllStreamsFind: async () => {
 		// @ts-ignore
 		return await callWsFunction('delete_all_streams_find')
+	},
+
+	deleteAllStreamsFolderSize: async () => {
+		// @ts-ignore
+		return await callWsFunction('delete_all_streams_folder_size')
+	},
+
+	deleteAllStreamsDelete: async () => {
+		// @ts-ignore
+		return await callWsFunction('delete_all_streams_delete')
 	},
 
 	getPathInfo: async (path: string): Promise<ExplorerItem> => {
@@ -228,6 +213,10 @@ export const py = {
 	read: async (path: string): Promise<string> => {
 		// @ts-ignore
 		return await callWsFunction('read', path)
+	},
+	readB64: async (path: string): Promise<string> => {
+		// @ts-ignore
+		return await callWsFunction('read_b64', path)
 	},
 	user: async () => {
 		// @ts-ignore

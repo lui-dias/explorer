@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte'
 	import { E } from '../event'
 	import { cwd, cwdSplit, isExplorerFocused, selected } from '../store'
-	import { outsideClick, sleep } from '../utils'
+	import { outsideClick, py, sleep } from '../utils'
 	import Reload from './icons/Reload.svelte'
 	import CwdItem from './CwdItem.svelte'
 
@@ -113,7 +113,7 @@
 				class="absolute inset-y-0 right-2"
 				data-test-id="cwd-reload"
 				on:click={async () => {
-					await E.stopAllFind()
+					await py.deleteAllStreamsFind()
 					await E.reload()
 				}}
 			>

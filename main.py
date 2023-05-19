@@ -812,7 +812,20 @@ class API:
         s.start()
         streams_finds[path] = s
 
+    def start_folder_size(self, path: str):
+        s = StreamFolderSize(path)
+        s.start()
+        streams_files[path] = s
+
+    def start_delete(self, id: str, path: str, moveToTrash=True):
+        s = StreamDelete(id, path, moveToTrash)
+        s.start()
+        streams_deletes[id] = s
+
     def ls(self, folder: str):
+        if folder not in streams_ls:
+            return
+
         streams_ls[folder].pause()
 
         # Need copy items, else items is passed by reference and will be empty after clear
@@ -827,11 +840,8 @@ class API:
         return r
 
     def stream_folder_size(self, path: str | list[str]):
-        s = StreamFolderSize(path)
-
         if path not in streams_files:
-            s.start()
-            streams_files[path] = s
+            return
 
         r = {'size': streams_files[path].size, 'end': streams_files[path].end}
 
@@ -840,26 +850,23 @@ class API:
 
         return r
 
-    def stream_delete(self, id: str, path: str, moveToTrash=True):
-        s = StreamDelete(id, path, moveToTrash)
-
-        if s.id not in streams_deletes:
-            s.start()
-            streams_deletes[s.id] = s
+    def stream_delete(self, id: str):
+        if id not in streams_deletes:
+            return
 
         r = {
-            'end': streams_deletes[s.id].end,
-            'total': streams_deletes[s.id].total,
-            'deleted': streams_deletes[s.id].deleted,
-            'last_deleted': streams_deletes[s.id].last_deleted,
+            'end': streams_deletes[id].end,
+            'total': streams_deletes[id].total,
+            'deleted': streams_deletes[id].deleted,
+            'last_deleted': streams_deletes[id].last_deleted,
         }
 
-        if streams_deletes[s.id].end:
-            del streams_deletes[s.id]
+        if streams_deletes[id].end:
+            del streams_deletes[id]
 
         return r
 
-    def stream_find(self, path: str, query: str):
+    def stream_find(self, path: str):
         if path not in streams_finds:
             return
 
@@ -894,35 +901,17 @@ class API:
 
         return p1.exists() and p1 != p2
 
-    def stop_all_streams_file_size(self):
-        for i in streams_files.values():
-            i.end = True
-
-        while streams_files:
-            sleep(0.001)
-
-    def stop_all_streams_find(self):
-        for i in streams_finds.values():
-            i.end = True
-
-        while streams_finds:
-            for i in streams_finds.values():
-                print(i.end)
-
-            sleep(0.001)
-
-    def stop_all_streams_ls(self):
-        for i in streams_ls.values():
-            i.end = True
-
-        while streams_ls:
-            sleep(0.001)
-
     def delete_all_streams_ls(self):
         streams_ls.clear()
 
     def delete_all_streams_find(self):
         streams_finds.clear()
+
+    def delete_all_streams_folder_size(self):
+        streams_files.clear()
+
+    def delete_all_streams_delete(self):
+        streams_deletes.clear()
 
     def get_config(self):
         return load_toml(CONFIG_FILE)
@@ -932,6 +921,9 @@ class API:
 
     def read(self, path: str):
         return Path(path).read_text()
+    
+    def read_b64(self, path: str):
+        return b64encode(Path(path).read_bytes()).decode()
 
     def user(self):
         return getuser()

@@ -114,7 +114,7 @@
 				searchItems.set([])
 				await py.set('cwd', $cwd)
 				cwdSplit.set($cwd.split('/'))
-				await E.stopAllFind()
+				await py.deleteAllStreamsFind()
 				await E.reload()
 			}
 		})

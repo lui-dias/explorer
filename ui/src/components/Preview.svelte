@@ -64,7 +64,7 @@
 		let language = ''
 
 		async function getText() {
-			return (data = atob(await py.read(selectedItem.path)))
+			return (data = atob(await py.readB64(selectedItem.path)))
 		}
 
 		for (const [key, value] of languages) {
