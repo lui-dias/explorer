@@ -7,7 +7,7 @@
 </script>
 
 <footer class="flex items-center justify-between h-10 px-2 text-text" id="footer">
-	<div class="flex items-center gap-x-2">
+	<div class="flex items-center gap-x-2 overflow-hidden text-ellipsis whitespace-nowrap">
 		{#if $footer.type !== 'none'}
 			{#if $footer.type === 'info'}
 				<Info class="fill-primary" />
