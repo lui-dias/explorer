@@ -149,7 +149,7 @@
 			selectedItem = $selected[0]
 			extension = selectedItem.name.split('.').pop()!
 
-			if (selectedItem.path !== lastSelected?.path) {
+			if (selectedItem.path !== lastSelected?.path && selectedItem.kind === 'file') {
 				lastSelected = selectedItem
 				getData()
 			}
