@@ -26,7 +26,7 @@
 	let selectedItem: ExplorerItem
 	let lastSelected: ExplorerItem
 	let extension: string
-	let data: any
+	let data = ''
 	let isLoading = false
 	let weight: number | null
 	let font = {
@@ -136,6 +136,24 @@
 				type: 'svg',
 			}
 		} else if (extension === 'md') {
+			const links = data.matchAll(/(?<=\()(?<protocol>.+:\/\/)?(?<path>.+(?=\)))/gm) || []
+
+			for (const i of links) {
+				if (i) {
+					const { protocol, path } = i.groups as {
+						protocol: string
+						path: string
+					}
+
+					if (!protocol) {
+						data = data.replace(
+							path,
+							`http://localhost:3003/stream/${path.replaceAll('\\', '/')}`,
+						)
+					}
+				}
+			}
+
 			type = {
 				type: 'markdown',
 				html: DOMPurify.sanitize(marked(data)),
