@@ -1,6 +1,10 @@
 <script lang="ts">
+	import DOMPurify from 'dompurify'
 	import isSvg from 'is-svg'
+	import { marked } from 'marked'
 	import Highlight from 'svelte-highlight'
+
+	import 'github-markdown-css/github-markdown.css'
 	import {
 		css,
 		javascript,
@@ -17,7 +21,7 @@
 	import githubDark from 'svelte-highlight/styles/github-dark'
 	import { isExplorerFocused, selected } from '../store'
 	import type { ExplorerItem } from '../types'
-	import { py, loadFontDynamicly } from '../utils'
+	import { loadFontDynamicly, py } from '../utils'
 
 	let selectedItem: ExplorerItem
 	let lastSelected: ExplorerItem
@@ -38,7 +42,7 @@
 	}
 
 	let type = {} as {
-		type: 'unknown' | 'image' | 'pdf' | 'svg' | 'text' | 'video' | 'font'
+		type: 'unknown' | 'image' | 'pdf' | 'svg' | 'text' | 'video' | 'font' | 'markdown'
 		[key: string]: any
 	}
 
@@ -64,7 +68,7 @@
 		let language = ''
 
 		async function getText() {
-			return (data = atob(await py.readB64(selectedItem.path)))
+			return (data = await py.read(selectedItem.path))
 		}
 
 		for (const [key, value] of languages) {
@@ -130,6 +134,11 @@
 		} else if (isSvg(await getText())) {
 			type = {
 				type: 'svg',
+			}
+		} else if (extension === 'md') {
+			type = {
+				type: 'markdown',
+				html: DOMPurify.sanitize(marked(data)),
 			}
 		} else {
 			type = {
@@ -205,6 +214,10 @@
 			<span />
 		{:else if type.type === 'image'}
 			<img src={`http://localhost:3003/stream/${selectedItem.path}`} alt="Preview" />
+		{:else if type.type === 'markdown'}
+			<div class="markdown-body p-3">
+				{@html type.html}
+			</div>
 		{:else if type.type === 'pdf'}
 			<span />
 		{:else if type.type === 'svg'}
