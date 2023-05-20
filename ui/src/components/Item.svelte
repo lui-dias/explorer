@@ -1,14 +1,14 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
 
+	import { asDropZone, asDroppable } from 'svelte-drag-and-drop-actions'
 	import { explorerItems, isMultipleSelected, selected } from '../store'
 	import type { ExplorerItem } from '../types'
-	import { asDroppable, asDropZone } from 'svelte-drag-and-drop-actions'
 
+	import { format } from 'date-fns'
 	import { E } from '../event'
-	import { py, appendPath, formatBytes, outsideClick } from '../utils'
+	import { appendPath, formatBytes, outsideClick, py } from '../utils'
 	import Icon from './ui/Icon.svelte'
-	import dayjs from 'dayjs'
 
 	export let file: ExplorerItem
 	let size = file.size ?? '0 B'
@@ -63,15 +63,15 @@
 				file.isEditMode = false
 			}
 		})
-        
-        await py.startFolderSize(file.path)
+
+		await py.startFolderSize(file.path)
 
 		while (true) {
 			const r = await py.streamFolderSize(file.path)
 
 			if (!r) {
 				await py.startFolderSize(file.path)
-                continue
+				continue
 			}
 
 			const { size: newSize, end } = r
@@ -188,7 +188,7 @@
 	</div>
 
 	<span class="text-[#b9b9b9] text-sm text-start w-[20%]">
-		{dayjs(file.modified).format('DD/MM/YYYY HH:mm')}
+		{format(new Date(file.modified), 'dd/MM/yyyy HH:mm')}
 	</span>
 	<span class="text-[#b9b9b9] text-sm capitalize text-start w-[15%]">
 		{#if file.kind === 'folder'}
