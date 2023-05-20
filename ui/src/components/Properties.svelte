@@ -27,7 +27,7 @@
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <dialog
-	class="w-72 h-[600px] p-0 rounded-md bg-gradient-to-b from-[#404449] to-[#2A2D32]"
+	class="w-96 h-[600px] p-0 rounded-md bg-gradient-to-b from-[#404449] to-[#2A2D32]"
 	bind:this={propertiesNode}
 	on:click={() => {
 		if (propertiesNode) {
