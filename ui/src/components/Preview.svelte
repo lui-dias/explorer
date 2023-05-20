@@ -273,7 +273,7 @@
 			<Highlight
 				language={type.language}
 				code={type.text}
-				class="pr-2 overflow-auto h-full scrollbar-thin scrollbar-thumb-zinc-700 [&>*]:scrollbar-thin [&>*]:scrollbar-thumb-zinc-700 [&>*]:h-full [&>*]:select-text"
+				class="overflow-auto h-full scrollbar-thin scrollbar-thumb-zinc-700 [&>*]:scrollbar-thin [&>*]:scrollbar-thumb-zinc-700 [&>*]:h-full [&>*]:select-text"
 			/>
 		{/if}
 	{/if}
