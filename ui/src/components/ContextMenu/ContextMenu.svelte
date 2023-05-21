@@ -140,6 +140,7 @@
 		vscode: {
 			text: 'Open in VSCode',
 			icon: 'OtherVscode',
+            condition: () => $installedApps.some(i => i.name === 'Visual Studio Code'),
 			action: async () => {
 				await py.shell(
 					`"${$installedApps.find(i => i.name === 'Visual Studio Code')!.exePath}" ${
