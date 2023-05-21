@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store'
-import type { TConfig, ExplorerItem, TFooter, TSortTypes, TDisksInfo } from './types'
+import type { TConfig, ExplorerItem, TFooter, TSortTypes, TDisksInfo, TInstalledApp } from './types'
 
 export const cwd = writable<string>('')
 export const sortType = writable<TSortTypes>('name')
@@ -16,6 +16,7 @@ export const footer = writable<TFooter>({ text: '', type: 'none' })
 export const settingsOpen = writable<boolean>(false)
 export const ws = writable<WebSocket>()
 export const isLoading = writable<boolean>(true)
+export const installedApps = writable<TInstalledApp[]>([])
 
 export const settings = writable<TConfig>({} as TConfig)
 

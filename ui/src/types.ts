@@ -38,3 +38,8 @@ export type TDisksInfo = {
     free: number
     percent: number
 }
+
+export type TInstalledApp = {
+    name: string
+    exePath: string
+}

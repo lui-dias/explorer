@@ -996,6 +996,7 @@ class API:
             return
 
     def copy(self, path: str):
+        # https://github.com/urbans0ft/fclip
         run(f'fileclip.exe {path}')
 
     def paste(self, folder: str):
@@ -1049,7 +1050,19 @@ class API:
                 h.update(data)
 
         return h.hexdigest()
+    
+    def get_installed_apps(self):
+        # https://pastebin.com/MfDPJ9AM
+        run('get-apps.exe', shell=True)
 
+        p = Path('apps.json')
+        d = sorted(loads(p.read_text('utf-8')), key=lambda x: x['name'].lower())
+        p.unlink()
+
+        return d
+    
+    def shell(self, cmd: str):
+        run(cmd, shell=True)
 
 streams_files = {}
 streams_deletes = {}

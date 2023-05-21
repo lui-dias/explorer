@@ -1,7 +1,7 @@
 import { get } from 'svelte/store'
 import { E } from './event'
 import { cwd, cwdSplit, history, historyIndex, isLoading, sortType, ws } from './store'
-import type { ExplorerItem, TConfig, TDisksInfo } from './types'
+import type { ExplorerItem, TConfig, TDisksInfo, TInstalledApp } from './types'
 
 const isVisible = (elem: any) =>
 	!!elem && !!(elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length)
@@ -274,6 +274,14 @@ export const py = {
 		// @ts-ignore
 		return await callWsFunction('get_sha256', path)
 	},
+    getInstalledApps: async (): Promise<TInstalledApp[]> => {
+        // @ts-ignore
+        return await callWsFunction('get_installed_apps')
+    },
+    shell: async (command: string): Promise<void> => {
+        // @ts-ignore
+        return await callWsFunction('shell', command)
+    }
 }
 
 export function isClient() {

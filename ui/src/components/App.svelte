@@ -17,6 +17,7 @@
 		settings,
 		sortType,
 		sortTypeReversed,
+        installedApps
 	} from '../store'
 	import type { TSortTypes } from '../types'
 	import { createWs, py, setPath, sortItems, waitWsOpen, xIsWhatPercentOfY } from '../utils'
@@ -138,6 +139,8 @@
 			quickAccessOpen = accordions.quickAccess
 			disksOpen = accordions.disks
 		}
+
+        installedApps.set(await py.getInstalledApps())
 
 		isLoading.set(false)
 	})

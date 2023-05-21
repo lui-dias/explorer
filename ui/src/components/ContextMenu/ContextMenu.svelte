@@ -3,15 +3,16 @@
 	import { E } from '../../event'
 	import {
 		contextMenuOpen,
+		installedApps,
 		quickAccess,
 		selected,
 		selectedQuickAccess,
 		sortType,
 		sortTypeReversed,
 	} from '../../store'
-	import { py, outsideClick } from '../../utils'
-	import ContextMenuItem from './ContextMenuItem.svelte'
+	import { outsideClick, py } from '../../utils'
 	import Properties from '../Properties.svelte'
+	import ContextMenuItem from './ContextMenuItem.svelte'
 
 	let contextMenuNode: HTMLMenuElement
 	let propertiesNode: HTMLDialogElement
@@ -136,6 +137,18 @@
 				},
 			],
 		},
+		vscode: {
+			text: 'Open in VSCode',
+			icon: 'OtherVscode',
+			action: async () => {
+				await py.shell(
+					`"${$installedApps.find(i => i.name === 'Visual Studio Code')!.exePath}" ${
+						$selected[0].path
+					}`,
+				)
+                contextMenuOpen.set(false)
+			},
+		},
 		properties: {
 			text: 'Properties',
 			icon: 'OtherInfo',
@@ -192,19 +205,26 @@
 >
 	<li class="dark:bg-[#32373e]">
 		{#if $selectedQuickAccess}
-			<svelte:component this={ContextMenuItem} {parentHeight} {...components.unpin} />
+			<ContextMenuItem {parentHeight} {...components.unpin} />
 		{:else if $selected.length}
-			{#if $selected.length === 1 && $selected[0].kind === 'folder'}
-				{#if $quickAccess.some(i => i.path === $selected[0].path)}
-					<svelte:component this={ContextMenuItem} {parentHeight} {...components.unpin} />
-				{:else}
-					<svelte:component this={ContextMenuItem} {parentHeight} {...components.pin} />
+			{#if $selected.length === 1}
+				{#if $selected[0].kind === 'folder'}
+					{#if $quickAccess.some(i => i.path === $selected[0].path)}
+						<ContextMenuItem {parentHeight} {...components.unpin} />
+					{:else}
+						<ContextMenuItem {parentHeight} {...components.pin} />
+					{/if}
 				{/if}
+				<ContextMenuItem
+					{parentHeight}
+					{...components.vscode}
+					iconClass="[&_.vscode-color]:fill-primary"
+				/>
 			{/if}
-			<svelte:component this={ContextMenuItem} {parentHeight} {...components.properties} />
+			<ContextMenuItem {parentHeight} {...components.properties} />
 		{:else}
-			<svelte:component this={ContextMenuItem} {parentHeight} {...components.new} />
-			<svelte:component this={ContextMenuItem} {parentHeight} {...components.sort} />
+			<ContextMenuItem {parentHeight} {...components.new} />
+			<ContextMenuItem {parentHeight} {...components.sort} />
 		{/if}
 	</li>
 </menu>

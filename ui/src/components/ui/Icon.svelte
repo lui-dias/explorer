@@ -68,6 +68,7 @@
 	import FolderTest from '../icons/folders/FolderTest.svelte'
 	import FolderView from '../icons/folders/FolderView.svelte'
 	import FolderVscode from '../icons/folders/FolderVscode.svelte'
+	import Vscode from '../icons/contextmenu/Vscode.svelte'
 
 	import { tv } from 'tailwind-variants'
 
@@ -158,7 +159,8 @@
         'OtherDesc'                : Desc,
         'OtherUsb'                 : Usb,
         'OtherInfo'                : Info,
-        'OtherCopy'                : Copy
+        'OtherCopy'                : Copy,
+        'OtherVscode'              : Vscode,
 	} as Record<string, any>
 </script>
 

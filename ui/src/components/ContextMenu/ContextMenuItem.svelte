@@ -18,6 +18,8 @@
 		__useStroke?: boolean
 	}[]
 
+	export let iconClass = ''
+
 	let menuList: HTMLDivElement | null = null
 	let btn: HTMLButtonElement | null = null
 
@@ -51,7 +53,7 @@
 {#if condition()}
 	<button
 		type="button"
-		class="flex items-center justify-between w-full px-4 py-2"
+		class="flex items-center justify-between w-full px-4 py-2 hover:bg-[#474C53]"
 		on:mouseover={() => (isHovered = true)}
 		on:mouseleave={() => (isHovered = false)}
 		bind:this={btn}
@@ -61,7 +63,9 @@
 			}
 		}}
 	>
-		<Icon {icon} colored />
+		<div class="flex justify-center items-center w-6">
+			<Icon {icon} colored class={iconClass} />
+		</div>
 		<span class="ml-2">{text}</span>
 
 		{#if isHovered}
@@ -81,9 +85,9 @@
 						>
 							<span class="w-8">
 								{#if __useStroke}
-									<Icon {icon} colored class="stroke-primary" />
+									<Icon {icon} colored class={`stroke-primary ${iconClass}`} />
 								{:else}
-									<Icon {icon} colored />
+									<Icon {icon} colored class={iconClass} />
 								{/if}
 							</span>
 							<span class="ml-auto pl-6">{text}</span>
