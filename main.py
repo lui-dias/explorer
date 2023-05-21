@@ -13,6 +13,7 @@ from shutil import rmtree
 from subprocess import run
 from threading import Lock, Thread
 from time import sleep, time_ns
+from traceback import print_exc
 from typing import Literal, TypedDict
 from zlib import crc32
 
@@ -29,9 +30,9 @@ from send2trash import send2trash
 from toml import dumps as dumps_toml
 from toml import load as load_toml
 from ujson import dumps, loads
+from websockets.exceptions import ConnectionClosedError, ConnectionClosedOK
 from websockets.legacy.server import WebSocketServerProtocol
 from websockets.server import serve
-from websockets.exceptions import ConnectionClosedOK, ConnectionClosedError
 
 try:
     from rich import print
@@ -921,8 +922,11 @@ class API:
         CONFIG_FILE.write_text(dumps_toml(config))
 
     def read(self, path: str):
-        return Path(path).read_text('utf-8')
-    
+        try:
+            return Path(path).read_text('utf-8')
+        except UnicodeDecodeError:
+            return Path(path).read_text('iso-8859-1')
+
     def read_b64(self, path: str):
         return b64encode(Path(path).read_bytes()).decode()
 
@@ -1050,7 +1054,7 @@ class API:
                 h.update(data)
 
         return h.hexdigest()
-    
+
     def get_installed_apps(self):
         # https://pastebin.com/MfDPJ9AM
         run('get-apps.exe', shell=True)
@@ -1060,9 +1064,10 @@ class API:
         p.unlink()
 
         return d
-    
+
     def shell(self, cmd: str):
         run(cmd, shell=True)
+
 
 streams_files = {}
 streams_deletes = {}
@@ -1160,8 +1165,11 @@ def start(debug=True, server=True):
                         name = data['name']
                         args = data['args']
 
-                        with suppress(Exception):
+                        try:
                             r = getattr(api, name)(*args)
+                        except Exception:
+                            print_exc()
+                            continue
 
                         await ws.send(dumps({'type': 'return', 'id': id, 'r': r}))
                 except ConnectionClosedOK:

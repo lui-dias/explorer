@@ -68,7 +68,9 @@
 		let language = ''
 
 		async function getText() {
-			return (data = await py.read(selectedItem.path))
+            data = await py.read(selectedItem.path)
+
+			return data
 		}
 
 		for (const [key, value] of languages) {

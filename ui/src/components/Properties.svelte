@@ -15,7 +15,7 @@
 
 	$: if (file) {
 		async function _() {
-			crc32 = await py.crc32(file.path)
+            crc32 = await py.crc32(file.path)
 			md5 = await py.md5(file.path)
 			sha1 = await py.sha1(file.path)
 			sha256 = await py.sha256(file.path)
