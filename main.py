@@ -31,7 +31,7 @@ from toml import load as load_toml
 from ujson import dumps, loads
 from websockets.legacy.server import WebSocketServerProtocol
 from websockets.server import serve
-from websockets.exceptions import ConnectionClosedOK
+from websockets.exceptions import ConnectionClosedOK, ConnectionClosedError
 
 try:
     from rich import print
@@ -1166,6 +1166,9 @@ def start(debug=True, server=True):
                         await ws.send(dumps({'type': 'return', 'id': id, 'r': r}))
                 except ConnectionClosedOK:
                     ...
+                except ConnectionClosedError as e:
+                    if str(e) != 'no close frame received or sent':
+                        raise
 
         async def main():
             async with serve(server, 'localhost', 3004):
