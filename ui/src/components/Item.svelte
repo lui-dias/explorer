@@ -88,7 +88,7 @@
 </script>
 
 <button
-	class={`_item flex items-center w-full hover:bg-[#7f8388]/20 hover:font-bold cursor-pointer outline-none ${
+	class={`item flex items-center w-full hover:bg-[#7f8388]/20 hover:font-bold cursor-pointer outline-none ${
 		isInside || $selected.find(item => item.path === file.path)
 			? 'bg-purple-300/20 font-bold'
 			: ''

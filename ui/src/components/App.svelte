@@ -17,7 +17,7 @@
 		settings,
 		sortType,
 		sortTypeReversed,
-        installedApps
+		installedApps,
 	} from '../store'
 	import type { TSortTypes } from '../types'
 	import { createWs, py, setPath, sortItems, waitWsOpen, xIsWhatPercentOfY } from '../utils'
@@ -45,9 +45,9 @@
 	let isMouseDown = false
 	let lastX = 0
 
-	let el = 0
-	let ew = 0
-	let aw = 0
+	let explorerLeft = 0
+	let explorerWidth = 0
+	let asideWidth = 0
 
 	let quickAccessOpen = true
 	let disksOpen = false
@@ -80,6 +80,7 @@
 		sortTypeReversed.set((await py.get('sortTypeReversed')) || $sortTypeReversed)
 		setPath((await py.get('cwd')) || (await py.pwd()))
 
+		// Sort items
 		sortType.subscribe(async () => {
 			const explorerSort = sortItems($explorerItems)
 			const searchSort = sortItems($searchItems)
@@ -109,7 +110,9 @@
 
 			await py.set('sortTypeReversed', $sortTypeReversed)
 		})
+		// ----------
 
+		// Reload explorer items when cwd changes
 		cwd.subscribe(async v => {
 			if (v) {
 				searchItems.set([])
@@ -120,40 +123,49 @@
 			}
 		})
 
+		// Update history when index changes
 		historyIndex.subscribe(v => {
 			cwd.set($history[$historyIndex])
 		})
 
+		// Update disks
 		disks.set(await py.disksInfo())
 
+		// Set components sizes and positions
 		const components = await py.get('components')
 		const accordions = await py.get('accordions')
 
 		if (components) {
-			el = components.explorer.left
-			ew = components.explorer.width
-			aw = components.aside.width
+			explorerLeft = components.explorer.left
+			explorerWidth = components.explorer.width
+			asideWidth = components.aside.width
 		}
 
 		if (accordions) {
 			quickAccessOpen = accordions.quickAccess
 			disksOpen = accordions.disks
 		}
+		// --------
 
-        installedApps.set(await py.getInstalledApps())
+		// Update installed apps
+		installedApps.set(await py.getInstalledApps())
 
+		// Remove loading indicator
 		isLoading.set(false)
 	})
 
-	$: if (explorerNode && asideNode && el && ew && aw) {
-		explorerNode.style.left = `${el}px`
-		explorerNode.style.width = `${ew}%`
-		asideNode.style.width = `${aw}%`
+	// Update components positions and sizes
+	// explorerLeft, explorerWidth, asideWidth can't be 0 otherwise the layout will break
+	$: if (explorerNode && asideNode && explorerLeft && explorerWidth && asideWidth) {
+		explorerNode.style.left = `${explorerLeft}px`
+		explorerNode.style.width = `${explorerWidth}%`
+		asideNode.style.width = `${asideWidth}%`
 	}
 
+	// Save accordions state
 	$: if (!$isLoading) {
 		async function _() {
-			let accordions = (await py.get('accordions')) || {}
+			let accordions = (await py.get('accordions')) ?? {}
 
 			accordions = {
 				...accordions,
@@ -172,29 +184,27 @@
 
 <svelte:window
 	on:click={e => {
-		const preview = document.querySelector('._preview')
+		// Handle if explorer is focused
+
+		const preview = document.querySelector('.preview')
 		const cwd = document.querySelector('#cwd')
 
 		if (!preview || !cwd) return
 
 		// @ts-ignore
-		const isInCwd = e.target === cwd || cwd.contains(e.target)
+		const clickedInCwd = e.target === cwd || cwd.contains(e.target)
 		// @ts-ignore
-		const isInPreview = e.target === preview || preview.contains(e.target)
+		const clickedInPreview = e.target === preview || preview.contains(e.target)
+		// @ts-ignore
+		const clickedInExplorer = explorerNode.contains(e.target) || e.target === explorerNode
 
-		if (
-			explorerNode &&
-			!isInCwd &&
-			!isInPreview &&
-			// @ts-ignore
-			(explorerNode.contains(e.target) || e.target === explorerNode)
-		) {
-			isExplorerFocused.set(true)
-		} else {
-			isExplorerFocused.set(false)
-		}
+		isExplorerFocused.set(
+			explorerNode && !clickedInCwd && !clickedInPreview && clickedInExplorer,
+		)
 	}}
 	on:mousedown={e => {
+		// Handle custom mouse buttons
+
 		if (e.button == 3) {
 			back()
 		} else if (e.button == 4) {
@@ -205,23 +215,24 @@
 		isMouseDown = false
 	}}
 	on:mousemove={async e => {
+		// Resize aside bar
+
 		if (!explorerNode) return
 
-		const rect = explorerNode.getBoundingClientRect()
-
-		const l = rect.left
-		const w = rect.width
+		const { left, width } = explorerNode.getBoundingClientRect()
 
 		const ww = window.innerWidth
 		const x = e.clientX
 
-		const isLeftBorder = x < l + 10
+		// size of the width that the person can move the mouse in which will be considered a resize area
+		const borderResizeArea = 10
+		const isInLeftBorder = x < left + borderResizeArea
 
-		if (isLeftBorder) {
-			isInBorder = true
+		isInBorder = isInLeftBorder
+
+		if (isInLeftBorder) {
 			document.body.style.cursor = 'col-resize'
 		} else if (!isMouseDown) {
-			isInBorder = false
 			document.body.style.cursor = 'default'
 		}
 
@@ -230,34 +241,39 @@
 
 			lastX = x
 
-			el = l + diffX
-			ew = xIsWhatPercentOfY(w - diffX, ww)
-			aw = xIsWhatPercentOfY(ww - (w - diffX - 14), ww)
+			explorerLeft = left + diffX
+			explorerWidth = xIsWhatPercentOfY(width - diffX, ww)
+			asideWidth = xIsWhatPercentOfY(ww - (width - diffX - 14), ww)
 
-			const components = (await py.get('components')) || {}
+			// Update components in local storage
+			const components = (await py.get('components')) ?? {}
 
-			components['explorer'] = { width: ew, left: el }
-			components['aside'] = { width: aw }
+			components['explorer'] = { width: explorerWidth, left: explorerLeft }
+			components['aside'] = { width: asideWidth }
 
 			await py.set('components', components)
 		}
 	}}
 	on:keyup={e => {
+		// Disable multiple selection
 		if (e.key === 'Control') {
 			isMultipleSelected.set(false)
 		}
 	}}
 	on:keydown={async e => {
+		// Enable multiple selection
 		if (e.key === 'Control') {
 			isMultipleSelected.set(true)
 		}
 
+		// Select all items
 		if (e.ctrlKey && e.key === 'a') {
 			if ($isExplorerFocused) {
 				selected.set($explorerItems)
 			}
 		}
 
+		// If have any file in clipboard, it will copy to cwd
 		if (e.ctrlKey && e.key === 'v') {
 			if ($isExplorerFocused) {
 				await py.paste($cwd)
@@ -265,8 +281,10 @@
 			}
 		}
 
+		// Down requires a item to be selected
 		if ($selected.length === 0) return
 
+		// Copy all selected items to clipboard
 		if (e.ctrlKey && e.key === 'c') {
 			if ($selected.length > 1 && $isExplorerFocused) {
 				const paths = $selected.map(i => i.path)
@@ -279,6 +297,7 @@
 			}
 		}
 
+		// Rename selected item to clipboard
 		if (e.key === 'F2') {
 			if ($selected.length > 1) {
 				await E.footerText({
@@ -308,6 +327,7 @@
 			)
 		}
 
+		// Delete selected items
 		if (e.key === 'Delete') {
 			await E.delete(
 				$selected.map(i => i.path),
@@ -321,7 +341,9 @@
 <Settings />
 
 {#if isMouseDown}
-	<span class="absolute inset-0 text-white z-10">{aw.toFixed(2)}% | {ew.toFixed(2)}%</span>
+	<span class="absolute inset-0 text-white z-10"
+		>{asideWidth.toFixed(2)}% | {explorerWidth.toFixed(2)}%</span
+	>
 {/if}
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -329,20 +351,19 @@
 	class="flex w-full h-full dark:bg-zinc-100 isolate"
 	class:dark:bg-zinc-800={$isLoading}
 	on:click={e => {
-		// Idk other way to select all items
-		const allItems = document.querySelectorAll('._item')
-		const preview = document.querySelector('._preview')
+		const allItems = document.querySelectorAll('.item')
+		const preview = document.querySelector('.preview')
 
+        // if click was on explorer, but not on items or preview
 		for (const item of allItems) {
 			// @ts-ignore
-			if (item.contains(e.target)) {
-				return
-			}
-
+            const clickWasInItem = item.contains(e.target)
 			// @ts-ignore
-			if (e.target === preview || preview?.contains(e.target)) {
-				return
-			}
+            const clickWasInPreview = e.target === preview || preview?.contains(e.target)
+
+            if (clickWasInItem || clickWasInPreview) {
+                return
+            }
 		}
 
 		selected.set([])
