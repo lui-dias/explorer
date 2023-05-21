@@ -27,7 +27,7 @@ let footerDebounce = debounce(
 
 export const E = {
 	reload: async () => {
-		await E.deleteAllStreamsLs()
+		await py.deleteAllStreamsLs()
 
 		// When creating a file/folder, even using ls, the size of the files was buggy,
 		// a file had the size of another file
@@ -37,7 +37,7 @@ export const E = {
 		const $cwd = get(cwd)
 		cwdSplit.set($cwd.split('/'))
 
-		await E.startLs($cwd)
+		await py.startLs($cwd)
 
 		while (true) {
 			const r = await py.ls($cwd)
@@ -64,14 +64,6 @@ export const E = {
 		}
 	},
 
-	startLs: async (folder: string) => {
-		await py.startLs(folder)
-	},
-
-	deleteAllStreamsLs: async () => {
-		await py.deleteAllStreamsLs()
-	},
-
 	createFile: async (path: string) => {
 		await py.createFile(path)
 		await E.reload()
@@ -94,12 +86,11 @@ export const E = {
 
 		while (true) {
 			const r = await py.streamDelete(id)
-            
+
 			if (!r) break
-            
+
 			const { end, total, deleted, last_deleted } = r
-            
-            console.log(1)
+
 			await E.footerText({
 				text: `Deleted ${deleted}/${total} ${!!last_deleted ? `- ${last_deleted}` : ''}`,
 				type: 'info',
@@ -192,11 +183,5 @@ export const E = {
 		])
 
 		$scrollExplorerToEnd()
-	},
-	copy: async (paths: string[]) => {
-		await py.copy(paths.join(' '))
-	},
-	paste: async (folder: string) => {
-		await py.paste(folder)
 	},
 }

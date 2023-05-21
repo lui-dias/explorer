@@ -260,7 +260,7 @@
 
 		if (e.ctrlKey && e.key === 'v') {
 			if ($isExplorerFocused) {
-				await E.paste($cwd)
+				await py.paste($cwd)
 				await E.reload()
 			}
 		}
@@ -270,7 +270,7 @@
 		if (e.ctrlKey && e.key === 'c') {
 			if ($selected.length > 1 && $isExplorerFocused) {
 				const paths = $selected.map(i => i.path)
-				await E.copy(paths)
+				await py.copy(paths.join(' '))
 
 				await E.footerText({
 					text: `Copied ${paths.length} items to clipboard`,
