@@ -46,4 +46,5 @@
 -   [x] Add tests (not all is tested)
 -   [ ] Add documentation
 -   [ ] Comment code
--   [ ] !!! Refactor code
+-   [ ] Refactor code
+-   [ ] Use icons in a sprite
