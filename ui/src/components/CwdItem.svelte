@@ -1,14 +1,18 @@
 <script lang="ts">
 	import { asDropZone } from 'svelte-drag-and-drop-actions'
-	import { cwd, cwdSplit, history, historyIndex, searchItems } from '../store'
-	import { py, sleep } from '../utils'
-	import Chevron from './icons/Chevron.svelte'
 	import { E } from '../event'
+	import { cwd, cwdSplit, history, historyIndex, searchItems } from '../store'
+	import { py } from '../utils'
+	import Chevron from './icons/Chevron.svelte'
 
-	export let i: number
+	export let cwdItemIndex: number
 	export let dir: string
 	export let hideNItems: number
 
+	/**
+	 * The ondragleave event was being called even before the mouse left the element,
+	 * n serves to condition the ondragleave to be called only when leaving the element
+	 **/
 	let n = 0
 	let isInside = false
 </script>
@@ -39,18 +43,20 @@
 		TypesToAccept: { 'text/plain': 'copy' },
 		// @ts-ignore
 		onDrop: async (x, y, Operation, data) => {
-			const path = $cwdSplit.slice(0, i + 1).join('/')
+			// Move file to new folder
+
+			const folder = $cwdSplit.slice(0, cwdItemIndex + 1).join('/')
 			const fileToMove = Object.values(data)[0]
 			// @ts-ignore
 			const name = fileToMove.split('/').pop()
 
 			// @ts-ignore
-			await py.rename(fileToMove, `${path}/${name}`)
+			await py.rename(fileToMove, `${folder}/${name}`)
 
 			await E.reload()
 
 			await E.footerText({
-				text: `Moved '${name}' to '${path}'`,
+				text: `Moved '${name}' to '${folder}'`,
 				type: 'info',
 			})
 		},
@@ -61,17 +67,19 @@
 		class={`dark:hover:bg-[#7f8388]/20 p-2 ${isInside ? 'bg-[#7f8388]/20' : ''}`}
 		data-test-id="cwd-item-button"
 		on:click={async () => {
-			const path = $cwdSplit.slice(0, hideNItems + i + 1).join('/')
-			const isLastItem = i === $cwdSplit.length - 1 - hideNItems
+			// Handle click in cwd item
 
-			console.log('start')
+			const folder = $cwdSplit.slice(0, hideNItems + cwdItemIndex + 1).join('/')
+			const isLastItem = cwdItemIndex === $cwdSplit.length - 1 - hideNItems
+
 			await py.deleteAllStreamsFind()
 			searchItems.set([])
 
 			if (!isLastItem) {
-				history.set([...$history, path])
+				// Just add folder to history and update historyIndex and cwd
+				history.set([...$history, folder])
 				historyIndex.set($history.length)
-				cwd.set(path)
+				cwd.set(folder)
 			} else {
 				await E.reload()
 			}
@@ -79,7 +87,7 @@
 	>
 		<span class="text-[#b9b9b9] whitespace-nowrap">{dir}</span>
 	</button>
-	{#if dir !== $cwdSplit.slice(-1)[0]}
+	{#if dir !== $cwdSplit.at(-1)}
 		<span class="rotate-180">
 			<Chevron class="fill-[#b9b9b9] w-5" />
 		</span>

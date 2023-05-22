@@ -1,14 +1,15 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
 	import { E } from '../event'
-	import { cwd, cwdSplit, isExplorerFocused, selected } from '../store'
+	import { cwd, cwdSplit, isExplorerFocused } from '../store'
 	import { outsideClick, py, sleep } from '../utils'
-	import Reload from './icons/Reload.svelte'
 	import CwdItem from './CwdItem.svelte'
+	import Reload from './icons/Reload.svelte'
 
 	let searchNode: HTMLButtonElement
 	let inputSearchNode: HTMLInputElement
-	let cwdList: HTMLUListElement
+	let cwdListNode: HTMLUListElement
+	/** How many items of cwd should be hidden */
 	let hideNItems = 0
 
 	let isSearchSelected = false
@@ -16,12 +17,13 @@
 	let padding = 40
 
 	async function fixHorizontalScroll() {
-		if (!cwdList) return
+		if (!cwdListNode) return
 
-		if (cwdList.scrollWidth <= cwdList.clientWidth - padding) {
+		if (cwdListNode.scrollWidth <= cwdListNode.clientWidth - padding) {
 			hideNItems = 0
 		} else {
-			while (cwdList.scrollWidth > cwdList.clientWidth) {
+			// While have scrollbar
+			while (cwdListNode.scrollWidth > cwdListNode.clientWidth) {
 				// This is necessary to avoid infinite loop
 				await sleep(0)
 
@@ -35,14 +37,14 @@
 		inputSearchNode.focus()
 	}
 
-	$: if ($cwdSplit && cwdList) {
+	$: if ($cwdSplit && cwdListNode) {
 		const observer = new MutationObserver(() => {
 			fixHorizontalScroll()
 
 			// Avoid infinite loop when setting hideNItems
 			observer.disconnect()
 		})
-		observer.observe(cwdList, { childList: true })
+		observer.observe(cwdListNode, { childList: true })
 	}
 
 	onMount(() => {
@@ -53,9 +55,7 @@
 			isSearchSelected = false
 		})
 
-		window.addEventListener('resize', () => {
-			fixHorizontalScroll()
-		})
+		window.addEventListener('resize', fixHorizontalScroll)
 	})
 </script>
 
@@ -63,7 +63,6 @@
 	on:keydown={e => {
 		if (e.key === 'Escape') {
 			isSearchSelected = false
-			selected.set([])
 		}
 	}}
 />
@@ -103,9 +102,9 @@
 		/>
 	{:else}
 		<div class="relative w-full">
-			<ul class="flex overflow-x-hidden" bind:this={cwdList}>
+			<ul class="flex overflow-x-hidden" bind:this={cwdListNode}>
 				{#each $cwdSplit.slice(hideNItems, $cwdSplit.length) as dir, i}
-					<CwdItem {dir} {i} {hideNItems} />
+					<CwdItem {dir} cwdItemIndex={i} {hideNItems} />
 				{/each}
 			</ul>
 			<button

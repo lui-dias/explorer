@@ -261,6 +261,11 @@
 		}
 	}}
 	on:keydown={async e => {
+        // Unselect all items
+		if (e.key === 'Escape') {
+			selected.set([])
+		}
+
 		// Enable multiple selection
 		if (e.key === 'Control') {
 			isMultipleSelected.set(true)
@@ -354,16 +359,16 @@
 		const allItems = document.querySelectorAll('.item')
 		const preview = document.querySelector('.preview')
 
-        // if click was on explorer, but not on items or preview
+		// if click was on explorer, but not on items or preview
 		for (const item of allItems) {
 			// @ts-ignore
-            const clickWasInItem = item.contains(e.target)
+			const clickWasInItem = item.contains(e.target)
 			// @ts-ignore
-            const clickWasInPreview = e.target === preview || preview?.contains(e.target)
+			const clickWasInPreview = e.target === preview || preview?.contains(e.target)
 
-            if (clickWasInItem || clickWasInPreview) {
-                return
-            }
+			if (clickWasInItem || clickWasInPreview) {
+				return
+			}
 		}
 
 		selected.set([])

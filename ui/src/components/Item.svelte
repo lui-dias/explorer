@@ -14,8 +14,13 @@
 	let size = file.size ?? '0 B'
 	let itemNode: HTMLButtonElement
 	let inputEditNode: HTMLInputElement
-	let n = 0
 	let isInside = false
+
+	/**
+	 * The ondragleave event was being called even before the mouse left the element,
+	 * n serves to condition the ondragleave to be called only when leaving the element
+	 **/
+	let n = 0
 
 	$: if (size) {
 		file.size = size
