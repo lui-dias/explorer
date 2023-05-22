@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { cwd as Scwd, explorerItems, scrollExplorerToEnd } from '../store'
+	import { cwd as Scwd, explorerItems, scrollExplorerToBottom } from '../store'
 	import { py, assert, setPath, sleep } from '../utils'
 
 	setTimeout(async () => {
@@ -86,7 +86,7 @@
 			const vl = document.querySelector('[data-test-id="vl"]')!
 			assert(!!vl, 'Should have virtual list')
 
-			$scrollExplorerToEnd()
+			$scrollExplorerToBottom()
 			await sleep(1)
 
 			const lastItem = [...vl.querySelectorAll('[data-test-id="explorer-item"]')]

@@ -65,12 +65,18 @@
 				{
 					text: 'File',
 					icon: 'OtherNewFile',
-					action: E.createNewExplorerFile,
+					action: () => {
+						E.createNewExplorerFile()
+						contextMenuOpen.set(false)
+					},
 				},
 				{
 					text: 'Folder',
 					icon: 'OtherNewFolder',
-					action: E.createNewExplorerFolder,
+					action: () => {
+						E.createNewExplorerFolder()
+						contextMenuOpen.set(false)
+					},
 				},
 			],
 		},
@@ -140,14 +146,14 @@
 		vscode: {
 			text: 'Open in VSCode',
 			icon: 'OtherVscode',
-            condition: () => $installedApps.some(i => i.name === 'Visual Studio Code'),
+			condition: () => $installedApps.some(i => i.name === 'Visual Studio Code'),
 			action: async () => {
 				await py.shell(
 					`"${$installedApps.find(i => i.name === 'Visual Studio Code')!.exePath}" ${
 						$selected[0].path
 					}`,
 				)
-                contextMenuOpen.set(false)
+				contextMenuOpen.set(false)
 			},
 		},
 		properties: {

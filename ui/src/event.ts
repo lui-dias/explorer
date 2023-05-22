@@ -1,13 +1,12 @@
 import { get } from 'svelte/store'
 import {
-	contextMenuOpen,
 	cwd,
 	cwdSplit,
 	explorerItems,
 	footer,
 	history,
 	historyIndex,
-	scrollExplorerToEnd,
+	scrollExplorerToBottom,
 	selected,
 	sortTypeReversed,
 } from './store'
@@ -26,6 +25,7 @@ let footerDebounce = debounce(
 )
 
 export const E = {
+	// Update explorer items
 	reload: async () => {
 		await py.deleteAllStreamsLs()
 
@@ -64,6 +64,7 @@ export const E = {
 		}
 	},
 
+	// Delete selected items
 	delete: async (path: string | string[], moveToTrash: boolean) => {
 		const id = gen_id()
 
@@ -90,6 +91,7 @@ export const E = {
 		await E.reload()
 	},
 
+	// Set footer text
 	footerText: async ({ text, type }: TFooter) => {
 		footer.set({
 			text,
@@ -99,6 +101,7 @@ export const E = {
 		footerDebounce()
 	},
 
+	// Back to previous directory in history
 	back: async () => {
 		const $historyIndex = get(historyIndex)
 
@@ -107,6 +110,7 @@ export const E = {
 		}
 	},
 
+	// Forward to next directory in history
 	forward: async () => {
 		const $historyIndex = get(historyIndex)
 		const $history = get(history)
@@ -119,9 +123,7 @@ export const E = {
 	createNewExplorerFile: async () => {
 		const $explorerItems = get(explorerItems)
 		const $cwd = get(cwd)
-		const $scrollExplorerToEnd = get(scrollExplorerToEnd)
-
-		contextMenuOpen.set(false)
+		const $scrollExplorerToBottom = get(scrollExplorerToBottom)
 
 		explorerItems.set([
 			...$explorerItems,
@@ -140,15 +142,13 @@ export const E = {
 			},
 		])
 
-		$scrollExplorerToEnd()
+		$scrollExplorerToBottom()
 	},
 
 	createNewExplorerFolder: async () => {
 		const $explorerItems = get(explorerItems)
 		const $cwd = get(cwd)
-		const $scrollExplorerToEnd = get(scrollExplorerToEnd)
-
-		contextMenuOpen.set(false)
+		const $scrollExplorerToBottom = get(scrollExplorerToBottom)
 
 		explorerItems.set([
 			...$explorerItems,
@@ -167,6 +167,6 @@ export const E = {
 			},
 		])
 
-		$scrollExplorerToEnd()
+		$scrollExplorerToBottom()
 	},
 }

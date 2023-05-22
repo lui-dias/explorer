@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
 	import VirtualList from 'svelte-tiny-virtual-list'
-	import { explorerItems, isSearching, scrollExplorerToEnd, searchItems } from '../store'
+	import { explorerItems, isSearching, scrollExplorerToBottom, searchItems } from '../store'
 	import type { ExplorerItem } from '../types'
 	import Item from './Item.svelte'
 	import Loading from './Loading.svelte'
@@ -10,7 +10,7 @@
 	let items = [] as ExplorerItem[]
 	let itemPos = 0
 
-	scrollExplorerToEnd.set(() => {
+	scrollExplorerToBottom.set(() => {
 		itemPos = items.length - 1
 	})
 
