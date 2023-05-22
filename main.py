@@ -394,7 +394,6 @@ def get_file_type(path: Path):
         elif any(
             name.endswith(i.lower())
             for i in [
-                'LICENSE',
                 'enc',
                 'lic',
                 'license_dark',
@@ -793,7 +792,6 @@ class StreamLs:
 class API:
     def close(self):
         w.destroy()
-        sys.exit(0)
 
     def minimize(self):
         w.minimize()
@@ -897,11 +895,8 @@ class API:
     def create_folder(self, path: str):
         Path(path).mkdir()
 
-    def exists(self, path: str, ignore: str = None):
-        p1 = Path(path)
-        p2 = Path(ignore) if ignore else None
-
-        return p1.exists() and p1 != p2
+    def exists(self, path: str):
+        return Path(path).exists()
 
     def delete_all_streams_ls(self):
         streams_ls.clear()
@@ -1075,13 +1070,13 @@ streams_finds = {}
 streams_ls = {}
 
 DRIVE_TYPES = {
-    0: "Unknown",
-    1: "No Root Directory",
-    2: "Removable Disk",
-    3: "Local Disk",
-    4: "Network Drive",
-    5: "Compact Disc",
-    6: "RAM Disk",
+    0: 'Unknown',
+    1: 'No Root Directory',
+    2: 'Removable Disk',
+    3: 'Local Disk',
+    4: 'Network Drive',
+    5: 'Compact Disc',
+    6: 'RAM Disk',
 }
 
 w = None
@@ -1233,10 +1228,15 @@ if args:
                 executor.submit(seed, i)
 
     if command == 'release':
+        debug = False
+
+        if len(args) == 1 and args[0] == 'debug':
+            debug = True
+
         run('cd ui && npm run build', shell=True)
         Thread(target=lambda: run('cd ui && npm run preview', shell=True)).start()
 
-        start(debug=False, server=False)
+        start(debug=debug, server=False)
 
 elif __name__ == '__main__':
     start()
