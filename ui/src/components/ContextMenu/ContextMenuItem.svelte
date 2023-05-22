@@ -53,7 +53,7 @@
 {#if condition()}
 	<button
 		type="button"
-		class="flex items-center justify-between w-full px-4 py-2 hover:bg-[#474C53]"
+		class="flex items-center justify-between w-full px-4 py-2 hover:bg-[#3F434A]"
 		on:mouseover={() => (isHovered = true)}
 		on:mouseleave={() => (isHovered = false)}
 		bind:this={btn}
@@ -78,8 +78,8 @@
 					{#if condition === undefined || condition()}
 						<button
 							type="button"
-							class={`px-4 py-2 flex items-center w-full ${
-								selected?.() ? 'bg-[#474C53]' : ''
+							class={`px-4 py-2 flex items-center w-full hover:bg-[#3F434A] ${
+								selected?.() ? 'bg-[#4A4F56]' : ''
 							}`}
 							on:click={action}
 						>
