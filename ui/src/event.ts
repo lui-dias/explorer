@@ -64,21 +64,6 @@ export const E = {
 		}
 	},
 
-	createFile: async (path: string) => {
-		await py.createFile(path)
-		await E.reload()
-	},
-
-	createFolder: async (path: string) => {
-		await py.createFolder(path)
-		await E.reload()
-	},
-
-	rename: async (from: string, to: string) => {
-		await py.rename(from, to)
-		await E.reload()
-	},
-
 	delete: async (path: string | string[], moveToTrash: boolean) => {
 		const id = gen_id()
 

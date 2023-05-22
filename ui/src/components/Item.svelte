@@ -53,27 +53,30 @@
 			})
 		} else {
 			if (file.action === 'createFile') {
-				await E.createFile(path)
+				await py.createFile(path)
 			} else if (file.action === 'createFolder') {
-				await E.createFolder(path)
+				await py.createFolder(path)
 			} else if (file.action === 'rename') {
-				await E.rename(file.path, path)
+				await py.rename(file.path, path)
 			}
+
+			await E.reload()
 		}
 	}
 
 	onMount(async () => {
 		outsideClick(itemNode, () => {
-			if (!$isMultipleSelected) {
-				file.isEditMode = false
-			}
+			file.isEditMode = false
 		})
 
 		await py.startFolderSize(file.path)
 
+		// Calculate size
 		while (true) {
 			const r = await py.streamFolderSize(file.path)
 
+			// For some reason, some files don't start to calculate size
+			// even though I called startFolderSize
 			if (!r) {
 				await py.startFolderSize(file.path)
 				continue
@@ -87,6 +90,7 @@
 		}
 	})
 
+	// Autofocus input edit when appear
 	$: if (file.isEditMode && inputEditNode) {
 		inputEditNode.focus()
 	}
@@ -101,6 +105,7 @@
 	data-test-id="explorer-item"
 	bind:this={itemNode}
 	on:click={() => {
+		// if isMultipleSelected, add else set
 		selected.set($isMultipleSelected ? [...$selected, file] : [file])
 	}}
 	on:dblclick={() => {
@@ -145,14 +150,15 @@
 				const path = Object.values(data)[0]
 				// @ts-ignore
 				const name = path.split('/').pop()
+				const folder = file.path
 
 				// @ts-ignore
-				await py.rename(path, `${file.path}/${name}`)
+				await py.rename(path, `${folder}/${name}`)
 
 				await E.reload()
 
 				await E.footerText({
-					text: `Moved '${name}' to '${file.path}'`,
+					text: `Moved '${name}' to '${folder}'`,
 					type: 'info',
 				})
 			}
@@ -165,7 +171,6 @@
 				type="text"
 				class="w-full h-full px-2 rounded-md outline-none text-[#b9b9b9] dark:bg-transparent"
 				spellcheck="false"
-				autocomplete="false"
 				data-test-id="edit-file"
 				bind:value={file.name}
 				bind:this={inputEditNode}
