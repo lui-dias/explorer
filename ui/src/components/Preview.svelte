@@ -21,7 +21,7 @@
 	import githubDark from 'svelte-highlight/styles/github-dark'
 	import { isExplorerFocused, selected } from '../store'
 	import type { ExplorerItem } from '../types'
-	import { loadFontDynamicly, py } from '../utils'
+	import { loadFontDynamically, py } from '../utils'
 
 	let selectedItem: ExplorerItem
 	let lastSelected: ExplorerItem
@@ -187,7 +187,7 @@
 
 	$: if (type.type === 'font') {
 		async function _() {
-			const fontName = await loadFontDynamicly(
+			const fontName = await loadFontDynamically(
 				encodeURI(`http://localhost:3003/stream/${selectedItem.path}`),
 			)
 			weight = await py.getFontWeight(selectedItem.path)

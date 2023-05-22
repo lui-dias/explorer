@@ -3,6 +3,7 @@ import { E } from './event'
 import { cwd, cwdSplit, history, historyIndex, isLoading, sortType, ws } from './store'
 import type { ExplorerItem, TConfig, TDisksInfo, TInstalledApp } from './types'
 
+// https://stackoverflow.com/a/3028037
 const isVisible = (elem: any) =>
 	!!elem && !!(elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length)
 
@@ -22,6 +23,7 @@ export function outsideClick(node: any, callback: any) {
 	}
 }
 
+// Sort array by key, like python sorted function
 export function sort<T>(arr: T[], fn: (key: T) => any, reverse = false) {
 	const copy = [...arr]
 
@@ -63,21 +65,6 @@ export function formatBytes(bytes: number) {
 
 export function isNumber(value: string) {
 	return !isNaN(Number(value))
-}
-
-export function formatDate(date: Date) {
-	const formats = {
-		yyyy: date.getFullYear(),
-		MM: date.getMonth() + 1,
-		dd: date.getDate(),
-		HH: date.getHours(),
-		mm: date.getMinutes(),
-		ss: date.getSeconds(),
-	} as Record<string, number>
-
-	return Object.keys(formats).reduce((acc, key) => {
-		return acc.replace(key, String(formats[key]).padStart(2, '0'))
-	}, 'dd/MM/yyyy HH:mm')
 }
 
 export const py = {
@@ -165,7 +152,6 @@ export const py = {
 
 	streamFind: async (
 		path: string,
-		query: string,
 	): Promise<{
 		end: boolean
 		total: number
@@ -274,18 +260,14 @@ export const py = {
 		// @ts-ignore
 		return await callWsFunction('get_sha256', path)
 	},
-    getInstalledApps: async (): Promise<TInstalledApp[]> => {
-        // @ts-ignore
-        return await callWsFunction('get_installed_apps')
-    },
-    shell: async (command: string): Promise<void> => {
-        // @ts-ignore
-        return await callWsFunction('shell', command)
-    }
-}
-
-export function isClient() {
-	return typeof window !== 'undefined'
+	getInstalledApps: async (): Promise<TInstalledApp[]> => {
+		// @ts-ignore
+		return await callWsFunction('get_installed_apps')
+	},
+	shell: async (command: string): Promise<void> => {
+		// @ts-ignore
+		return await callWsFunction('shell', command)
+	},
 }
 
 export function debounce(fn: () => void, s: number) {
@@ -312,6 +294,24 @@ export function sleep(s: number) {
 	return new Promise(resolve => setTimeout(resolve, s * 1000))
 }
 
+// ? If is the last path in history, append new path
+// path = '/home/user/Downloads'
+//
+// history = ['/home', '/home/user']
+//              v
+//              v
+// history = ['/home', '/home/user', '/home/user/Downloads']
+//
+// ? else remove all paths after history[hi + 1], then append new path
+//
+// path = '/home/user/Downloads'
+// historyIndex = 1
+//
+// history = ['/home', '/home/user', '/home/user/Videos', '/home/user/Videos/House']
+//              v
+//              v
+// history = ['/home', '/home/user', '/home/user/Downloads']
+
 export function appendPath(path: string) {
 	const hi = get(historyIndex)
 	const h = get(history)
@@ -326,8 +326,9 @@ export function appendPath(path: string) {
 	cwd.set(path)
 }
 
-// Add each parent path to history
-// Example: /home/user/Downloads
+// ? Remove all paths, then split path folders
+//
+// path = /home/user/Downloads
 // history: ['/home', '/home/user', '/home/user/Downloads']
 export function setPath(path: string) {
 	const $cwdSplit = path.split('/')
@@ -347,7 +348,7 @@ export function sortItems(items: ExplorerItem[]) {
 	const $sortType = get(sortType)
 
 	if ($sortType === 'name') {
-		return sort(items, i => (isNumber(i.name) ? Number(i.name) : i.name))
+		return sort(items, i => i.name)
 	}
 	if ($sortType === 'modified') {
 		return sort(items, i => i.modified)
@@ -362,19 +363,15 @@ export function sortItems(items: ExplorerItem[]) {
 	return items
 }
 
-export const b64ToUint8Array = (b64: string) => {
-	return Uint8Array.from(atob(b64), c => c.charCodeAt(0))
-}
-
 export function assert(condition: boolean, message: string) {
 	if (!condition) {
 		throw new Error(message)
 	}
 }
 
-export async function loadFontDynamicly(url: string) {
+export async function loadFontDynamically(url: string) {
 	const name = gen_id(8)
-	const font = new FontFace(name, `url(${url})`, {})
+	const font = new FontFace(name, `url(${url})`)
 
 	await font.load()
 
@@ -393,20 +390,19 @@ export function waitWsOpen() {
 	})
 }
 
-export async function waitAppLoad() {
-	let $isLoading = get(isLoading)
-
-	while (!$isLoading) {
-		await sleep(0.001)
-		$isLoading = get(isLoading)
-	}
+export function waitAppLoad() {
+	return new Promise<void>(async (resolve, reject) => {
+		isLoading.subscribe(v => {
+			if (!v) resolve()
+		})
+	})
 }
 
 export function callWsFunction(name: string, ...args: any[]) {
 	const $ws = get(ws)
 
 	return new Promise((resolve, reject) => {
-		const r_id = gen_id(8)
+		const response_id = gen_id(8)
 
 		function listener(event: MessageEvent) {
 			const { type, id, r } = JSON.parse(event.data) as {
@@ -415,23 +411,21 @@ export function callWsFunction(name: string, ...args: any[]) {
 				r: any
 			}
 
-			if (type === 'return' && id === r_id) {
+			if (type === 'return' && id === response_id) {
 				$ws.removeEventListener('message', listener)
 				resolve(r)
 			}
 		}
 
 		$ws.addEventListener('message', listener)
-		$ws.send(JSON.stringify({ type: 'call', id: r_id, name, args }))
+		$ws.send(JSON.stringify({ type: 'call', id: response_id, name, args }))
 	})
 }
 
 export function createWs() {
 	const _ws = new WebSocket('ws://localhost:3004')
 
-	_ws.onclose = () => {
-		createWs()
-	}
+	_ws.onclose = createWs
 
 	ws.set(_ws)
 }
