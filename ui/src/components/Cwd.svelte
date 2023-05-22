@@ -111,6 +111,7 @@
 				type="button"
 				class="absolute inset-y-0 right-2"
 				data-test-id="cwd-reload"
+				aria-label="Reload explorer"
 				on:click={async () => {
 					await py.deleteAllStreamsFind()
 					await E.reload()

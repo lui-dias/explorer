@@ -27,6 +27,7 @@
 		<button
 			type="button"
 			class="disabled:cursor-not-allowed"
+			aria-label="Open settings"
 			disabled
 			on:click={() => settingsOpen.set(true)}
 		>

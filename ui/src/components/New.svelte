@@ -47,7 +47,7 @@
 
 <div class="relative flex flex-col" on:mouseleave={() => (isHover = false)}>
 	<div class="z-20" on:mouseenter={() => (isHover = true)}>
-		<Button>
+		<Button aria-label="Create new file or folder">
 			<Icon icon="OtherPlus" slot="icon" colored glow />
 		</Button>
 	</div>
@@ -58,7 +58,12 @@
 	>
 		<Animate {animate} transition={{ ease: 'linear' }} let:motion bind:setIndex={indexBtn}>
 			<div use:motion>
-				<Button on:click={E.createNewExplorerFile} shadow={n === 1} data-test-id="new-file">
+				<Button
+					on:click={E.createNewExplorerFile}
+					shadow={n === 1}
+					data-test-id="new-file"
+					aria-label="Create new file"
+				>
 					<Icon icon="OtherNewFile" slot="icon" colored glow />
 				</Button>
 			</div>
@@ -74,6 +79,7 @@
 					on:click={E.createNewExplorerFolder}
 					shadow={n === 1}
 					data-test-id="new-folder"
+					aria-label="Create new folder"
 				>
 					<Icon icon="OtherNewFolder" slot="icon" colored glow />
 				</Button>

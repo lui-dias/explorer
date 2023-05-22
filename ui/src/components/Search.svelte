@@ -86,7 +86,7 @@
 							isSearching.set(true)
 
 							while (true) {
-								const r = await py.streamFind($cwd, query)
+								const r = await py.streamFind($cwd)
 
 								if (!r) break
 
@@ -102,7 +102,7 @@
 								if (end || lastCwd !== $cwd) {
 									if (!end) {
 										// Call last time to set end as true and delete the stream
-										await py.streamFind(lastCwd, query)
+										await py.streamFind(lastCwd)
 									}
 
 									await E.footerText({
@@ -125,6 +125,7 @@
 			<div use:motion>
 				<Button
 					data-test-id="search-icon"
+                    aria-label="Search for files in that folder"
 					on:click={async () => {
 						si = (si + 1) % 2
 
