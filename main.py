@@ -111,6 +111,388 @@ def get_path_info(path: str):
 
 file_type_cache = {}
 
+folders = {
+    ('vscode',): 'FolderVscode',
+    ('node_modules',): 'FolderNode Modules',
+    ('public',): 'FolderPublic',
+    (
+        'src',
+        'source',
+        'sources',
+    ): 'FolderSrc',
+    (
+        'component',
+        'components',
+        '.components',
+        'gui',
+        'ui',
+        'widgets',
+    ): 'FolderComponent',
+    (
+        'html',
+        'view',
+        'views',
+        'layout',
+        'layouts',
+        'page',
+        'pages',
+        '_view',
+        '_views',
+        '_layout',
+        '_layouts',
+        '_page',
+    ): 'FolderView',
+    (
+        'dist',
+        '.dist',
+        'dists',
+        'out',
+        'outs',
+        'export',
+        'exports',
+        'build',
+        '.build',
+        'builds',
+        'release',
+        'releases',
+        'target',
+        'targets',
+    ): 'FolderDist',
+    (
+        'assets',
+        '.assets',
+        'asset',
+        '.asset',
+        'static',
+    ): 'FolderAssets',
+    (
+        'git',
+        '.git',
+        'submodules',
+        '.submodules',
+    ): 'FolderGit',
+    (
+        'cli',
+        'cmd',
+        'command',
+        'commands',
+        'commandline',
+        'console',
+    ): 'FolderCLI',
+    ('.github',): 'FolderGithub',
+    (
+        'tests',
+        '.tests',
+        'test',
+        '.test',
+        '__tests__',
+        '__test__',
+        'spec',
+        '.spec',
+        'integration',
+    ): 'FolderTest',
+    (
+        'docs',
+        '.docs',
+        'doc',
+        '.doc',
+    ): 'FolderDocs',
+    (
+        'next',
+        '.next',
+    ): 'FolderNext',
+}
+
+files = {
+    ('py',): 'FilePython',
+    (
+        'prettierrc',
+        '.prettierrc',
+    ): 'FilePrettier',
+    (
+        'tsconfig.json',
+        'tsconfig.app.json',
+        'tsconfig.base.json',
+        'tsconfig.common.json',
+        'tsconfig.dev.json',
+        'tsconfig.development.json',
+        'tsconfig.e2e.json',
+        'tsconfig.eslint.json',
+        'tsconfig.node.json',
+        'tsconfig.prod.json',
+        'tsconfig.production.json',
+        'tsconfig.server.json',
+        'tsconfig.spec.json',
+        'tsconfig.staging.json',
+        'tsconfig.test.json',
+        'tsconfig.lib.json',
+        'tsconfig.lib.prod.json',
+    ): 'FileConfig',
+    (
+        '.gitattributes',
+        '.gitconfig',
+        '.gitignore',
+        '.gitmodules',
+        '.gitkeep',
+        '.mailmap',
+        '.issuetracker',
+    ): 'FileGit',
+    (
+        'markdown',
+        '.md',
+        'mdown',
+    ): 'FileMarkdown',
+    (
+        'toml',
+        '.toml',
+    ): 'FileToml',
+    ('.astro',): 'FileAstro',
+    (
+        '.astro.config.js',
+        '.astro.config.cjs',
+        '.astro.config.mjs',
+        '.astro.config.ts',
+    ): 'FileAstro Config',
+    (
+        'tailwind.js',
+        'tailwind.cjs',
+        'tailwind.coffee',
+        'tailwind.ts',
+        'tailwind.json',
+        'tailwind.config.js',
+        'tailwind.config.cjs',
+        'tailwind.config.coffee',
+        'tailwind.config.ts',
+        'tailwind.config.json',
+        '.tailwind.js',
+        '.tailwind.cjs',
+        '.tailwind.coffee',
+        '.tailwind.ts',
+        '.tailwind.json',
+        '.tailwindrc.js',
+        '.tailwindrc.cjs',
+        '.tailwindrc.coffee',
+        '.tailwindrc.ts',
+        '.tailwindrc.json',
+    ): 'FileTailwind',
+    (
+        '.d.ts',
+        '.d.cts',
+        '.d.mts',
+    ): 'FileTypescript Definition',
+    ('.db',): 'FileDatabase',
+    ('.svg',): 'FileSVG',
+    ('.html',): 'FileHTML',
+    ('.css',): 'FileCSS',
+    (
+        '.woff',
+        '.woff2',
+        '.ttf',
+        '.otf',
+        '.eot',
+        '.pfa',
+        '.pfb',
+        '.sfd',
+    ): 'FileFont',
+    (
+        '.csv',
+        '.tsv',
+        '.txt',
+    ): 'FileText',
+    (
+        '.plist',
+        '.properties',
+        '.env',
+    ): 'FileConfig',
+    (
+        'yarn.lock',
+        '.yarnrc',
+        '.yarnrc.yml',
+        '.yarnclean',
+        '.yarn-integrity',
+        '.yarn-metadata.json',
+        '.yarnignore',
+    ): 'FileYarn',
+    (
+        'pnpmfile.js',
+        'pnpm-lock.yaml',
+        'pnpm-workspace.yaml',
+    ): 'FilePNPM',
+    ('.pdf',): 'FilePDF',
+    (
+        '.dockerignore',
+        'compose.yaml',
+        'compose.yml',
+        'docker-compose.yaml',
+        'docker-compose.yml',
+        'docker-compose.ci-build.yaml',
+        'docker-compose.ci-build.yml',
+        'docker-compose.override.yaml',
+        'docker-compose.override.yml',
+        'docker-compose.vs.debug.yaml',
+        'docker-compose.vs.debug.yml',
+        'docker-compose.vs.release.yaml',
+        'docker-compose.vs.release.yml',
+        'docker-cloud.yaml',
+        'docker-cloud.yml',
+        'Dockerfile',
+    ): 'FileDocker',
+    (
+        'enc',
+        'lic',
+        'license_dark',
+        'license',
+        'licence',
+        'copying',
+        'copying.lesser',
+        'license-mit',
+        'license-apache',
+        'license.md',
+        'license.txt',
+        'licence.md',
+        'licence.txt',
+        'copying.md',
+        'copying.txt',
+        'copying.lesser.md',
+        'copying.lesser.txt',
+        'license-mit.md',
+        'license-mit.txt',
+        'license-apache.md',
+        'license-apache.txt',
+    ): 'FileLicense',
+    ('.rst',): 'FileRst',
+    (
+        '.jpeg',
+        '.jpg',
+        '.gif',
+        '.png',
+        '.bmp',
+        '.tiff',
+        '.ico',
+        '.webp',
+    ): 'FileImage',
+    (
+        '.eslintrc',
+        '.eslintignore',
+        '.eslintcache',
+        '.eslintrc.js',
+        '.eslintrc.mjs',
+        '.eslintrc.cjs',
+        '.eslintrc.json',
+        '.eslintrc.yaml',
+        '.eslintrc.yml',
+    ): 'FileConfig',
+    (
+        '.npmignore',
+        '.npmrc',
+        'package.json',
+        'package-lock.json',
+        'npm-shrinkwrap.json',
+    ): 'FileNPM',
+    (
+        '.postcssrc',
+        '.postcssrc.json',
+        '.postcssrc.yaml',
+        '.postcssrc.yml',
+        '.postcssrc.ts',
+        '.postcssrc.js',
+        '.postcssrc.cjs',
+        'postcss.config.ts',
+        'postcss.config.js',
+        'postcss.config.cjs',
+    ): 'FilePostCSSConfig',
+    (
+        '.zip',
+        '.rar',
+        '.7z',
+        '.tar',
+        '.tgz',
+        '.bz',
+        '.gz',
+        '.bzip2',
+        '.xz',
+        '.bz2',
+        '.zipx',
+    ): 'FileArchive',
+    (
+        '3g2',
+        '3gp',
+        'asf',
+        'amv',
+        'avi',
+        'divx',
+        'qt',
+        'f4a',
+        'f4b',
+        'f4p',
+        'f4v',
+        'flv',
+        'm2v',
+        'm4v',
+        'mkv',
+        'mk3d',
+        'mov',
+        'mp2',
+        'mp4',
+        'mpe',
+        'mpeg',
+        'mpeg2',
+        'mpg',
+        'mpv',
+        'nsv',
+        'ogv',
+        'rm',
+        'rmvb',
+        'svi',
+        'vob',
+        'webm',
+        'wmv',
+    ): 'FileVideo',
+    # ! --------------------------------------------
+    # ! KEEP ALWAYS AT THE END
+    # ! --------------------------------------------
+    (
+        '.json',
+        '.jsonl',
+        '.ndjson',
+        '.json-tmlanguage',
+        '.jsonc',
+    ): 'FileJSON',
+    ('js',): 'FileJavascript',
+    ('ts',): 'FileTypescript',
+    (
+        '.yaml',
+        '.yml',
+        '.yaml-tmlanguage',
+    ): 'FileYAML',
+    (
+        '.a',
+        '.app',
+        '.bin',
+        '.cmo',
+        '.cmx',
+        '.cma',
+        '.cmxa',
+        '.cmi',
+        '.dll',
+        '.exe',
+        '.hl',
+        '.ilk',
+        '.lib',
+        '.n',
+        '.ndll',
+        '.o',
+        '.obj',
+        '.pyc',
+        '.pyd',
+        '.pyo',
+        '.pdb',
+        '.scpt',
+        '.scptd',
+        '.so',
+    ): 'FileBinary',
+}
+
 
 def get_file_type(path: Path):
     name = path.name
@@ -118,482 +500,22 @@ def get_file_type(path: Path):
     if name in file_type_cache:
         return file_type_cache[name]
 
-    n = ''
+    n = 'Unknown'
 
     if path.is_dir():
-        if any(name.endswith(i.lower()) for i in ['.vscode', 'vscode']):
-            n = 'FolderVscode'
-
-        elif any(name.endswith(i.lower()) for i in ['node_modules']):
-            n = 'FolderNode Modules'
-
-        elif any(name.endswith(i.lower()) for i in ['public', '.public']):
-            n = 'FolderPublic'
-
-        elif any(name.endswith(i.lower()) for i in ['src', 'source', 'sources']):
-            n = 'FolderSrc'
-
-        elif any(
-            name.endswith(i.lower())
-            for i in ['component', 'components', '.components', 'gui', 'ui', 'widgets']
-        ):
-            n = 'FolderComponent'
-
-        elif any(
-            name.endswith(i.lower())
-            for i in [
-                'html',
-                'view',
-                'views',
-                'layout',
-                'layouts',
-                'page',
-                'pages',
-                '_view',
-                '_views',
-                '_layout',
-                '_layouts',
-                '_page',
-                '_pages',
-            ]
-        ):
-            n = 'FolderView'
-
-        elif any(
-            name.endswith(i.lower())
-            for i in [
-                'dist',
-                '.dist',
-                'dists',
-                'out',
-                'outs',
-                'export',
-                'exports',
-                'build',
-                '.build',
-                'builds',
-                'release',
-                'releases',
-                'target',
-                'targets',
-            ]
-        ):
-            n = 'FolderDist'
-
-        elif any(
-            name.endswith(i.lower())
-            for i in ['assets', '.assets', 'asset', '.asset', 'static']
-        ):
-            n = 'FolderAssets'
-
-        elif any(
-            name.endswith(i.lower())
-            for i in ['git', '.git', 'submodules', '.submodules']
-        ):
-            n = 'FolderGit'
-
-        elif any(
-            name.endswith(i.lower())
-            for i in ['cli', 'cmd', 'command', 'commands', 'commandline', 'console']
-        ):
-            n = 'FolderCLI'
-
-        elif any(name.endswith(i.lower()) for i in ['.github']):
-            n = 'FolderGithub'
-
-        elif any(
-            name.endswith(i.lower())
-            for i in [
-                'tests',
-                '.tests',
-                'test',
-                '.test',
-                '__tests__',
-                '__test__',
-                'spec',
-                '.spec',
-                'specs',
-                '.specs',
-                'integration',
-            ]
-        ):
-            n = 'FolderTest'
-
-        elif any(name.endswith(i.lower()) for i in ['docs', '.docs', 'doc', '.doc']):
-            n = 'FolderDocs'
-
-        elif any(name.endswith(i.lower()) for i in ['.next']):
-            n = 'FolderNext'
+        for ext, t in folders.items():
+            if any(name.endswith(i.lower()) for i in ext):
+                n = t
+                break
         else:
             n = 'Folder'
     elif path.is_file():
-        if any(name.endswith(i.lower()) for i in ['.py']):
-            n = 'FilePython'
-
-        elif any(name.endswith(i.lower()) for i in ['.prettierrc', '.prettierignore']):
-            n = 'FilePrettier'
-
-        elif any(
-            name.endswith(i.lower())
-            for i in [
-                'tsconfig.json',
-                'tsconfig.app.json',
-                'tsconfig.base.json',
-                'tsconfig.common.json',
-                'tsconfig.dev.json',
-                'tsconfig.development.json',
-                'tsconfig.e2e.json',
-                'tsconfig.eslint.json',
-                'tsconfig.node.json',
-                'tsconfig.prod.json',
-                'tsconfig.production.json',
-                'tsconfig.server.json',
-                'tsconfig.spec.json',
-                'tsconfig.staging.json',
-                'tsconfig.test.json',
-                'tsconfig.lib.json',
-                'tsconfig.lib.prod.json',
-            ]
-        ):
-            n = 'FileTsconfig'
-
-        elif any(
-            name.endswith(i.lower())
-            for i in [
-                '.gitattributes',
-                '.gitconfig',
-                '.gitignore',
-                '.gitmodules',
-                '.gitkeep',
-                '.mailmap',
-                '.issuetracker',
-            ]
-        ):
-            n = 'FileGit'
-
-        elif any(name.endswith(i.lower()) for i in ['.markdown', '.md', '.mdown']):
-            n = 'FileMarkdown'
-
-        elif any(name.endswith(i.lower()) for i in ['.toml']):
-            n = 'FileToml'
-
-        elif any(name.endswith(i.lower()) for i in ['.astro']):
-            n = 'FileAstro'
-
-        elif any(
-            name.endswith(i.lower())
-            for i in [
-                'astro.config.js',
-                'astro.config.cjs',
-                'astro.config.mjs',
-                'astro.config.ts',
-            ]
-        ):
-            n = 'FileAstro Config'
-
-        elif any(
-            name.endswith(i.lower())
-            for i in [
-                'tailwind.js',
-                'tailwind.cjs',
-                'tailwind.coffee',
-                'tailwind.ts',
-                'tailwind.json',
-                'tailwind.config.js',
-                'tailwind.config.cjs',
-                'tailwind.config.coffee',
-                'tailwind.config.ts',
-                'tailwind.config.json',
-                '.tailwind.js',
-                '.tailwind.cjs',
-                '.tailwind.coffee',
-                '.tailwind.ts',
-                '.tailwind.json',
-                '.tailwindrc.js',
-                '.tailwindrc.cjs',
-                '.tailwindrc.coffee',
-                '.tailwindrc.ts',
-                '.tailwindrc.json',
-            ]
-        ):
-            n = 'FileTailwind'
-
-        elif any(name.endswith(i.lower()) for i in ['.d.ts', '.d.cts', '.d.mts']):
-            n = 'FileTypescript Definition'
-
-        elif any(name.endswith(i.lower()) for i in ['.db']):
-            n = 'FileDatabase'
-
-        elif any(name.endswith(i.lower()) for i in ['.svg']):
-            n = 'FileSVG'
-
-        elif any(name.endswith(i.lower()) for i in ['.html']):
-            n = 'FileHTML'
-
-        elif any(name.endswith(i.lower()) for i in ['.css']):
-            n = 'FileCSS'
-
-        elif any(
-            name.endswith(i.lower())
-            for i in ['.woff', '.woff2', '.ttf', '.otf', '.eot', '.pfa', '.pfb', '.sfd']
-        ):
-            n = 'FileFont'
-
-        elif any(name.endswith(i.lower()) for i in ['.csv', '.tsv', '.txt']):
-            n = 'FileText'
-
-        elif any(name.endswith(i.lower()) for i in ['.plist', '.properties', '.env']):
-            n = 'FileConfig'
-
-        elif any(
-            name.endswith(i.lower())
-            for i in [
-                'yarn.lock',
-                '.yarnrc',
-                '.yarnrc.yml',
-                '.yarnclean',
-                '.yarn-integrity',
-                '.yarn-metadata.json',
-                '.yarnignore',
-            ]
-        ):
-            n = 'FileYarn'
-
-        elif any(
-            name.endswith(i.lower())
-            for i in ['pnpmfile.js', 'pnpm-lock.yaml', 'pnpm-workspace.yaml']
-        ):
-            n = 'FilePNPM'
-
-        elif any(name.endswith(i.lower()) for i in ['.pdf']):
-            n = 'FilePDF'
-
-        elif any(
-            name.endswith(i.lower())
-            for i in [
-                '.dockerignore',
-                'compose.yaml',
-                'compose.yml',
-                'docker-compose.yaml',
-                'docker-compose.yml',
-                'docker-compose.ci-build.yaml',
-                'docker-compose.ci-build.yml',
-                'docker-compose.override.yaml',
-                'docker-compose.override.yml',
-                'docker-compose.vs.debug.yaml',
-                'docker-compose.vs.debug.yml',
-                'docker-compose.vs.release.yaml',
-                'docker-compose.vs.release.yml',
-                'docker-cloud.yaml',
-                'docker-cloud.yml',
-                'Dockerfile',
-            ]
-        ):
-            n = 'FileDocker'
-
-        elif any(
-            name.endswith(i.lower())
-            for i in [
-                'enc',
-                'lic',
-                'license_dark',
-                'license',
-                'licence',
-                'copying',
-                'copying.lesser',
-                'license-mit',
-                'license-apache',
-                'license.md',
-                'license.txt',
-                'licence.md',
-                'licence.txt',
-                'copying.md',
-                'copying.txt',
-                'copying.lesser.md',
-                'copying.lesser.txt',
-                'license-mit.md',
-                'license-mit.txt',
-                'license-apache.md',
-                'license-apache.txt',
-            ]
-        ):
-            n = 'FileLicense'
-
-        elif any(name.endswith(i.lower()) for i in ['.rst']):
-            n = 'FileRst'
-
-        elif any(
-            name.endswith(i.lower())
-            for i in [
-                '.jpeg',
-                '.jpg',
-                '.gif',
-                '.png',
-                '.bmp',
-                '.tiff',
-                '.ico',
-                '.webp',
-            ]
-        ):
-            n = 'FileImage'
-
-        elif any(
-            name.endswith(i.lower())
-            for i in [
-                '.eslintrc',
-                '.eslintignore',
-                '.eslintcache',
-                '.eslintrc.js',
-                '.eslintrc.mjs',
-                '.eslintrc.cjs',
-                '.eslintrc.json',
-                '.eslintrc.yaml',
-                '.eslintrc.yml',
-            ]
-        ):
-            n = 'FileESLint'
-
-        elif any(
-            name.endswith(i.lower())
-            for i in [
-                '.npmignore',
-                '.npmrc',
-                'package.json',
-                'package-lock.json',
-                'npm-shrinkwrap.json',
-            ]
-        ):
-            n = 'FileNPM'
-
-        elif any(
-            name.endswith(i.lower())
-            for i in [
-                '.postcssrc',
-                '.postcssrc.json',
-                '.postcssrc.yaml',
-                '.postcssrc.yml',
-                '.postcssrc.ts',
-                '.postcssrc.js',
-                '.postcssrc.cjs',
-                'postcss.config.ts',
-                'postcss.config.js',
-                'postcss.config.cjs',
-            ]
-        ):
-            n = 'FilePostCSSConfig'
-
-        elif any(
-            name.endswith(i.lower())
-            for i in [
-                '.zip',
-                '.rar',
-                '.7z',
-                '.tar',
-                '.tgz',
-                '.bz',
-                '.gz',
-                '.bzip2',
-                '.xz',
-                '.bz2',
-                '.zipx',
-            ]
-        ):
-            n = 'FileZip'
-
-        elif any(
-            name.endswith(i.lower())
-            for i in [
-                '3g2',
-                '3gp',
-                'asf',
-                'amv',
-                'avi',
-                'divx',
-                'qt',
-                'f4a',
-                'f4b',
-                'f4p',
-                'f4v',
-                'flv',
-                'm2v',
-                'm4v',
-                'mkv',
-                'mk3d',
-                'mov',
-                'mp2',
-                'mp4',
-                'mpe',
-                'mpeg',
-                'mpeg2',
-                'mpg',
-                'mpv',
-                'nsv',
-                'ogv',
-                'rm',
-                'rmvb',
-                'svi',
-                'vob',
-                'webm',
-                'wmv',
-            ]
-        ):
-            n = 'FileVideo'
-
-        # ! --------------------------------------------
-        # ! KEEP ALWAYS AT THE END
-        # ! --------------------------------------------
-
-        elif any(
-            name.endswith(i.lower())
-            for i in ['.json', '.jsonl', '.ndjson', '.json-tmlanguage', '.jsonc']
-        ):
-            n = 'FileJson'
-
-        elif any(name.endswith(i.lower()) for i in ['.js']):
-            n = 'FileJavascript'
-
-        elif any(name.endswith(i.lower()) for i in ['.ts']):
-            n = 'FileTypescript'
-
-        elif any(
-            name.endswith(i.lower()) for i in ['.yaml', '.yml', '.yaml-tmlanguage']
-        ):
-            n = 'FileYaml'
-
-        elif any(
-            name.endswith(i.lower())
-            for i in [
-                '.a',
-                '.app',
-                '.bin',
-                '.cmo',
-                '.cmx',
-                '.cma',
-                '.cmxa',
-                '.cmi',
-                '.dll',
-                '.exe',
-                '.hl',
-                '.ilk',
-                '.lib',
-                '.n',
-                '.ndll',
-                '.o',
-                '.obj',
-                '.pyc',
-                '.pyd',
-                '.pyo',
-                '.pdb',
-                '.scpt',
-                '.scptd',
-                '.so',
-            ]
-        ):
-            n = 'FileBinary'
+        for ext, t in files.items():
+            if any(name.endswith(i.lower()) for i in ext):
+                n = t
+                break
         else:
             n = 'File'
-    else:
-        n = 'unknown'
 
     file_type_cache[name] = n
 
