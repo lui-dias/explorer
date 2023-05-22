@@ -1,9 +1,29 @@
-<html lang="en" data-color-mode="dark" data-light-theme="light" data-dark-theme="dark" data-a11y-animated-images="system" width="98"  height="48" ><parsererror xmlns="http://www.w3.org/1999/xhtml" style="display: block; white-space: pre; border: 2px solid #c77; padding: 0 1em 0 1em; margin: 1em; background-color: #fdd; color: black"><h3>This page contains the following errors:</h3><div style="font-family:monospace;font-size:12px">error on line 16 at column 76: Specification mandates value for attribute crossorigin
-</div><h3>Below is a rendering of the page up to the first error.</h3></parsererror>
-  <head>
+<html lang="en" data-color-mode="dark" data-light-theme="light" data-dark-theme="dark"
+    data-a11y-animated-images="system" width="24px" height="24px">
+<parsererror xmlns="http://www.w3.org/1999/xhtml"
+    style="display: block; white-space: pre; border: 2px solid #c77; padding: 0 1em 0 1em; margin: 1em; background-color: #fdd; color: black">
+    <h3>This page contains the following errors:</h3>
+    <div style="font-family:monospace;font-size:12px">error on line 16 at column 76: Specification mandates value for
+        attribute crossorigin
+    </div>
+    <h3>Below is a rendering of the page up to the first error.</h3>
+</parsererror>
+
+<head>
     <meta charset="utf-8">
-  <script type="text/javascript" nonce="fbe5d0634f0d4d5bbeea50359a4" src="//local.adguard.org?ts=1684778492374&amp;type=content-script&amp;dmn=github.com&amp;pth=%2Fvscode-icons%2Fvscode-icons%2Fraw%2Fmaster%2Ficons%2Ffile_type_makefile.svg&amp;app=vivaldi.exe&amp;css=2&amp;js=1&amp;rel=1&amp;rji=1&amp;sbe=1"/>
-<script type="text/javascript" nonce="fbe5d0634f0d4d5bbeea50359a4" src="//local.adguard.org?ts=1684778492374&amp;name=AdGuard%20Extra&amp;name=AdGuard%20Popup%20Blocker&amp;type=user-script"/><link rel="dns-prefetch" href="https://github.githubassets.com">
-  <link rel="dns-prefetch" href="https://avatars.githubusercontent.com">
-  <link rel="dns-prefetch" href="https://github-cloud.s3.amazonaws.com">
-  <link rel="dns-prefetch" href="https://user-images.githubusercontent.com/"></link></link></link></link></meta></head></html>
+    <script type="text/javascript" nonce="fbe5d0634f0d4d5bbeea50359a4"
+        src="//local.adguard.org?ts=1684778492374&amp;type=content-script&amp;dmn=github.com&amp;pth=%2Fvscode-icons%2Fvscode-icons%2Fraw%2Fmaster%2Ficons%2Ffile_type_makefile.svg&amp;app=vivaldi.exe&amp;css=2&amp;js=1&amp;rel=1&amp;rji=1&amp;sbe=1" />
+    <script type="text/javascript" nonce="fbe5d0634f0d4d5bbeea50359a4"
+        src="//local.adguard.org?ts=1684778492374&amp;name=AdGuard%20Extra&amp;name=AdGuard%20Popup%20Blocker&amp;type=user-script" />
+    <link rel="dns-prefetch" href="https://github.githubassets.com">
+    <link rel="dns-prefetch" href="https://avatars.githubusercontent.com">
+    <link rel="dns-prefetch" href="https://github-cloud.s3.amazonaws.com">
+    <link rel="dns-prefetch" href="https://user-images.githubusercontent.com/">
+    </link>
+    </link>
+    </link>
+    </link>
+    </meta>
+</head>
+
+</html>
