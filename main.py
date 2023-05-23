@@ -317,11 +317,8 @@ folders = {
     # ! KEEP ALWAYS AT THE END
     # ! --------------------------------------------
 
-    'folders/module'      : ('modules',),
+    'folders/module': ('modules',),
 }
-# fmt: on
-
-
 
 files = {
     'files/access': (
