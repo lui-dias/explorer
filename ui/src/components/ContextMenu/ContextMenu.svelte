@@ -3,6 +3,7 @@
 	import { E } from '../../event'
 	import {
 		contextMenuOpen,
+		cwd,
 		installedApps,
 		quickAccess,
 		selected,
@@ -156,6 +157,14 @@
 				contextMenuOpen.set(false)
 			},
 		},
+        terminal: {
+            text: 'Open in Terminal',
+            icon: 'OtherTerminal',
+            action: async () => {
+                await py.shell(`%localappdata%\\Microsoft\\WindowsApps\\wt.exe -d ${$cwd}`)
+                contextMenuOpen.set(false)
+            }
+        },
 		properties: {
 			text: 'Properties',
 			icon: 'OtherInfo',
@@ -232,6 +241,7 @@
 		{:else}
 			<ContextMenuItem {parentHeight} {...components.new} />
 			<ContextMenuItem {parentHeight} {...components.sort} />
+			<ContextMenuItem {parentHeight} {...components.terminal} />
 		{/if}
 	</li>
 </menu>

@@ -17,6 +17,7 @@
 	import Plus from '../icons/contextmenu/Plus.svelte'
 	import Size from '../icons/contextmenu/Size.svelte'
 	import Sort from '../icons/contextmenu/Sort.svelte'
+	import Terminal from '../icons/contextmenu/Terminal.svelte'
 	import Types from '../icons/contextmenu/Types.svelte'
 	import Unpin from '../icons/contextmenu/Unpin.svelte'
 	import Vscode from '../icons/contextmenu/Vscode.svelte'
@@ -68,6 +69,7 @@
         'OtherCopy'                : Copy,
         'OtherVscode'              : Vscode,
         'OtherPreview'             : Preview,
+        'OtherTerminal'            : Terminal,
 	} as Record<string, any>
 </script>
 
