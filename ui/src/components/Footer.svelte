@@ -28,6 +28,7 @@
 		<button
 			type="button"
 			aria-label="Toggle preview"
+			title="Toggle preview"
 			on:click={() => canShowPreview.set(!$canShowPreview)}
 		>
 			<Icon
@@ -39,6 +40,7 @@
 			type="button"
 			class="disabled:cursor-not-allowed"
 			aria-label="Open settings"
+			title="Open settings (disabled)"
 			disabled
 			on:click={() => settingsOpen.set(true)}
 		>
