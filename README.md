@@ -6,7 +6,7 @@ _Icons from [vscode-icons](https://github.com/vscode-icons/vscode-icons)_
 
 A file explorer with some features that I think it would be nice for a file explorer to have.
 
-It was made to work on windows
+It was made to work on windows, tested on windows 11
 
 ## How to run
 
