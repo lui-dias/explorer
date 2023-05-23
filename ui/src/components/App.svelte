@@ -8,6 +8,7 @@
 		explorerItems,
 		history,
 		historyIndex,
+		installedApps,
 		isExplorerFocused,
 		isLoading,
 		isMultipleSelected,
@@ -17,7 +18,6 @@
 		settings,
 		sortType,
 		sortTypeReversed,
-		installedApps,
 	} from '../store'
 	import type { TSortTypes } from '../types'
 	import { createWs, py, setPath, sortItems, waitWsOpen, xIsWhatPercentOfY } from '../utils'
@@ -261,7 +261,7 @@
 		}
 	}}
 	on:keydown={async e => {
-        // Unselect all items
+		// Unselect all items
 		if (e.key === 'Escape') {
 			selected.set([])
 		}

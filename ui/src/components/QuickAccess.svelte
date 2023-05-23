@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte'
 	import { contextMenuOpen, quickAccess, selectedQuickAccess } from '../store'
 	import { appendPath, py } from '../utils'
-	import Icon from './ui/Icon.svelte'
+	import IconV2 from './ui/IconV2.svelte'
 
 	onMount(async () => {
 		const items = JSON.parse((await py.get('quickAccess')) ?? '[]') as string[]
@@ -37,7 +37,7 @@
 						appendPath(file.path)
 					}}
 				>
-					<Icon icon={file.type} colored />
+					<IconV2 icon={file.type} colored />
 					<span
 						class="whitespace-nowrap overflow-hidden text-ellipsis text-[#b9b9b9] font-inter hover:font-bold"
 						>{file.name}</span

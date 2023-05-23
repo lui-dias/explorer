@@ -9,6 +9,7 @@
 	import { E } from '../event'
 	import { appendPath, formatBytes, outsideClick, py } from '../utils'
 	import Icon from './ui/Icon.svelte'
+	import IconV2 from './ui/IconV2.svelte'
 
 	export let file: ExplorerItem
 	let size = file.size ?? '0 B'
@@ -186,7 +187,7 @@
 			/>
 		{:else}
 			<div class="text-[#b9b9b9] flex items-center gap-x-1.5 w-64 text-sm" title={file.path}>
-				<Icon icon={file.type} />
+				<IconV2 icon={file.type} />
 				<span
 					class="w-full overflow-hidden text-ellipsis whitespace-nowrap text-start"
 					data-test-id="file-name"
