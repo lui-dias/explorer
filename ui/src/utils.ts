@@ -125,9 +125,9 @@ export const py = {
 		// @ts-ignore
 		return await callWsFunction('create_folder', path)
 	},
-	exists: async (path: string, ignore?: string): Promise<boolean> => {
+	exists: async (path: string): Promise<boolean> => {
 		// @ts-ignore
-		return await callWsFunction('exists', path, ignore)
+		return await callWsFunction('exists', path)
 	},
 	streamFolderSize: async (
 		path: string,
