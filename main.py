@@ -2257,6 +2257,25 @@ class API:
     def shell(self, cmd: str):
         run(cmd, shell=True)
 
+    def parse_path(self, path: str):
+        user = getuser()
+
+        a = re.sub(r'%AllUsersProfile%', 'C:/ProgramData', path, flags=re.I)
+        a = re.sub(r'%AppData%', f'C:/Users/{user}/AppData/Roaming', a, flags=re.I)
+        a = re.sub(r'%CommonProgramFiles%', 'C:/Program Files/Common Files', a, flags=re.I)
+        a = re.sub(r'%CommonProgramFiles(x86)%', 'C:/Program Files (x86)', a, flags=re.I)
+        a = re.sub(r'%HomeDrive%', 'C:/', a, flags=re.I)
+        a = re.sub(r'%LocalAppData%', f'C:/Users/{user}/AppData/Local', a, flags=re.I)
+        a = re.sub(r'%ProgramData%', 'C:/ProgramData', a, flags=re.I)
+        a = re.sub(r'%ProgramFiles%', 'C:/Program Files or C:/Program Files (x86)', a, flags=re.I)
+        a = re.sub(r'%Public%', 'C:/Users/Public', a, flags=re.I)
+        a = re.sub(r'%SystemDrive%', 'C:', a, flags=re.I)
+        a = re.sub(r'%SystemRoot%', 'C:/Windows', a, flags=re.I)
+        a = re.sub(r'%UserProfile%', f'C:/Users/{user}', a, flags=re.I)
+
+        
+        return Path(a).as_posix()
+
 
 streams_files = {}
 streams_deletes = {}

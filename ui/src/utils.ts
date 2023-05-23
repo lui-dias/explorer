@@ -268,6 +268,10 @@ export const py = {
 		// @ts-ignore
 		return await callWsFunction('shell', command)
 	},
+	parse_path: async (path: string): Promise<string> => {
+		// @ts-ignore
+		return await callWsFunction('parse_path', path)
+	},
 }
 
 export function debounce(fn: () => void, s: number) {

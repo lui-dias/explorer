@@ -94,7 +94,7 @@
 			data-test-id="cwd-input"
 			on:keyup={async e => {
 				if (e.key === 'Enter') {
-					cwd.set(inputSearchNode.value)
+					cwd.set(await py.parse_path(inputSearchNode.value))
 					await E.reload()
 				}
 			}}
