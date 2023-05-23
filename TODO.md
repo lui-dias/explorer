@@ -5,6 +5,7 @@
 -   [x] Streamed get file size
 -   [x] Cache file icons
 -   [x] Ls Multithreaded
+-   [ ] Load larger files on preview
 
 ### Features
 
