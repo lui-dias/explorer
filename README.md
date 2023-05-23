@@ -6,9 +6,10 @@ _Icons from [vscode-icons](https://github.com/vscode-icons/vscode-icons)_
 
 A file explorer with some features that I think it would be nice for a file explorer to have.
 
-It was made to work on windows, however most functions should work on mac or linux.
+It was made to work on windows
 
 ## How to run
+
 ```
 git clone https://github.com/lui-dias/explorer
 
@@ -29,6 +30,7 @@ If the server doesn't load in time, wait a bit and reload the page.
 ### [Features/TODO](TODO.md)
 
 ## How to seed a folder with files
+
 The command will create the files in the `seed` folder, the folder is created if the folder does not exist
 
 ```
@@ -36,6 +38,7 @@ python main.py seed <n_files> <size>
 ```
 
 Example
+
 ```
 python main.py seed 1000 1b
 python main.py seed 100 1kb
