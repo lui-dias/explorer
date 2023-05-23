@@ -254,7 +254,6 @@ folders = {
     'folders/minikube'    : ('minikube', 'minik8s', 'minikuber'),
     'folders/mock'        : ('mocks', 'mocks', '__mocks__'),
     'folders/model'       : ('model', 'models', 'entities'),
-    'folders/module'      : ('modules',),
     'folders/mongodb'     : ('mongodb', 'mongo'),
     'folders/mysql'       : ('mysqldb', 'mysql'),
     'folders/next'        : ('next',),
@@ -313,6 +312,12 @@ folders = {
     'folders/windows'   : ('windows', 'win32'),
     'folders/www'       : ('www', 'wwwroot'),
     'folders/yarn'      : ('yarn',),
+
+    # ! --------------------------------------------
+    # ! KEEP ALWAYS AT THE END
+    # ! --------------------------------------------
+
+    'folders/module'      : ('modules',),
 }
 # fmt: on
 
@@ -621,7 +626,6 @@ files = {
     'files/devcontainer'      : ('devcontainer.json', '.devcontainer.json'),
     'files/dhall'             : ('dhall',),
     'files/django'            : ('djt',),
-    'files/dlang'             : ('d',),
     'files/diff'              : ('diff',),
     'files/docker'            : (
         '.dockerignore',
@@ -1101,7 +1105,7 @@ files = {
     'files/objectivec'    : ('m',),
     'files/objectivecpp'  : ('mm',),
     'files/objidconfig'   : ('.objidconfig',),
-    'files/ocaml'         : ('.merlin', 'ml'),
+    'files/ocaml'         : ('.merlin', '.ml'),
     'files/ogone'         : ('o3',),
     'files/onenote'       : ('one', 'onepkg', 'onetoc', 'onetoc2', 'sig'),
     'files/openscad'      : ('scad',),
@@ -1754,6 +1758,7 @@ files = {
     'files/js'        : ('js',),
     'files/typescript': ('ts',),
     'files/yaml'      : ('yaml', 'yml'),
+    'files/dlang'     : ('d',),
 }
 # fmt: on
 
