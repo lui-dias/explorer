@@ -35,6 +35,7 @@
 	// Focus search input when search button is clicked
 	$: if (inputSearchNode) {
 		inputSearchNode.focus()
+        inputSearchNode.setSelectionRange(0, inputSearchNode.value.length)
 	}
 
 	$: if ($cwdSplit && cwdListNode) {
