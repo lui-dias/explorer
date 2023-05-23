@@ -17,6 +17,7 @@ export const settingsOpen = writable<boolean>(false)
 export const ws = writable<WebSocket>()
 export const isLoading = writable<boolean>(true)
 export const installedApps = writable<TInstalledApp[]>([])
+export const canShowPreview = writable<boolean>(true)
 
 export const settings = writable<TConfig>({} as TConfig)
 

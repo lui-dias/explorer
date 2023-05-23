@@ -4,6 +4,7 @@
 	import Copy from '../icons/Copy.svelte'
 	import Disk from '../icons/Disk.svelte'
 	import Info from '../icons/Info.svelte'
+	import Preview from '../icons/Preview.svelte'
 	import Search from '../icons/Search.svelte'
 	import Usb from '../icons/Usb.svelte'
 	import Abc from '../icons/contextmenu/Abc.svelte'
@@ -32,11 +33,16 @@
 				true: 'fill-primary group-disabled:fill-gray-400 group-disabled:drop-shadow-none',
 				false: '',
 			},
+            stroked: {
+                true: 'stroke-primary group-disabled:stroke-gray-400 group-disabled:drop-shadow-none',
+                false: '',
+            }
 		},
 	})
 
 	export let glow = false
 	export let colored = false
+    export let stroked = false
 	export let icon: string
 
 	// prettier-ignore
@@ -61,7 +67,8 @@
         'OtherInfo'                : Info,
         'OtherCopy'                : Copy,
         'OtherVscode'              : Vscode,
+        'OtherPreview'             : Preview,
 	} as Record<string, any>
 </script>
 
-<svelte:component this={icons[icon]} class={`${_icon({ glow, colored })} ${$$props.class}`} />
+<svelte:component this={icons[icon]} class={`${_icon({ glow, colored, stroked })} ${$$props.class}`} />

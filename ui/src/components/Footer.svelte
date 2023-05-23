@@ -1,9 +1,10 @@
 <script lang="ts">
-	import { footer, settingsOpen } from '../store'
+	import { canShowPreview, footer, settingsOpen } from '../store'
 	import Config from './icons/Config.svelte'
 	import Error from './icons/Error.svelte'
 	import Info from './icons/Info.svelte'
 	import Warning from './icons/Warning.svelte'
+	import Icon from './ui/Icon.svelte'
 </script>
 
 <footer class="flex items-center justify-between h-10 px-2 text-text" id="footer">
@@ -24,6 +25,16 @@
 	</div>
 
 	<div class="flex items-center gap-x-2">
+		<button
+			type="button"
+			aria-label="Toggle preview"
+			on:click={() => canShowPreview.set(!$canShowPreview)}
+		>
+			<Icon
+				icon="OtherPreview"
+				class={`w-6 h-6 ${$canShowPreview ? 'fill-primary' : 'fill-zinc-500'}`}
+			/>
+		</button>
 		<button
 			type="button"
 			class="disabled:cursor-not-allowed"

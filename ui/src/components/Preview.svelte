@@ -19,7 +19,7 @@
 		yaml,
 	} from 'svelte-highlight/languages'
 	import githubDark from 'svelte-highlight/styles/github-dark'
-	import { isExplorerFocused, selected } from '../store'
+	import { canShowPreview, isExplorerFocused, selected } from '../store'
 	import type { ExplorerItem } from '../types'
 	import { loadFontDynamically, py } from '../utils'
 
@@ -224,12 +224,12 @@
 	on:click={() => {
 		isExplorerFocused.set(false)
 	}}
-	class:pl-4={$selected.length === 1 && $selected[0].kind === 'file'}
+	class:pl-4={$canShowPreview && $selected.length === 1 && $selected[0].kind === 'file'}
 	class={`preview w-full transition-all duration-300 ease-out h-[398px] overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-700 ${
-		$selected.length === 1 && $selected[0].kind === 'file' ? 'max-w-[250px]' : 'max-w-0'
+		$canShowPreview && $selected.length === 1 && $selected[0].kind === 'file' ? 'max-w-[250px]' : 'max-w-0'
 	}`}
 >
-	{#if $selected.length === 1 && $selected[0].kind === 'file'}
+	{#if $canShowPreview && $selected.length === 1 && $selected[0].kind === 'file'}
 		{#if isLoading}
 			<span />
 		{:else if type.type === 'image'}
