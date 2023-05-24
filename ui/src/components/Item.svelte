@@ -116,8 +116,6 @@
                     if ($filesCache[file.path]) {
                         $filesCache[file.path].end = true
 					}
-                    
-                    console.log('break')
 					break
 				}
 			}
@@ -142,10 +140,12 @@
 		// if isMultipleSelected, add else set
 		selected.set($isMultipleSelected ? [...$selected, file] : [file])
 	}}
-	on:dblclick={() => {
+	on:dblclick={async () => {
 		if (file.kind === 'folder') {
 			appendPath(file.path)
-		}
+		} else {
+            await py.shell(file.path)
+        }
 	}}
 	on:dragleave={e => {
 		if (file.kind === 'folder') {
