@@ -2,13 +2,12 @@
 	import { onMount } from 'svelte'
 
 	import { asDropZone, asDroppable } from 'svelte-drag-and-drop-actions'
-	import { explorerItems, isMultipleSelected, selected } from '../store'
+	import { explorerItems, filesCache, isMultipleSelected, selected } from '../store'
 	import type { ExplorerItem } from '../types'
 
 	import { format } from 'date-fns'
 	import { E } from '../event'
 	import { appendPath, formatBytes, outsideClick, py } from '../utils'
-	import Icon from './ui/Icon.svelte'
 	import IconV2 from './ui/IconV2.svelte'
 
 	export let file: ExplorerItem
@@ -26,9 +25,17 @@
 	$: if (size) {
 		file.size = size
 
+		updateFileCacheSize(size)
+
 		// Update selected file, useful to get updated file size on properties
 		if ($selected.length === 1 && $selected[0].path === file.path) {
 			selected.set([file])
+		}
+	}
+
+	function updateFileCacheSize(size: number) {
+		if ($filesCache[file.path]) {
+			$filesCache[file.path].file.size = size
 		}
 	}
 
@@ -70,24 +77,50 @@
 			file.isEditMode = false
 		})
 
-		await py.startFolderSize(file.path)
+		const cache = $filesCache[file.path]
 
-		// Calculate size
-		while (true) {
-			const r = await py.streamFolderSize(file.path)
+		if (cache) {
+			file = cache.file
+		} else {
+			filesCache.set({
+				...$filesCache,
+				...{
+					[file.path]: {
+						file,
+						end: false,
+					},
+				},
+			})
 
-			// For some reason, some files don't start to calculate size
-			// even though I called startFolderSize
-			if (!r) {
-				await py.startFolderSize(file.path)
-				continue
+			await py.startFolderSize(file.path)
+		}
+
+        // $filesCache[file.path] can be undefined, but it's ok :)
+		if (!$filesCache[file.path]?.end) {
+			// Calculate size
+			while (true) {
+				const r = await py.streamFolderSize(file.path)
+
+				// For some reason, some files don't start to calculate size
+				// even though I called startFolderSize
+				if (!r) {
+					await py.startFolderSize(file.path)
+					continue
+				}
+
+				const { size: newSize, end } = r
+
+				size = newSize
+                
+				if (end) {
+                    if ($filesCache[file.path]) {
+                        $filesCache[file.path].end = true
+					}
+                    
+                    console.log('break')
+					break
+				}
 			}
-
-			const { size: newSize, end } = r
-
-			size = newSize
-
-			if (end) break
 		}
 	})
 

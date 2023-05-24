@@ -6,6 +6,7 @@
 		cwdSplit,
 		disks,
 		explorerItems,
+		filesCache,
 		history,
 		historyIndex,
 		installedApps,
@@ -116,6 +117,7 @@
 		cwd.subscribe(async v => {
 			if (v) {
 				searchItems.set([])
+                filesCache.set({})
 				await py.set('cwd', $cwd)
 				cwdSplit.set($cwd.split('/'))
 				await py.deleteAllStreamsFind()

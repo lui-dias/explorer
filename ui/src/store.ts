@@ -18,6 +18,12 @@ export const ws = writable<WebSocket>()
 export const isLoading = writable<boolean>(true)
 export const installedApps = writable<TInstalledApp[]>([])
 export const canShowPreview = writable<boolean>(true)
+export const filesCache = writable<{
+	[key: string]: {
+		file: ExplorerItem
+		end: boolean
+	}
+}>({})
 
 export const settings = writable<TConfig>({} as TConfig)
 
