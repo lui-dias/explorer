@@ -422,7 +422,15 @@ export function callWsFunction(name: string, ...args: any[]) {
 		}
 
 		$ws.addEventListener('message', listener)
-		$ws.send(JSON.stringify({ type: 'call', id: response_id, name, args }))
+		$ws.send(
+			JSON.stringify({
+				type: 'call',
+				id: response_id,
+				name,
+				args,
+				token: sessionStorage.getItem('token'),
+			}),
+		)
 	})
 }
 

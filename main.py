@@ -21,6 +21,7 @@ import click as c
 import regex as re
 import webview
 import wmi
+from webview import Window
 from flask import Flask, send_from_directory
 from flask_cors import CORS
 from fontTools.ttLib import TTFont, TTLibError
@@ -2301,7 +2302,7 @@ DRIVE_TYPES = {
     6: 'RAM Disk',
 }
 
-w = None
+w: Window = None
 
 UI_FOLDER = Path('ui')
 SEED_FOLDER = Path('seed')
@@ -2371,7 +2372,11 @@ def start(debug=True, server=True):
         height=600,
     )
 
-    def ws_server():
+    def start_window():
+        w.evaluate_js(f'sessionStorage.setItem("token", "{webview.token}")')
+        start_ws_server()
+
+    def start_ws_server():
         async def server(ws: WebSocketServerProtocol):
             while True:
                 try:
@@ -2381,6 +2386,11 @@ def start(debug=True, server=True):
                         id = data['id']
                         name = data['name']
                         args = data['args']
+                        token = data.get('token')
+
+                        if not token or token != webview.token:
+                            print(f'Invalid token: {token}')
+                            continue
 
                         try:
                             r = getattr(api, name)(*args)
@@ -2403,7 +2413,7 @@ def start(debug=True, server=True):
         run_async(main())
 
     Thread(target=app.run, args=('localhost', 3003)).start()
-    webview.start(ws_server, debug=debug, private_mode=False)
+    webview.start(start_window, debug=debug, private_mode=False)
 
 
 def parse_size(size: str):
