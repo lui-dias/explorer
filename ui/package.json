@@ -30,7 +30,8 @@
 		"tailwind-scrollbar": "^3.0.4",
 		"tailwind-variants": "^0.1.5",
 		"tailwindcss": "^3.3.2",
-		"tiny-typed-emitter": "^2.1.0"
+		"tiny-typed-emitter": "^2.1.0",
+		"wait-port": "^1.0.4"
 	},
 	"devDependencies": {
 		"@types/dompurify": "^3.0.2",

@@ -2347,6 +2347,8 @@ def start(debug=True, server=True):
     if server:
         Thread(target=start_server).start()
 
+    run('cd ui && pnpm wait-port localhost:3000', shell=True, capture_output=True)
+
     app = Flask(__name__)
     CORS(app)
 
