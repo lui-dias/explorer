@@ -25,8 +25,6 @@ python main.py
 
 After first run, you can just run `python main.py` to start the server.
 
-If the server doesn't load in time, wait a bit and reload the page.
-
 ### [Features/TODO](TODO.md)
 
 ## How to seed a folder with files
